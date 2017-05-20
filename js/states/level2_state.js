@@ -129,6 +129,20 @@
             diamond.animations.add('spin', [4, 5, 6, 7, 6, 5], 6, true);
             diamond.animations.play('spin');
         });
+        
+        this.bats = this.game.add.physicsGroup();
+        this.level2.createFromObjects('Enemies', 'bat', 'enemies', 8, true, false, this.bats);
+        this.bats.forEach(function(bat){
+            bat.anchor.setTo(0.5, 0.5);
+            bat.body.immovable = true;
+            bat.animations.add('fly', [8, 9, 10], 6, true);
+            bat.animations.play('fly');
+            // Velocidade inicial do inimigo
+            bat.body.velocity.x = 100;
+            // bounce.x=1 indica que, se o objeto tocar num objeto no eixo x, a força deverá
+            // ficar no sentido contrário; em outras palavras, o objeto é perfeitamente elástico
+            bat.body.bounce.x = 1;
+        });
 
         // Criando assets de som com this.game.add.audio()
         // O parâmetro é o nome do asset definido no preload()
@@ -164,6 +178,12 @@
         // arcade.overlap(). O Phaser irá automaticamente calcular a colisão dos objetos
         // Inicialmente, adicionando colisões do player com as paredes da fase, que é um layer:
         this.game.physics.arcade.collide(this.player, this.wallsLayer);
+        
+        // Colisão com os morcegos - depende de como foi a colisão, veremos abaixo
+        this.game.physics.arcade.overlap(this.player, this.bats, this.batCollision, null, this);
+
+        // Adicionando colisão entre os morcegos e as paredes
+        this.game.physics.arcade.collide(this.bats, this.wallsLayer);
         
         // Movimentação do player
         // Para detectar se uma das teclas referenciadas foi pressionada,
@@ -206,6 +226,30 @@
             this.player.animations.play('jump');
         }
         
+        // Para cada morcego, verificar em que sentido ele está indo
+        // Se a velocidade for positiva, a escala no eixo X será 1, caso
+        // contrário -1
+        this.bats.forEach(function(bat){
+           if(bat.body.velocity.x != 0) {
+               // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
+               bat.scale.x = 1 * Math.sign(bat.body.velocity.x);
+           }
+        });
+        
+    }
+    
+    // Tratamento da colisão entre o jogador e os diamantes
+    Level2State.prototype.batCollision = function(player, bat){
+        // Se o jogador colidir por baixo e o morcego por cima, isso indica que o jogador pulou
+        // em cima do morcego, nesse caso vamos "matar" o morcego
+        if(player.body.touching.down && bat.body.touching.up){
+            this.enemyDeathSound.play(); // tocando som de morte do morcego
+            this.player.body.velocity.y = -200; // adicionando um pequeno impulso vertical ao jogador
+            this.score += 100; // atualizando score
+            this.scoreText.text = "Score: " + this.score;
+            bat.kill();
+        }
+        else this.lose(); // caso contrário, ir para condição de derrota
     }
 
     // Condição de derrota: guarde o score e siga para o próximo estado
