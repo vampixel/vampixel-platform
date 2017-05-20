@@ -46,7 +46,7 @@
     
     Level1State.prototype.update = function() {
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
-        this.game.debug.inputInfo(50,50);
+        this.player.handleInputs();
     } 
 
     
