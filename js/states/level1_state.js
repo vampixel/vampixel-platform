@@ -3,7 +3,7 @@
 
     var Level1State = function(Level1) {
         // load sprites here
-        this.player              = gameManager.getSprite('player');
+        this.player = gameManager.getSprite('player');
  
     };
     
@@ -34,13 +34,19 @@
         
         // setup initial player properties
         this.player.setup(this);
+//        this.player.sprite.x = 170;
+//        this.player.sprite.y = 70;
+        this.player.sprite.x = 828;
+        this.player.sprite.y = 70;
         
         //Movimentacao de camera
+        this.game.camera.follow(this.player.sprite);
         
     }
     
     Level1State.prototype.update = function() {
-        this.game.physics.arcade.collide(this.player, this.wallsLayer);
+        this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
+        this.game.debug.inputInfo(50,50);
     } 
 
     
