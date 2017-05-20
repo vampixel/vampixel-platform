@@ -28,25 +28,30 @@
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.gravity;
         this.stateContext = stateContext;
+
+        this.keys = this.game.input.keyboard.createCursorKeys();
+        this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.jumpButton.onDown.add(this.jump, this);
     }
 
     Player.prototype.jump = function () {
+        
+        var onFloor = this.sprite.body.onFloor();
 
-        if(!this.stateContext.isGameover) {
-            if(this.sprite.body.touching.down) {
-                this.isJumping = true;
-                return doJump.apply(this);
-            }
-            else if(!this.isDoubleJumping) {
-                this.isDoubleJumping = true;
-                this.sprite.animations.play('batGirl');
-                return doJump.apply(this);
-            }
+        if(onFloor) {
+            this.isJumping = true;
+            return doJump.apply(this);
+        }
+        else if(!this.isDoubleJumping) {
+            console.log('double jump...');
+            this.isDoubleJumping = true;
+            this.sprite.animations.play('batGirl');
+            return doJump.apply(this);
         }
 
         function doJump() {
             this.sprite.body.velocity.y = this.jumpVelocity || -450;
-            this.stateContext.jumpSound.play();
+            //this.stateContext.jumpSound.play();
         }
     }
 
@@ -55,6 +60,31 @@
             this.isJumping = false;
             this.isDoubleJumping = false;
             playerSprite.animations.play('walk');
+        }
+    }
+
+    Player.prototype.handleInputs = function () {
+
+        if(this.keys.left.isDown){
+            this.sprite.body.velocity.x = -150; // Ajustar velocidade
+            // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
+            if(this.sprite.scale.x == 1) this.sprite.scale.x = -1;
+            // Iniciando a animação 'walk'
+            //this.sprite.animations.play('walk');
+        }
+        // Se a tecla direita estiver pressionada (this.keys.right.isDown == true),
+        // mover o sprite para a direita
+        else if(this.keys.right.isDown){
+            // se a tecla direita estiver pressionada
+            this.sprite.body.velocity.x = 150;  // Ajustar velocidade
+            // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
+            if(this.sprite.scale.x == -1) this.sprite.scale.x = 1;
+           // this.sprite.animations.play('walk');
+        }
+        else {
+            // Ajustar velocidade para zero
+            this.sprite.body.velocity.x = 0;
+           // this.sprite.animations.play('idle');
         }
     }
 
