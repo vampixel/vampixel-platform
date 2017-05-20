@@ -2,6 +2,7 @@
     'use strict'; 
 
     var Level2State = function() {
+         this.player = gameManager.getSprite('player');
     };
 
 
@@ -11,7 +12,7 @@
 
         // Para carregar um spritesheet, é necessário saber a altura e largura de cada sprite, e o número de sprites no arquivo
         // No caso do player.png, os sprites são de 32x32 pixels, e há 8 sprites no arquivo
-        this.game.load.spritesheet('player', 'Assets/spritesheets/player.png', 32, 32, 8);
+        // this.game.load.spritesheet('player', 'Assets/spritesheets/player.png', 32, 32, 8);
         this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.spritesheet('enemies', 'Assets/spritesheets/enemies.png', 32, 32, 12);
         
@@ -24,6 +25,9 @@
         this.game.load.audio('playerDeath', 'Assets/sounds/hurt3.ogg');
         this.game.load.audio('enemyDeath', 'Assets/sounds/hit2.ogg');
         this.game.load.audio('music', 'Assets/sounds/mystery.wav');
+
+        // player
+        this.player.preload();
     }
 
     Level2State.prototype.create = function() {
@@ -70,38 +74,8 @@
         //this.level1.setCollision([5, 6, 13], true, this.lavaLayer);
             
         // Inicializando jogador
-        // Adicionando o sprite do jogador na posição (160, 64) usando o asset 'player'
-        // Como estamos usando um spritesheet, é necessário informar qual sprite vamos usar
-        // A contagem é da mesma forma do que nos tiles do mapa, mas o primeiro sprite recebe
-        // o número 0 ao invés de 1.
-        this.player = this.game.add.sprite(160, 64, 'player', 5);
-        // Ajustando âncora do jogador (ponto de referência para posicionamento)
-        this.player.anchor.setTo(0.5, 0.5);
-        // Ativando física para o jogador
-        this.game.physics.enable(this.player);
-        // Ativando gravidade para o jogador
-        // Como é positiva no eixo Y, o jogador terá uma gravidade "normal",
-        // ou seja, irá acelerar para baixo
-        this.player.body.gravity.y = 750;
-        // Como o "mundo" é maior do que a área visível, é necessário que a câmera siga o jogador.
-        // https://photonstorm.github.io/phaser-ce/Phaser.Camera.html#follow
-        this.game.camera.follow(this.player);
-        
-        // Animações do jogador
-        // Animações, no contexto do Phaser, nada mais são do que sequências de frames do spritesheet
-        // Para criar uma animação, utilizamos animations.add()
-        // Parâmetros: nome da animação, lista de quadros, quadros por segundo da animação
-        // https://photonstorm.github.io/phaser-ce/Phaser.AnimationManager.html
-        this.player.animations.add('walk', [0, 1, 2, 1], 6);
-        this.player.animations.add('idle', [5, 5, 5, 5, 5, 5, 6, 5, 6, 5], 6);
-        this.player.animations.add('jump', [4], 6);
-        
-        // Adicionando entradas
-        // createCursorKeys() cria automaticamente mapeamentos para as 4 teclas de direção
-        // https://photonstorm.github.io/phaser-ce/Phaser.Keyboard.html#createCursorKeys
-        // Lista de teclas disponíveis: https://photonstorm.github.io/phaser-ce/Phaser.KeyCode.html
-        this.keys = this.game.input.keyboard.createCursorKeys();
-        this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.player.setup(this);
+        this.game.camera.follow(this.player.sprite);
         
         // Adicionando objetos do Tiled, utilizando grupos
         // Um grupo é como se fosse um array de sprites, mas com várias facilidades adicionais, 
@@ -128,6 +102,20 @@
             // Adicionando animações; o parâmetro true indica que a animação é em loop
             diamond.animations.add('spin', [4, 5, 6, 7, 6, 5], 6, true);
             diamond.animations.play('spin');
+        });
+        
+        this.bats = this.game.add.physicsGroup();
+        this.level2.createFromObjects('Enemies', 'bat', 'enemies', 8, true, false, this.bats);
+        this.bats.forEach(function(bat){
+            bat.anchor.setTo(0.5, 0.5);
+            bat.body.immovable = true;
+            bat.animations.add('fly', [8, 9, 10], 6, true);
+            bat.animations.play('fly');
+            // Velocidade inicial do inimigo
+            bat.body.velocity.x = 100;
+            // bounce.x=1 indica que, se o objeto tocar num objeto no eixo x, a força deverá
+            // ficar no sentido contrário; em outras palavras, o objeto é perfeitamente elástico
+            bat.body.bounce.x = 1;
         });
 
         // Criando assets de som com this.game.add.audio()
@@ -163,49 +151,41 @@
         // Todas as colisões entre os objetos do jogo são avaliadas com arcade.collide() ou 
         // arcade.overlap(). O Phaser irá automaticamente calcular a colisão dos objetos
         // Inicialmente, adicionando colisões do player com as paredes da fase, que é um layer:
-        this.game.physics.arcade.collide(this.player, this.wallsLayer);
+        this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
+        
+        // Colisão com os morcegos - depende de como foi a colisão, veremos abaixo
+        this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.batCollision, null, this);
+
+        // Adicionando colisão entre os morcegos e as paredes
+        this.game.physics.arcade.collide(this.bats, this.wallsLayer);
         
         // Movimentação do player
-        // Para detectar se uma das teclas referenciadas foi pressionada,
-        // basta verificar a variável .isDown da mesma
-        // Caso seja a tecla para a esquerda, ajustar uma velocidade negativa
-        // ao eixo X, que fará a posição X diminuir e consequentemente o jogador
-        // ir para a esquerda;
-        if(this.keys.left.isDown){
-            this.player.body.velocity.x = -150; // Ajustar velocidade
-            // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
-            if(this.player.scale.x == 1) this.player.scale.x = -1;
-            // Iniciando a animação 'walk'
-            this.player.animations.play('walk');
-        }
-        // Se a tecla direita estiver pressionada (this.keys.right.isDown == true),
-        // mover o sprite para a direita
-        else if(this.keys.right.isDown){
-            // se a tecla direita estiver pressionada
-            this.player.body.velocity.x = 150;  // Ajustar velocidade
-            // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
-            if(this.player.scale.x == -1) this.player.scale.x = 1;
-            this.player.animations.play('walk');
-        }
-        else {
-            // Ajustar velocidade para zero
-            this.player.body.velocity.x = 0;
-            this.player.animations.play('idle');
-        }
-
-        // Se o a barra de espaço ou a tecla cima estiverem pressionadas, e o jogador estiver com a parte de baixo tocando em alguma coisa
-        if((this.jumpButton.isDown || this.keys.up.isDown) && (this.player.body.touching.down || this.player.body.onFloor())){
-            // Adicione uma velocidade no eixo Y, fazendo o jogador pular
-            this.player.body.velocity.y = -400;
-            // Tocando o som de pulo
-            this.jumpSound.play();
-        }
-
-        // Se o jogador não estiver no chão, inicie a animação 'jump'
-        if(!this.player.body.touching.down && !this.player.body.onFloor()){
-            this.player.animations.play('jump');
-        }
+         this.player.handleInputs();
+         
+        // Para cada morcego, verificar em que sentido ele está indo
+        // Se a velocidade for positiva, a escala no eixo X será 1, caso
+        // contrário -1
+        this.bats.forEach(function(bat){
+           if(bat.body.velocity.x != 0) {
+               // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
+               bat.scale.x = 1 * Math.sign(bat.body.velocity.x);
+           }
+        });
         
+    }
+    
+    // Tratamento da colisão entre o jogador e os diamantes
+    Level2State.prototype.batCollision = function(player, bat){
+        // Se o jogador colidir por baixo e o morcego por cima, isso indica que o jogador pulou
+        // em cima do morcego, nesse caso vamos "matar" o morcego
+        if(player.body.touching.down && bat.body.touching.up){
+            this.enemyDeathSound.play(); // tocando som de morte do morcego
+            this.player.body.velocity.y = -200; // adicionando um pequeno impulso vertical ao jogador
+            this.score += 100; // atualizando score
+            this.scoreText.text = "Score: " + this.score;
+            bat.kill();
+        }
+        else this.lose(); // caso contrário, ir para condição de derrota
     }
 
     // Condição de derrota: guarde o score e siga para o próximo estado
