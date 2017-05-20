@@ -5,7 +5,7 @@ var gameManager = (function () {
     var gameInstance = null,
         states = {},
         sprites = {},
-        global = {};
+        globals = {};
 
     var addSprite =  function (name, Sprite) {
         sprites[name] = Sprite;
@@ -73,7 +73,7 @@ var gameManager = (function () {
         getGameInstance: getGameInstance,
         getSprites: getSprites,
         getStates: getStates,
-        global: global
+        globals: globals
     }
     
 })();

@@ -22,6 +22,8 @@
         this.minBloodHeight = 200;
         this.maxBloodHeight = 410;
         this.increaseGameSpeedRate = 5;
+
+        gameManager.globals.scoreToGoToLevel2 = 2;
     }
 
     Level1State.prototype.preload = function() {
