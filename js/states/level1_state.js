@@ -12,7 +12,7 @@
         this.player.preload();
         
         //Tile maps
-        this.game.load.tilemap('Level1','assets/maps/Level1.json', null, Phaser.Tilemap.TILED_JSON);
+        this.game.load.tilemap('Level1','assets/maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
         this.game.load.image('mapTiles', 'assets/spritesheets/tiles.png');
     }
 

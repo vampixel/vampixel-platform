@@ -9,8 +9,8 @@
         this.game.load.image('background', 'assets/img/LOGO_SPLASH.png');
         this.game.load.image('start', 'assets/img/start1.png');
         this.game.load.image('chooseLevelButton', 'assets/img/chooseLevelButton.png');
-        this.game.load.audio('environment', 'assets/audio/environment.ogg');
-        this.game.load.audio('clickSound', 'assets/audio/click.ogg');
+        this.game.load.audio('environment', 'assets/sounds/environment.ogg');
+        this.game.load.audio('clickSound', 'assets/sounds/click.ogg');
     }   
     
     MenuState.prototype.create = function() {

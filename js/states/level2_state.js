@@ -16,7 +16,7 @@
         this.game.load.spritesheet('enemies', 'Assets/spritesheets/enemies.png', 32, 32, 12);
         
         // Para carregar um arquivo do Tiled, o mesmo precisa estar no formato JSON
-        this.game.load.tilemap('level1', 'Assets/mapnew/level1.json', null, Phaser.Tilemap.TILED_JSON);
+        this.game.load.tilemap('level2', 'assets/maps/level2.json', null, Phaser.Tilemap.TILED_JSON);
 
         // Para carregar os sons, basta informar a chave e dizer qual é o arquivo
         this.game.load.audio('jumpSound', 'Assets/sounds/jump.wav');
@@ -35,18 +35,18 @@
 
         // Para carregar o mapa do Tiled para o Phaser, 3 estágios são necessários:
         // 1 - Criar um objeto com o arquivo do Tiled carregado no preload()
-        this.level1 = this.game.add.tilemap('level1');
+        this.level2 = this.game.add.tilemap('level2');
         // 2 - Adicionar as imagens correspondentes aos tilesets do Tiled dentro do Phaser
         // "tiles" é o nome do tileset dentro do Tiled
         // "mapTiles" é o nome da imagem com os tiles, carregada no preload()
-        this.level1.addTilesetImage('tiles', 'mapTiles');
+        this.level2.addTilesetImage('tiles', 'mapTiles');
         
         // 3 - Criar os layers do mapa
         // A ordem nesse caso é importante, então os layers que ficarão no "fundo" deverão ser
         // criados primeiro, e os que ficarão na "frente" por último;
-        this.bgLayer = this.level1.createLayer('Floor');
+        this.bgLayer = this.level2.createLayer('Floor');
         //this.lavaLayer = this.level1.createLayer('Lava');
-        this.wallsLayer = this.level1.createLayer('BG');
+        this.wallsLayer = this.level2.createLayer('BG');
         // Mais informações sobre tilemaps:
         // https://photonstorm.github.io/phaser-ce/#toc14
 
@@ -63,7 +63,7 @@
         // devem colidir, pois há mais tiles que colidem do que tiles sem colisão.
         // Os parâmetros são a lista dos tiles, "true" indicando que a colisão deve ser ativada,
         // e o nome do layer.
-        this.level1.setCollisionByExclusion([9, 10, 11, 12, 17, 18, 19, 20], true, this.wallsLayer);
+        this.level2.setCollisionByExclusion([9, 10, 11, 12, 17, 18, 19, 20], true, this.wallsLayer);
         
         // Para o layer de lava é o caso oposto: poucos tiles colidem, então é mais fácil 
         // informar diretamente quais são.
@@ -120,7 +120,7 @@
         
         // Grupo de diamantes
         this.diamonds = this.game.add.physicsGroup();
-        this.level1.createFromObjects('Items', 'diamond', 'items', 5, true, false, this.diamonds);
+        this.level2.createFromObjects('Items', 'diamond', 'items', 5, true, false, this.diamonds);
         // Para cada objeto do grupo, vamos executar uma função
         this.diamonds.forEach(function(diamond){
             // body.immovable = true indica que o objeto não é afetado por forças externas
