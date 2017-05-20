@@ -27,7 +27,7 @@
         button.anchor.set(0.5);
 
         function clicked() {
-            this.game.state.start('game');
+            this.game.state.start('lavel1');
             this.clickSound.play();
         }  
     }

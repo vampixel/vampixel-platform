@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var scoreToGoToLevel2 = 20;
+
     var Player = function () {
         this.imageName = 'player_image';
         this.imageUrl = 'assets/img/walk-idle-transform-BAT.png';
@@ -79,6 +81,10 @@
 
         // destroy blood
         blood.kill();
+
+        if(this.score >= scoreToGoToLevel2) {
+            this.game.state.start('level2');
+        }
     }
 
     // give points based on the Y of blood

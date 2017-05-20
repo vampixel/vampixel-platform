@@ -1,7 +1,7 @@
 (function () {
     'use strict'; 
 
-    var GameState = function() {
+    var Level1State = function() {
         // load sprites here
         this.player              = gameManager.getSprite('player');
         this.backgroundOne       = gameManager.getSprite('backgroundOne');
@@ -24,7 +24,7 @@
         this.increaseGameSpeedRate = 5;
     }
 
-    GameState.prototype.preload = function() {
+    Level1State.prototype.preload = function() {
         // player
         this.player.preload();
 
@@ -56,7 +56,7 @@
         
     }
 
-    GameState.prototype.create = function() {
+    Level1State.prototype.create = function() {
 
         // Sounds
         // environment 
@@ -119,13 +119,13 @@
        
     }
 
-    GameState.prototype.update = function() {
+    Level1State.prototype.update = function() {
         updateParallaxes.apply(this);
         handleColliders.apply(this);
 
     }    
     
-    GameState.prototype.render = function() {
+    Level1State.prototype.render = function() {
         // this.game.debug.inputInfo(32, 32);
     }
 
@@ -207,6 +207,6 @@
         }, 3000);
     }
 
-    gameManager.addState('game', GameState);
+    gameManager.addState('lavel1', Level1State);
 
 })();
