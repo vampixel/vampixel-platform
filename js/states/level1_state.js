@@ -51,7 +51,6 @@
         
         // obstacles
         this.game.load.image('obstacle', 'assets/img/crucifixo.png');
-        this.game.load.audio('obstacleSound', 'assets/audio/impactocrucifixo.wav');
 
         // red square
         this.game.load.image('redSquare', 'assets/img/red_square.png');
@@ -209,6 +208,6 @@
         }, 3000);
     }
 
-    gameManager.addState('lavel1', Level1State);
+    gameManager.addState('level1', Level1State);
 
 })();
