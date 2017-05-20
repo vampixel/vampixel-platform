@@ -8,6 +8,7 @@
         this.onMenu = true;
         this.game.load.image('background', 'assets/img/LOGO_SPLASH.png');
         this.game.load.image('start', 'assets/img/start1.png');
+        this.game.load.image('chooseLevelButton', 'assets/img/chooseLevelButton.png');
         this.game.load.audio('environment', 'assets/audio/environment.ogg');
         this.game.load.audio('clickSound', 'assets/audio/click.ogg');
     }   
@@ -23,13 +24,21 @@
         //var text = this.game.add.text(this.game.world.centerX, this.game.world.centerY - 150, 'Vampixel', { fill: '#ffffff', align: 'center', fontSize: 80 });
         //text.anchor.set(0.5);
 
-        var button = this.game.add.button(this.game.world.centerX, this.game.world.centerY + 150, 'start', clicked, this);
-        button.anchor.set(0.5);
+        var startButton = this.game.add.button(this.game.world.centerX, this.game.world.centerY + 150, 'start', startButtonClicked, this);
+        startButton.anchor.set(0.5);
+        
+        var chooseLevelButton = this.game.add.button(this.game.world.centerX, this.game.world.centerY + 230, 'chooseLevelButton', chooseLevelButton, this);
+        chooseLevelButton.anchor.set(0.5);
 
-        function clicked() {
-            this.game.state.start('lavel1');
+        function startButtonClicked() {
             this.clickSound.play();
-        }  
+            this.game.state.start('level1');
+        }
+        
+        function chooseLevelButton() {
+            this.clickSound.play();
+            this.game.state.start('level'+ prompt("Digite a fase"));
+        }
     }
     
     MenuState.prototype.update = function() {
