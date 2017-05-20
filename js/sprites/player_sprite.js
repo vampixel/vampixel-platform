@@ -31,15 +31,19 @@
 
         this.keys = this.game.input.keyboard.createCursorKeys();
         this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.jumpButton.onDown.add(this.jump, this);
     }
 
     Player.prototype.jump = function () {
+        
+        var onFloor = this.sprite.body.onFloor();
 
-        if(this.sprite.body.touching.down) {
+        if(onFloor) {
             this.isJumping = true;
             return doJump.apply(this);
         }
         else if(!this.isDoubleJumping) {
+            console.log('double jump...');
             this.isDoubleJumping = true;
             this.sprite.animations.play('batGirl');
             return doJump.apply(this);
@@ -60,6 +64,7 @@
     }
 
     Player.prototype.handleInputs = function () {
+
         if(this.keys.left.isDown){
             this.sprite.body.velocity.x = -150; // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
@@ -80,13 +85,6 @@
             // Ajustar velocidade para zero
             this.sprite.body.velocity.x = 0;
            // this.sprite.animations.play('idle');
-        }
-
-
-        // Se o a barra de espaço ou a tecla cima estiverem pressionadas, e o jogador estiver com a parte de baixo tocando em alguma coisa
-        // if((this.jumpButton.isDown || this.keys.up.isDown) && (this.player.body.touching.down || this.player.body.onFloor())){
-        if(this.jumpButton.isDown || this.keys.up.isDown){
-            this.jump();
         }
     }
 
