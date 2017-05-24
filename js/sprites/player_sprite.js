@@ -82,7 +82,8 @@
         else {
             // Ajustar velocidade para zero
             this.sprite.body.velocity.x = 0;
-           // this.sprite.animations.play('idle');
+            this.sprite.animations.stop('walk');
+            this.sprite.animations.play('idle');
         }
     }
 
