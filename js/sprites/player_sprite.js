@@ -3,7 +3,7 @@
 
     var Player = function () {
         this.imageName = 'player_image';
-        this.imageUrl = 'assets/img/walk-idle-transform-BAT.png';
+        this.imageUrl = 'assets/spritesheets/walk-idle-transform-BAT.png';
         this.sprite = null;
         this.gravity = 750;
         this.jumpVelocity = -450;
@@ -23,7 +23,6 @@
         this.sprite.animations.add('walk', [0, 1, 2, 3], 22, true);
         this.sprite.animations.add('transform', [7,8,9], 22, true);
         this.sprite.animations.add('batGirl', [10,11,12,13,14,15,16,17,18,19], 22, true);
-        this.sprite.animations.play('walk');
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.gravity;
@@ -56,10 +55,9 @@
     }
 
     Player.prototype.groundCollision = function (playerSprite) {
-        if(this.isJumping) {
+        if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
             this.isJumping = false;
             this.isDoubleJumping = false;
-            playerSprite.animations.play('walk');
         }
     }
 
@@ -70,7 +68,7 @@
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
             if(this.sprite.scale.x == 1) this.sprite.scale.x = -1;
             // Iniciando a animação 'walk'
-            //this.sprite.animations.play('walk');
+            this.sprite.animations.play('walk');
         }
         // Se a tecla direita estiver pressionada (this.keys.right.isDown == true),
         // mover o sprite para a direita
@@ -79,7 +77,7 @@
             this.sprite.body.velocity.x = 150;  // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
             if(this.sprite.scale.x == -1) this.sprite.scale.x = 1;
-           // this.sprite.animations.play('walk');
+            this.sprite.animations.play('walk');
         }
         else {
             // Ajustar velocidade para zero
