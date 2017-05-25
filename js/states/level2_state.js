@@ -20,9 +20,9 @@
         this.game.load.tilemap('level2', 'assets/maps/level2.json', null, Phaser.Tilemap.TILED_JSON);
 
         // Para carregar os sons, basta informar a chave e dizer qual é o arquivo
-        this.game.load.audio('jumpSound', 'Assets/sounds/jump.wav');
-        this.game.load.audio('pickupSound', 'Assets/sounds/pickup.wav');
-        this.game.load.audio('playerDeath', 'Assets/sounds/hurt3.ogg');
+        //this.game.load.audio('jumpSound', 'Assets/sounds/jump.wav');
+        //this.game.load.audio('pickupSound', 'Assets/sounds/pickup.wav');
+        //this.game.load.audio('playerDeath', 'Assets/sounds/hurt3.ogg');
         this.game.load.audio('enemyDeath', 'Assets/sounds/hit2.ogg');
         this.game.load.audio('music', 'Assets/sounds/mystery.wav');
 
@@ -120,9 +120,10 @@
 
         // Criando assets de som com this.game.add.audio()
         // O parâmetro é o nome do asset definido no preload()
-        this.jumpSound = this.game.add.audio('jumpSound');
-        this.pickupSound = this.game.add.audio('pickupSound');
-        this.playerDeathSound = this.game.add.audio('playerDeath');
+        
+        //this.jumpSound = this.game.add.audio('jumpSound');
+        //this.pickupSound = this.game.add.audio('pickupSound');
+        //this.playerDeathSound = this.game.add.audio('playerDeath');
         this.enemyDeathSound = this.game.add.audio('enemyDeath');
         
         // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true
@@ -147,6 +148,7 @@
     }
 
     Level2State.prototype.update = function() {
+        //this.menuSound.stop();
         // Detecção de colisões
         // Todas as colisões entre os objetos do jogo são avaliadas com arcade.collide() ou 
         // arcade.overlap(). O Phaser irá automaticamente calcular a colisão dos objetos

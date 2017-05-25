@@ -14,10 +14,15 @@
         //Tile maps
         this.game.load.tilemap('Level1','assets/maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
         this.game.load.image('mapTiles', 'assets/spritesheets/tiles.png');
+        this.game.load.audio('environmentSound', 'assets/sounds/environment.ogg');
     }
 
     Level1State.prototype.create = function() {
-       this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        
+        this.environmentSound = this.game.add.audio('environmentSound');
+        this.environmentSound.loop = true;
+        this.environmentSound.play();
     
         //Tile maps
         this.Level1 = this.game.add.tilemap('Level1');
@@ -47,6 +52,7 @@
     Level1State.prototype.update = function() {
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         this.player.handleInputs();
+        //this.menuSound.stop();
     } 
 
     
