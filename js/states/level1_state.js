@@ -13,7 +13,7 @@
         
         //Tile maps
         this.game.load.tilemap('Level1','assets/maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
-        this.game.load.image('mapTiles', 'assets/spritesheets/tiles.png');
+        this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
         this.game.load.audio('environmentSound', 'assets/sounds/environment.ogg');
     }
 
@@ -26,7 +26,7 @@
     
         //Tile maps
         this.Level1 = this.game.add.tilemap('Level1');
-        this.Level1.addTilesetImage('tiles','mapTiles');
+        this.Level1.addTilesetImage('tiled-fases','mapTiles');
         
         this.bgLayer = this.Level1.createLayer('Bg');
         this.lavaLayer = this.Level1.createLayer('Lava');
@@ -39,8 +39,6 @@
         
         // setup initial player properties
         this.player.setup(this);
-//        this.player.sprite.x = 170;
-//        this.player.sprite.y = 70;
         this.player.sprite.x = 828;
         this.player.sprite.y = 70;
         
