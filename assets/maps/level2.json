@@ -111,6 +111,19 @@
          "tilecount":12,
          "tileheight":32,
          "tilewidth":32
+        }, 
+        {
+         "columns":8,
+         "firstgid":53,
+         "image":"..\/spritesheets\/tiled-fases.png",
+         "imageheight":256,
+         "imagewidth":256,
+         "margin":0,
+         "name":"tiled-fases",
+         "spacing":0,
+         "tilecount":64,
+         "tileheight":32,
+         "tilewidth":32
         }],
  "tilewidth":32,
  "version":1,
