@@ -3,6 +3,7 @@
 
     var Level3State = function() {
          this.player = gameManager.getSprite('player');
+         this.boss = gameManager.getSprite('boss');
     };
 
 
@@ -29,6 +30,7 @@
 
         // player
         this.player.preload();
+        this.boss.preload();
     }
 
     Level3State.prototype.create = function() {
@@ -92,6 +94,7 @@
             
         // Inicializando jogador
         this.player.setup(this);
+        this.boss.setup(this);
         this.game.camera.follow(this.player.sprite);
         
         // Adicionando objetos do Tiled, utilizando grupos
@@ -158,6 +161,7 @@
         // Inicialmente, adicionando colisões do player com as paredes da fase, que é um layer:
         //this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.floor, this.player.groundCollision, null, this.player);
+        this.game.physics.arcade.collide(this.boss.sprite, this.floor);
         this.game.physics.arcade.collide(this.player.sprite, this.platform1, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.platform2, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.platform3, this.player.groundCollision, null, this.player);        
