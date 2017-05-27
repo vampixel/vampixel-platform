@@ -12,13 +12,11 @@
         this.imageUrlBatShot = 'assets/img/red_square_10x10.png';
         this.imageBatShot = null;
         
-        
-        
         this.gravity = 750;
         this.jumpVelocity = -450;
         this.isJumping = false;
         this.isDoubleJumping = false;
-        this.initialPositionX = 100;
+        this.initialPositionX = 50;
         this.initialPositionY = this.game.height - 500;
         
         this.bullets;
