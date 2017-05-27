@@ -48,9 +48,9 @@
         // 3 - Criar os layers do mapa
         // A ordem nesse caso é importante, então os layers que ficarão no "fundo" deverão ser
         // criados primeiro, e os que ficarão na "frente" por último;
-        this.bgLayer = this.level2.createLayer('Floor');
+        this.bgLayer = this.level2.createLayer('BG');
         //this.lavaLayer = this.level1.createLayer('Lava');
-        this.floor = this.level2.createLayer('BG');
+        this.floor = this.level2.createLayer('Floor');
         this.wallsLayer = this.level2.createLayer('Wall');
         // Mais informações sobre tilemaps:
         // https://photonstorm.github.io/phaser-ce/#toc14
