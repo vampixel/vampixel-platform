@@ -10,8 +10,6 @@
     Level1State.prototype.preload = function() {
         // player
         this.player.preload();
-        
-        
         this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
         this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.audio('environmentSound', 'assets/sounds/environment.ogg');
@@ -32,13 +30,13 @@
         this.Level1.addTilesetImage('tiled-fases','mapTiles');
         
         this.bgLayer = this.Level1.createLayer('Bg');
-        this.lavaLayer = this.Level1.createLayer('Lava');
+        this.fireLayer = this.Level1.createLayer('Fire');
         this.wallsLayer = this.Level1.createLayer('Walls');
         this.wallsLayer.resizeWorld();
         
         //Tile maps - collision
-        this.Level1.setCollisionByExclusion([19,20,21,22,23,24,11,16,17,18,19], true, this.wallsLayer);
-        this.Level1.setCollision([5,6,13], true, this.lavaLayer);
+        this.Level1.setCollisionByExclusion([19,20,21,22,23,24], true, this.wallsLayer);
+        this.Level1.setCollisionByExclusion([], true, this.fireLayer);
         
         // setup initial player properties
         this.player.setup(this);
@@ -68,8 +66,9 @@
         // on the outside. Use it to draw a circle that will be used
         // by the FireParticle class.
         var grd = bmpd.ctx.createRadialGradient(
-        pSize / 2, pSize /2, 2,
-        pSize / 2, pSize / 2, pSize * 0.5);
+                    pSize / 2, pSize /2, 2,
+                    pSize / 2, pSize / 2, pSize * 0.5);
+        
         grd.addColorStop(0, 'rgba(193, 170, 30, 0.6)');
         grd.addColorStop(1, 'rgba(255, 100, 30, 0.1)');
         bmpd.ctx.fillStyle = grd;
@@ -106,21 +105,28 @@
     FireParticle.prototype.constructor = FireParticle;
     
     Level1State.prototype.update = function() {
+        // Colisão com o fogo - o jogador morre
+        this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
-        this.player.handleInputs();
         // Colisão com os diamantes - devem ser coletados
-        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this.player);
-        //this.menuSound.stop();
+        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);
+        this.player.handleInputs();        
     } 
 
     // Tratamento da colisão entre o jogador e os diamantes
     // As funções para esse fim sempre recebem os dois objetos que colidiram,
     // e então podemos manipular tais objetos
     Level1State.prototype.diamondCollect = function(player, diamond){
-        diamond.kill(); // removendo o diamante do jogo
+        diamond.kill();
         this.game.state.start('level2');  
     }
-
+    
+    Level1State.prototype.fireDeath = function(player, fire){
+        console.debug("fireDeath");
+        this.Level1.setCollision(29, false, this.fireLayer);
+        this.game.state.start('lose');
+    }
+    
     gameManager.addState('level1', Level1State);
 
 })();
