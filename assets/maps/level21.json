@@ -48,10 +48,22 @@
          "draworder":"topdown",
          "height":30,
          "name":"Items",
-         "objects":[],
+         "objects":[
+                {
+                 "gid":82,
+                 "height":32,
+                 "id":8,
+                 "name":"diamond",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":1251,
+                 "y":249
+                }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "width":40,
          "x":0,
          "y":0
@@ -92,7 +104,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":8,
+ "nextobjectid":9,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":32,
@@ -120,6 +132,19 @@
          "name":"enemies",
          "spacing":0,
          "tilecount":12,
+         "tileheight":32,
+         "tilewidth":32
+        }, 
+        {
+         "columns":4,
+         "firstgid":77,
+         "image":"..\/..\/..\/tiled-template\/Assets\/spritesheets\/items.png",
+         "imageheight":128,
+         "imagewidth":128,
+         "margin":0,
+         "name":"items",
+         "spacing":0,
+         "tilecount":16,
          "tileheight":32,
          "tilewidth":32
         }],
