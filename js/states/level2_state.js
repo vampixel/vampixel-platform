@@ -8,23 +8,24 @@
 
     Level2State.prototype.preload = function() {
         // Para carregar um sprite, basta informar uma chave e dizer qual é o arquivo
-        this.game.load.image('mapTiles', 'Assets/spritesheets/tiles.png');
+        //this.game.load.image('mapTiles', 'assets/spritesheets/tiles.png');
+        this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
 
         // Para carregar um spritesheet, é necessário saber a altura e largura de cada sprite, e o número de sprites no arquivo
         // No caso do player.png, os sprites são de 32x32 pixels, e há 8 sprites no arquivo
         // this.game.load.spritesheet('player', 'Assets/spritesheets/player.png', 32, 32, 8);
-        this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
-        this.game.load.spritesheet('enemies', 'Assets/spritesheets/enemies.png', 32, 32, 12);
+        this.game.load.spritesheet('items', 'assets/spritesheets/items.png', 32, 32, 16);
+        this.game.load.spritesheet('enemies', 'assets/spritesheets/enemies.png', 32, 32, 12);
         
         // Para carregar um arquivo do Tiled, o mesmo precisa estar no formato JSON
-        this.game.load.tilemap('level2', 'assets/maps/level2.json', null, Phaser.Tilemap.TILED_JSON);
+        this.game.load.tilemap('level2', 'assets/maps/level21.json', null, Phaser.Tilemap.TILED_JSON);
 
         // Para carregar os sons, basta informar a chave e dizer qual é o arquivo
-        //this.game.load.audio('jumpSound', 'Assets/sounds/jump.wav');
-        //this.game.load.audio('pickupSound', 'Assets/sounds/pickup.wav');
-        //this.game.load.audio('playerDeath', 'Assets/sounds/hurt3.ogg');
-        this.game.load.audio('enemyDeath', 'Assets/sounds/hit2.ogg');
-        this.game.load.audio('music', 'Assets/sounds/mystery.wav');
+        //this.game.load.audio('jumpSound', 'assets/sounds/jump.wav');
+        //this.game.load.audio('pickupSound', 'assets/sounds/pickup.wav');
+        //this.game.load.audio('playerDeath', 'assets/sounds/hurt3.ogg');
+        this.game.load.audio('enemyDeath', 'assets/sounds/hit2.ogg');
+        this.game.load.audio('music', 'assets/sounds/mystery.wav');
 
         // player
         this.player.preload();
@@ -43,12 +44,14 @@
         // 2 - Adicionar as imagens correspondentes aos tilesets do Tiled dentro do Phaser
         // "tiles" é o nome do tileset dentro do Tiled
         // "mapTiles" é o nome da imagem com os tiles, carregada no preload()
-        this.level2.addTilesetImage('tiles', 'mapTiles');
+        this.level2.addTilesetImage('tiled-fases', 'mapTiles');
         
         // 3 - Criar os layers do mapa
         // A ordem nesse caso é importante, então os layers que ficarão no "fundo" deverão ser
         // criados primeiro, e os que ficarão na "frente" por último;
+        
         this.bgLayer = this.level2.createLayer('BG');
+        this.itemLayer = this.level2.createLayer('Item');
         //this.lavaLayer = this.level1.createLayer('Lava');
         this.floor = this.level2.createLayer('Floor');
         this.wallsLayer = this.level2.createLayer('Wall');
@@ -69,7 +72,7 @@
         // Os parâmetros são a lista dos tiles, "true" indicando que a colisão deve ser ativada,
         // e o nome do layer.
         this.level2.setCollisionByExclusion([9, 10, 11, 12, 17, 18, 19, 20], true, this.wallsLayer);
-        this.level2.setCollisionByExclusion([9, 10, 11, 12, 17, 18, 19, 20], true, this.floor);
+        this.level2.setCollisionByExclusion([11, 12, 17, 19, 20], true, this.floor);
         
         // Para o layer de lava é o caso oposto: poucos tiles colidem, então é mais fácil 
         // informar diretamente quais são.
@@ -119,6 +122,20 @@
             // ficar no sentido contrário; em outras palavras, o objeto é perfeitamente elástico
             bat.body.bounce.x = 1;
         });
+        
+        this.nuns = this.game.add.physicsGroup();
+        this.level2.createFromObjects('Enemies', 'nun', 'enemies', 8, true, false, this.nuns);
+        this.nuns.forEach(function(nun){
+            nun.anchor.setTo(0.5, 0.5);
+            nun.body.immovable = true;
+            nun.animations.add('fly', [5,6,7], 6, true);
+            nun.animations.play('fly');
+            // Velocidade inicial do inimigo
+            nun.body.velocity.x = 100;
+            // bounce.x=1 indica que, se o objeto tocar num objeto no eixo x, a força deverá
+            // ficar no sentido contrário; em outras palavras, o objeto é perfeitamente elástico
+            nun.body.bounce.x = 1;
+        });
 
         // Criando assets de som com this.game.add.audio()
         // O parâmetro é o nome do asset definido no preload()
@@ -160,9 +177,11 @@
         
         // Colisão com os morcegos - depende de como foi a colisão, veremos abaixo
         this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.gameover, null, this);
+        this.game.physics.arcade.overlap(this.player.sprite, this.nuns, this.gameover, null, this);
 
         // Adicionando colisão entre os morcegos e as paredes
         this.game.physics.arcade.collide(this.bats, this.wallsLayer);
+        this.game.physics.arcade.collide(this.nuns, this.wallsLayer);
         
         // Movimentação do player
          this.player.handleInputs();
@@ -174,6 +193,13 @@
            if(bat.body.velocity.x != 0) {
                // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
                bat.scale.x = 1 * Math.sign(bat.body.velocity.x);
+           }
+        });
+        
+        this.nuns.forEach(function(nun){
+           if(nun.body.velocity.x != 0) {
+               // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
+               nun.scale.x = 1 * Math.sign(nun.body.velocity.x);
            }
         });
     }
