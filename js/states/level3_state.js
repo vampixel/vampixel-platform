@@ -43,16 +43,13 @@
         
         //  Movimentacao de camera
         
-        
     }
     
     Level3State.prototype.update = function() {
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         this.player.handleInputs();
-        //this.menuSound.stop();
     } 
 
-    
     gameManager.addState('level3', Level3State);
 
 })();
