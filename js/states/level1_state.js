@@ -12,6 +12,7 @@
         this.player.preload();
         this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
         this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
+        this.game.load.spritesheet('enemies', 'Assets/spritesheets/enemies.png', 32, 32, 12);
         this.game.load.audio('environmentSound', 'assets/sounds/environment.ogg');
         
         //Tile maps
@@ -56,6 +57,21 @@
             // Adicionando animações; o parâmetro true indica que a animação é em loop
             diamond.animations.add('spin', [4, 5, 6, 7, 6, 5], 6, true);
             diamond.animations.play('spin');
+        });
+        
+        // Grupo de morcegos:
+        this.bats = this.game.add.physicsGroup();
+        this.Level1.createFromObjects('Enemies', 'bat', 'enemies', 8, true, false, this.bats);
+        this.bats.forEach(function(bat){
+            bat.anchor.setTo(0.5, 0.5);
+            bat.body.immovable = true;
+            bat.animations.add('fly', [8, 9, 10], 6, true);
+            bat.animations.play('fly');
+            // Velocidade inicial do inimigo
+            bat.body.velocity.x = 100;
+            // bounce.x=1 indica que, se o objeto tocar num objeto no eixo x, a força deverá
+            // ficar no sentido contrário; em outras palavras, o objeto é perfeitamente elástico
+            bat.body.bounce.x = 1;
         });
         
         //Fire effect with phaser particles
@@ -110,7 +126,22 @@
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         // Colisão com os diamantes - devem ser coletados
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);
-        this.player.handleInputs();        
+        // Colisão com os morcegos - depende de como foi a colisão, veremos abaixo
+        this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.batCollision, null, this);
+        // Adicionando colisão entre os morcegos e as paredes
+        this.game.physics.arcade.collide(this.bats, this.wallsLayer);
+        
+        this.player.handleInputs(); 
+        
+        // Para cada morcego, verificar em que sentido ele está indo
+        // Se a velocidade for positiva, a escala no eixo X será 1, caso
+        // contrário -1
+        this.bats.forEach(function(bat){
+            if(bat.body.velocity.x != 0) {
+                // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
+                bat.scale.x = 1 * Math.sign(bat.body.velocity.x);
+            }
+        });
     } 
 
     // Tratamento da colisão entre o jogador e os diamantes
@@ -119,6 +150,17 @@
     Level1State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
         this.game.state.start('level2');  
+    }
+    
+    // Tratamento da colisão entre o jogador e os diamantes
+    Level1State.prototype.batCollision = function(player, bat){
+    // Se o jogador colidir por baixo e o morcego por cima, isso indica que o jogador pulou
+    // em cima do morcego, nesse caso vamos "matar" o morcego
+        if(player.body.touching.down && bat.body.touching.up){
+            this.player.sprite.body.velocity.y = -200; // adicionando um pequeno impulso vertical ao jogador
+            bat.kill();
+        }
+        else this.game.state.start('lose'); // caso contrário, ir para condição de derrota
     }
     
     Level1State.prototype.fireDeath = function(player, fire){
