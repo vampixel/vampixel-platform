@@ -12,8 +12,6 @@
         this.imageUrlBatShot = 'assets/img/red_square_10x10.png';
         this.imageBatShot = null;
         
-        
-        
         this.gravity = 750;
         this.jumpVelocity = -450;
         this.isJumping = false;
@@ -56,8 +54,8 @@
             b.name = 'imageNameBatShot' + i;
             b.exists = false;
             b.visible = false;
-           // b.checkWorldBounds = true;
-           // b.events.onOutOfBounds.add(this.resetBullet, this);
+            b.checkWorldBounds = true;
+            b.events.onOutOfBounds.add(this.resetBullet, this);
         }
         
         //SpriteSheet and Animations Player
