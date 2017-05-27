@@ -57,13 +57,18 @@
 	    this.platform1 = this.game.add.sprite(110, 220, 'platform');
 	    this.platform2 = this.game.add.sprite(280, 330, 'platform');
 	    this.platform3 = this.game.add.sprite(110, 420, 'platform');
-
-
-
+        this.game.physics.arcade.enable(this.platform1);
+        this.game.physics.arcade.enable(this.platform2);
+        this.game.physics.arcade.enable(this.platform3);
+        this.platform1.body.immovable = true;
+        this.platform2.body.immovable = true;
+        this.platform3.body.immovable = true;
+        this.platform1.body.checkCollision.down = false;
+        this.platform2.body.checkCollision.down = false;
+        this.platform3.body.checkCollision.down = false;
 
         // Mais informações sobre tilemaps:
         // https://photonstorm.github.io/phaser-ce/#toc14
-
 
         // Redimensionando o tamanho do "mundo" do jogo
         this.bgLayer.resizeWorld();
@@ -117,21 +122,7 @@
         });
         
         this.bats = this.game.add.physicsGroup();
-        // this.level3.createFromObjects('Enemies', 'bat', 'enemies', 8, true, false, this.bats);
-        // this.bats.forEach(function(bat){
-        //     bat.anchor.setTo(0.5, 0.5);
-        //     bat.body.immovable = true;
-        //     bat.animations.add('fly', [8, 9, 10], 6, true);
-        //     bat.animations.play('fly');
-        //     // Velocidade inicial do inimigo
-        //     bat.body.velocity.x = 100;
-        //     // bounce.x=1 indica que, se o objeto tocar num objeto no eixo x, a força deverá
-        //     // ficar no sentido contrário; em outras palavras, o objeto é perfeitamente elástico
-        //     bat.body.bounce.x = 1;
-        // });
-
-        // Criando assets de som com this.game.add.audio()
-        // O parâmetro é o nome do asset definido no preload()
+        
         
         //this.jumpSound = this.game.add.audio('jumpSound');
         //this.pickupSound = this.game.add.audio('pickupSound');
@@ -167,50 +158,19 @@
         // Inicialmente, adicionando colisões do player com as paredes da fase, que é um layer:
         //this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.floor, this.player.groundCollision, null, this.player);
-        this.game.physics.arcade.collide(this.player.sprite, this.platform1);
-        this.game.physics.arcade.collide(this.player.sprite, this.platform2);
-        this.game.physics.arcade.collide(this.player.sprite, this.platform3);        
-        this.game.physics.arcade.enable(this.platform1);
-        this.game.physics.arcade.enable(this.platform2);
-        this.game.physics.arcade.enable(this.platform3);
-        this.platform1.body.immovable = true;
-        this.platform2.body.immovable = true;
-        this.platform3.body.immovable = true;
-        this.platform1.body.checkCollision.down = false;
-        this.platform2.body.checkCollision.down = false;
-        this.platform3.body.checkCollision.down = false;
+        this.game.physics.arcade.collide(this.player.sprite, this.platform1, this.player.groundCollision, null, this.player);
+        this.game.physics.arcade.collide(this.player.sprite, this.platform2, this.player.groundCollision, null, this.player);
+        this.game.physics.arcade.collide(this.player.sprite, this.platform3, this.player.groundCollision, null, this.player);        
+        
         
         // Colisão com os morcegos - depende de como foi a colisão, veremos abaixo
         this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.gameover, null, this);
 
         
         // Movimentação do player
-         this.player.handleInputs();
-         
-        // Para cada morcego, verificar em que sentido ele está indo
-        // Se a velocidade for positiva, a escala no eixo X será 1, caso
-        // contrário -1
-        this.bats.forEach(function(bat){
-           if(bat.body.velocity.x != 0) {
-               // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
-               bat.scale.x = 1 * Math.sign(bat.body.velocity.x);
-           }
-        });
+        this.player.handleInputs();
+       
     }
-    
-    // Tratamento da colisão entre o jogador e os diamantes
-    /*Level3State.prototype.batCollision = function(player, bat){
-        // Se o jogador colidir por baixo e o morcego por cima, isso indica que o jogador pulou
-        // em cima do morcego, nesse caso vamos "matar" o morcego
-        //if(player.body.touching.down && bat.body.touching.up){
-            this.enemyDeathSound.play(); // tocando som de morte do morcego
-            //this.player.body.velocity.y = -200; // adicionando um pequeno impulso vertical ao jogador
-            //this.score += 100; // atualizando score
-            //this.scoreText.text = "Score: " + this.score;
-            bat.kill();
-        //}
-        else this.gameover(); // caso contrário, ir para condição de derrota
-    }*/
 
     // Condição de derrota: guarde o score e siga para o próximo estado
     Level3State.prototype.gameover = function(){

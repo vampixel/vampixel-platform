@@ -81,26 +81,20 @@
         this.shotButton = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
     }
 
-    Player.prototype.jump = function () {
-        
-        var onFloor = this.sprite.body.onFloor();
-
-        if(onFloor) {
+    Player.prototype.jump = function () {    
+        console.log('jumping...');
+        if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = true;
             return doJump.apply(this);
         }
         else if(!this.isDoubleJumping) {
-            //console.log('double jump...');
             this.isDoubleJumping = true;
-            //this.sprite.animations.play('transform');
             this.sprite.animations.play('batGirl');
             return doJump.apply(this);
         }
 
         function doJump() {
-            //this.sprite.animations.play('jump');
             this.sprite.body.velocity.y = this.jumpVelocity || -450;
-            this.soundJump.play();
         }
     }
 
@@ -108,7 +102,7 @@
         if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
             this.isJumping = false;
             this.isDoubleJumping = false;
-            //this.sprite.animations.stop('batGirl');
+             this.sprite.animations.play('walk');
         }
     }
 
@@ -118,7 +112,9 @@
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
             if(this.sprite.scale.x == 1) this.sprite.scale.x = -1;
             // Iniciando a animação 'walk'
-            this.sprite.animations.play('walk');
+            if(!this.isJumping) {
+                this.sprite.animations.play('walk');
+            }
         }
         // Se a tecla direita estiver pressionada (this.keys.right.isDown == true),
         // mover o sprite para a direita
@@ -127,13 +123,18 @@
             this.sprite.body.velocity.x = 150;  // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
             if(this.sprite.scale.x == -1) this.sprite.scale.x = 1;
-            this.sprite.animations.play('walk');
+
+            if(!this.isJumping) {
+                this.sprite.animations.play('walk');
+            }
         }
         else {
             // Ajustar velocidade para zero
             this.sprite.body.velocity.x = 0;
-            this.sprite.animations.stop('walk');
-            this.sprite.animations.play('idle');
+             
+            if(!this.isJumping) {
+                this.sprite.animations.play('');
+            }
         }
         
         if (this.shotButton.isDown){
