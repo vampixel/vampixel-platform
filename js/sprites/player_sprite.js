@@ -56,8 +56,8 @@
             b.name = 'imageNameBatShot' + i;
             b.exists = false;
             b.visible = false;
-            b.checkWorldBounds = true;
-            b.events.onOutOfBounds.add(this.resetBullet, this);
+           // b.checkWorldBounds = true;
+           // b.events.onOutOfBounds.add(this.resetBullet, this);
         }
         
         //SpriteSheet and Animations Player
@@ -115,9 +115,6 @@
     }
 
     Player.prototype.handleInputs = function () {
-        
-        this.game.physics.arcade.collide(this.sprite, this.bats, this.lose, null, this);
-
         if(this.keys.left.isDown){
             this.sprite.body.velocity.x = -150; // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
@@ -214,11 +211,6 @@
         setTimeout(function () {
             newPointText.kill();
         }, 500)
-    }
-    
-    Player.prototype.lose = function(){
-        this.sprite.kill();
-        this.game.state.start('lose');
     }
 
     gameManager.addSprite('player', Player);

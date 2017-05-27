@@ -31,10 +31,11 @@
         this.Level1 = this.game.add.tilemap('Level1');
         this.Level1.addTilesetImage('tiled-fases','mapTiles');
         
-        this.bgLayer = this.Level1.createLayer('Bg');
-        this.lavaLayer = this.Level1.createLayer('Lava');
-        this.wallsLayer = this.Level1.createLayer('Walls');
-        this.wallsLayer.resizeWorld();
+        /*  this.bgLayer = this.Level1.createLayer('Bg');
+            this.lavaLayer = this.Level1.createLayer('Lava');
+            this.wallsLayer = this.Level1.createLayer('Walls');
+            this.wallsLayer.resizeWorld();
+        */
         
         //Tile maps - collision
         this.Level1.setCollisionByExclusion([19,20,21,22,23,24,11,16,17,18,19], true, this.wallsLayer);
