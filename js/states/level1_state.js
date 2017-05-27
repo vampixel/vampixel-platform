@@ -11,11 +11,13 @@
         // player
         this.player.preload();
         
+        
+        this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
+        this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
+        this.game.load.audio('environmentSound', 'assets/sounds/environment.ogg');
+        
         //Tile maps
         this.game.load.tilemap('Level1','assets/maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
-        this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
-        this.game.load.audio('environmentSound', 'assets/sounds/environment.ogg');
-
     }
 
     Level1State.prototype.create = function() {
@@ -40,15 +42,27 @@
         
         // setup initial player properties
         this.player.setup(this);
-        this.player.sprite.x = 628;
+        this.player.sprite.x = this.game.world.centerX;
         this.player.sprite.y = 70;
         
         //Movimentacao de camera
         this.game.camera.follow(this.player.sprite);
         
+        // Grupo de diamantes
+        this.diamonds = this.game.add.physicsGroup();
+        this.Level1.createFromObjects('Items', 'diamond', 'items', 5, true, false, this.diamonds);
+        // Para cada objeto do grupo, vamos executar uma função
+        this.diamonds.forEach(function(diamond){
+            // body.immovable = true indica que o objeto não é afetado por forças externas
+            diamond.body.immovable = true;
+            // Adicionando animações; o parâmetro true indica que a animação é em loop
+            diamond.animations.add('spin', [4, 5, 6, 7, 6, 5], 6, true);
+            diamond.animations.play('spin');
+        });
+        
         //Fire effect with phaser particles
         var emitter;
-        var pSize = this.game.world.width / 22.5;
+        var pSize = this.game.world.width / 12.5;
         var bmpd = this.game.add.bitmapData(pSize, pSize);
         // Create a radial gradient, yellow-ish on the inside, orange
         // on the outside. Use it to draw a circle that will be used
@@ -67,20 +81,20 @@
         
         // Generate 100 particles
         emitter = this.game.add.emitter(this.game.world.centerX, this.game.world.height, 100);
-        emitter.width = 3 * pSize;
+        emitter.width = 11 * pSize;
         emitter.particleClass = FireParticle;
         
         // Magic happens here, bleding the colors of each particle
         // generates the bright light effect
         emitter.blendMode = PIXI.blendModes.ADD;
         emitter.makeParticles();
-        emitter.minParticleSpeed.set(-15, -80);
-        emitter.maxParticleSpeed.set(15, -100);
+        emitter.minParticleSpeed.set(-15, -160);
+        emitter.maxParticleSpeed.set(15, -200);
         emitter.setRotation(0, 0);
         // Make the flames taller than they are wide to simulate the
         // effect of flame tongues
         emitter.setScale(3, 1, 4, 3, 12000, Phaser.Easing.Quintic.Out);
-        emitter.gravity = -5;
+        emitter.gravity = -20;
         emitter.start(false, 3000, 50);
     }
     
@@ -94,10 +108,19 @@
     Level1State.prototype.update = function() {
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         this.player.handleInputs();
+        // Colisão com os diamantes - devem ser coletados
+        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this.player);
         //this.menuSound.stop();
     } 
 
-    
+    // Tratamento da colisão entre o jogador e os diamantes
+    // As funções para esse fim sempre recebem os dois objetos que colidiram,
+    // e então podemos manipular tais objetos
+    Level1State.prototype.diamondCollect = function(player, diamond){
+        diamond.kill(); // removendo o diamante do jogo
+        this.game.state.start('level2');  
+    }
+
     gameManager.addState('level1', Level1State);
 
 })();
