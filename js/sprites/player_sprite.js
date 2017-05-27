@@ -16,7 +16,7 @@
         this.jumpVelocity = -450;
         this.isJumping = false;
         this.isDoubleJumping = false;
-        this.initialPositionX = 100;
+        this.initialPositionX = 50;
         this.initialPositionY = this.game.height - 500;
         
         this.bullets;
