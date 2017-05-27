@@ -159,7 +159,7 @@
         this.game.physics.arcade.collide(this.player.sprite, this.floor, this.player.groundCollision, null, this.player);
         
         // Colisão com os morcegos - depende de como foi a colisão, veremos abaixo
-        this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.batCollision, null, this);
+        this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.gameover, null, this);
 
         // Adicionando colisão entre os morcegos e as paredes
         this.game.physics.arcade.collide(this.bats, this.wallsLayer);
@@ -176,29 +176,28 @@
                bat.scale.x = 1 * Math.sign(bat.body.velocity.x);
            }
         });
-        
     }
     
     // Tratamento da colisão entre o jogador e os diamantes
-    Level2State.prototype.batCollision = function(player, bat){
+    /*Level2State.prototype.batCollision = function(player, bat){
         // Se o jogador colidir por baixo e o morcego por cima, isso indica que o jogador pulou
         // em cima do morcego, nesse caso vamos "matar" o morcego
-        if(player.body.touching.down && bat.body.touching.up){
+        //if(player.body.touching.down && bat.body.touching.up){
             this.enemyDeathSound.play(); // tocando som de morte do morcego
-            this.player.body.velocity.y = -200; // adicionando um pequeno impulso vertical ao jogador
-            this.score += 100; // atualizando score
-            this.scoreText.text = "Score: " + this.score;
+            //this.player.body.velocity.y = -200; // adicionando um pequeno impulso vertical ao jogador
+            //this.score += 100; // atualizando score
+            //this.scoreText.text = "Score: " + this.score;
             bat.kill();
-        }
-        else this.lose(); // caso contrário, ir para condição de derrota
-    }
+        //}
+        else this.gameover(); // caso contrário, ir para condição de derrota
+    }*/
 
     // Condição de derrota: guarde o score e siga para o próximo estado
     Level2State.prototype.gameover = function(){
-        alert("game over");
+        //player.kill();
+        this.game.state.start('lose');
     }
-
-
+    
     gameManager.addState('level2', Level2State);
 
 })();

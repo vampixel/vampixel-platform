@@ -37,11 +37,11 @@
     }
 
     Player.prototype.preload = function () {
-        //Imagens
+        //Load Imagens
         this.game.load.spritesheet(this.imageName, this.imageUrl, 48, 64);
         this.game.load.image(this.imageNameBatShot, this.imageUrlBatShot);
         
-        //Sounds
+        //Load Sounds
         this.game.load.audio(this.soundNameJump, this.soundUrlJump);
         this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
     }
