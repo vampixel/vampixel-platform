@@ -50,7 +50,8 @@
         // criados primeiro, e os que ficarão na "frente" por último;
         this.bgLayer = this.level2.createLayer('Floor');
         //this.lavaLayer = this.level1.createLayer('Lava');
-        this.wallsLayer = this.level2.createLayer('BG');
+        this.floor = this.level2.createLayer('BG');
+        this.wallsLayer = this.level2.createLayer('Wall');
         // Mais informações sobre tilemaps:
         // https://photonstorm.github.io/phaser-ce/#toc14
 
@@ -68,6 +69,7 @@
         // Os parâmetros são a lista dos tiles, "true" indicando que a colisão deve ser ativada,
         // e o nome do layer.
         this.level2.setCollisionByExclusion([9, 10, 11, 12, 17, 18, 19, 20], true, this.wallsLayer);
+        this.level2.setCollisionByExclusion([9, 10, 11, 12, 17, 18, 19, 20], true, this.floor);
         
         // Para o layer de lava é o caso oposto: poucos tiles colidem, então é mais fácil 
         // informar diretamente quais são.
@@ -153,7 +155,8 @@
         // Todas as colisões entre os objetos do jogo são avaliadas com arcade.collide() ou 
         // arcade.overlap(). O Phaser irá automaticamente calcular a colisão dos objetos
         // Inicialmente, adicionando colisões do player com as paredes da fase, que é um layer:
-        this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
+        //this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
+        this.game.physics.arcade.collide(this.player.sprite, this.floor, this.player.groundCollision, null, this.player);
         
         // Colisão com os morcegos - depende de como foi a colisão, veremos abaixo
         this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.batCollision, null, this);
