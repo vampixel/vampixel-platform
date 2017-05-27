@@ -54,8 +54,8 @@
             b.name = 'imageNameBatShot' + i;
             b.exists = false;
             b.visible = false;
-           // b.checkWorldBounds = true;
-           // b.events.onOutOfBounds.add(this.resetBullet, this);
+            b.checkWorldBounds = true;
+            b.events.onOutOfBounds.add(this.resetBullet, this);
         }
         
         //SpriteSheet and Animations Player

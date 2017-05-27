@@ -10,7 +10,7 @@
         text.anchor.set(0.5);
         
         setTimeout(function () {
-            game.state.start('game');
+            game.state.start('menu');
         }, 1000);
     }
 
