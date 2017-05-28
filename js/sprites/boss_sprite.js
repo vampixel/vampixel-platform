@@ -18,8 +18,13 @@
         this.imageName = 'boss_image';
         this.imageUrl = 'assets/img/red_square_10x10.png';
         this.initialPositionX = 600;
-        this.initialPositionY = 440;
+        this.initialPositionY = 500;
+        this.width = 100;
+        this.height = 100;
         this.gravity = 750;
+        this.velocity = 5;
+        this.stateContext = null;
+        this.isGoing = '';
     }
 
     /**
@@ -34,21 +39,23 @@
      * @type Required
      * @description Call it inside the create method in your state
      */
-    Boss.prototype.setup = function () {   
-        // required
-        // here you'll actually create your sprite
+    Boss.prototype.setup = function (stateContext) {   
         this.sprite = this.game.add.sprite(this.initialPositionX, this.initialPositionY, this.imageName);
         this.game.physics.arcade.enable(this.sprite);
-        this.sprite.body.gravity.y = this.gravity;
-        this.sprite.width = 100; 
-        this.sprite.height = 100; 
+        this.sprite.anchor.set(0.5);
+        this.sprite.body.collideWorldBounds = true;
+        this.sprite.width = this.width; 
+        this.sprite.height = this.height; 
+        this.stateContext = stateContext;
     }
 
     /**
      * @type Optional
      */
-    Boss.prototype.customMethod = function () {
-        // write here your custom method
+    Boss.prototype.move = function () {
+        // if(this.sprite.body.velocity.x != 0) {
+        //     this.sprite.scale.x = 1 * Math.sign(this.sprite.body.velocity.x);
+        // }
     }
 
     // required

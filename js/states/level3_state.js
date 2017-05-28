@@ -56,9 +56,9 @@
         this.floor = this.level3.createLayer('Floor');
 
 
-	    this.platform1 = this.game.add.sprite(110, 220, 'platform');
-	    this.platform2 = this.game.add.sprite(280, 330, 'platform');
-	    this.platform3 = this.game.add.sprite(110, 420, 'platform');
+	    this.platform1 = this.game.add.sprite(110, 210, 'platform');
+	    this.platform2 = this.game.add.sprite(280, 320, 'platform');
+	    this.platform3 = this.game.add.sprite(110, 410, 'platform');
         this.game.physics.arcade.enable(this.platform1);
         this.game.physics.arcade.enable(this.platform2);
         this.game.physics.arcade.enable(this.platform3);
@@ -173,7 +173,8 @@
         
         // Movimentação do player
         this.player.handleInputs();
-       
+        this.boss.move.apply(this.boss);
+
     }
 
     // Condição de derrota: guarde o score e siga para o próximo estado

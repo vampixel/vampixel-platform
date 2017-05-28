@@ -32,6 +32,7 @@
         this.soundNamePickupBlood = 'pickupSound';
         this.soundUrlPickupBlood = 'assets/sounds/sipBlood.ogg';
         this.soundPickup = null;
+        this.stateContext = null;
     }
 
     Player.prototype.preload = function () {
