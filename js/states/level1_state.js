@@ -144,7 +144,7 @@
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);        
         this.game.physics.arcade.overlap(this.player.sprite, this.fireBullets, this.fireBulletCollect, null, this);        
         this.game.physics.arcade.collide(this.bats, this.wallsLayer);
-        this.game.physics.arcade.collide(this.fireBullets, this.wallsLayer);
+        this.game.physics.arcade.collide(this.fireBullets, this.wallsLayer, this.fireBulletCollide, null, this);
 
         this.player.handleInputs(); 
         
@@ -157,15 +157,30 @@
                 bat.scale.x = 1 * Math.sign(bat.body.velocity.x);
             }
         });
+        
+        this.fireBullets.forEach(function(fireBullet){
+            if(fireBullet.body.velocity.x != 0) {
+                // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
+                fireBullet.scale.x = -1;
+                console.log(fireBullet.scale.x);
+            }
+        });
+        
+        this.game.debug.inputInfo(32, 32);
     } 
 
     Level1State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
         this.game.state.start('level2');  
     } 
-    Level1State.prototype.fireBulletCollect = function(player, diamond){
-        diamond.kill();
-        this.game.state.start('level2');  
+    
+    Level1State.prototype.fireBulletCollide = function(fireBullet){
+        fireBullet.kill();
+    }
+    
+    Level1State.prototype.fireBulletCollect = function(player, fireBullet){
+        fireBullet.kill();
+        this.game.state.start('lose');  
     }
     
     Level1State.prototype.batCollision = function(player, bat){
