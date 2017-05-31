@@ -10,7 +10,7 @@
     Level1State.prototype.preload = function() {
         // player
         this.player.preload();
-        this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
+        this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
         this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.spritesheet('enemies', 'Assets/spritesheets/enemies.png', 32, 32, 12);
         this.game.load.audio('environmentSound', 'assets/sounds/environment.ogg');
@@ -28,7 +28,7 @@
     
         //Tile maps
         this.Level1 = this.game.add.tilemap('Level1');
-        this.Level1.addTilesetImage('tiled-fases','mapTiles');
+        this.Level1.addTilesetImage('tiled-fases','tiledFases');
         
         this.bgLayer = this.Level1.createLayer('Bg');
         this.fireLayer = this.Level1.createLayer('Fire');
@@ -47,6 +47,21 @@
         //Movimentacao de camera
         this.game.camera.follow(this.player.sprite);
         
+        // Grupo de fireBullets
+        this.fireBullets = this.game.add.physicsGroup();
+        this.Level1.createFromObjects('Enemies', 'fireBullet', 'items', 5, true, false, this.fireBullets);
+        
+        // Para cada objeto do grupo, vamos executar uma função
+        this.fireBullets.forEach(function(fireBullet){
+            // body.immovable = true indica que o objeto não é afetado por forças externas
+            fireBullet.body.immovable = true;
+            // Adicionando animações; o parâmetro true indica que a animação é em loop
+            fireBullet.animations.add('go', [10, 11, 10], 3, true);
+            fireBullet.animations.play('go');
+            fireBullet.body.velocity.x = 100;
+            fireBullet.body.bounce.x = 1;
+        });
+        
         // Grupo de diamantes
         this.diamonds = this.game.add.physicsGroup();
         this.Level1.createFromObjects('Items', 'diamond', 'items', 5, true, false, this.diamonds);
@@ -59,8 +74,9 @@
             diamond.animations.play('spin');
         });
         
-        // Grupo de morcegos:
+        // Grupo de inimigos
         this.bats = this.game.add.physicsGroup();
+        
         this.Level1.createFromObjects('Enemies', 'bat', 'enemies', 8, true, false, this.bats);
         this.bats.forEach(function(bat){
             bat.anchor.setTo(0.5, 0.5);
@@ -120,12 +136,15 @@
     FireParticle.prototype = Object.create(Phaser.Particle.prototype);
     FireParticle.prototype.constructor = FireParticle;
     
+    
     Level1State.prototype.update = function() {
         this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.gameOver, null, this);
         this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.gameOver, null, this);
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);        
+        this.game.physics.arcade.overlap(this.player.sprite, this.fireBullets, this.fireBulletCollect, null, this);        
         this.game.physics.arcade.collide(this.bats, this.wallsLayer);
+        this.game.physics.arcade.collide(this.fireBullets, this.wallsLayer);
 
         this.player.handleInputs(); 
         
@@ -141,6 +160,10 @@
     } 
 
     Level1State.prototype.diamondCollect = function(player, diamond){
+        diamond.kill();
+        this.game.state.start('level2');  
+    } 
+    Level1State.prototype.fireBulletCollect = function(player, diamond){
         diamond.kill();
         this.game.state.start('level2');  
     }
