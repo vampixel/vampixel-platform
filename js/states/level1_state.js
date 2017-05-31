@@ -121,16 +121,12 @@
     FireParticle.prototype.constructor = FireParticle;
     
     Level1State.prototype.update = function() {
-        // Colisão com o fogo - o jogador morre
-        this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
+        this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.gameOver, null, this);
+        this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.gameOver, null, this);
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
-        // Colisão com os diamantes - devem ser coletados
-        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);
-        // Colisão com os morcegos - depende de como foi a colisão, veremos abaixo
-        this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.batCollision, null, this);
-        // Adicionando colisão entre os morcegos e as paredes
+        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);        
         this.game.physics.arcade.collide(this.bats, this.wallsLayer);
-        
+
         this.player.handleInputs(); 
         
         // Para cada morcego, verificar em que sentido ele está indo
@@ -157,6 +153,10 @@
     Level1State.prototype.fireDeath = function(player, fire){
         this.Level1.setCollision(29, false, this.fireLayer);
         this.game.state.start('lose');
+    }
+    
+    Level1State.prototype.gameOver = function() {
+       this.game.state.start('lose'); 
     }
     
     gameManager.addState('level1', Level1State);
