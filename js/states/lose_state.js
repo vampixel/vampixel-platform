@@ -10,8 +10,8 @@
         text.anchor.set(0.5);
         
         setTimeout(function () {
-            game.state.start('menu');
-        }, 1000);
+            this.game.state.start('menu');
+        }, 3000);
     }
 
     gameManager.addState('lose', LoseState);

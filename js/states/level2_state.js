@@ -24,7 +24,7 @@
         //this.game.load.audio('jumpSound', 'assets/sounds/jump.wav');
         //this.game.load.audio('pickupSound', 'assets/sounds/pickup.wav');
         //this.game.load.audio('playerDeath', 'assets/sounds/hurt3.ogg');
-        this.game.load.audio('enemyDeath', 'assets/sounds/hit2.ogg');
+        //this.game.load.audio('enemyDeath', 'assets/sounds/hit2.ogg');
         this.game.load.audio('music', 'assets/sounds/mystery.wav');
 
         // player
@@ -143,20 +143,12 @@
         //this.jumpSound = this.game.add.audio('jumpSound');
         //this.pickupSound = this.game.add.audio('pickupSound');
         //this.playerDeathSound = this.game.add.audio('playerDeath');
-        this.enemyDeathSound = this.game.add.audio('enemyDeath');
+        //this.enemyDeathSound = this.game.add.audio('enemyDeath');
         
-        // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true
+        // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true, para ficar repetindo
         this.music = this.game.add.audio('music');
         this.music.loop = true;
-        // Já iniciamos a música aqui mesmo pra ficar tocando ao fundo
         this.music.play();
-        
-        // HUD de score
-        // A linha abaixo adiciona um texto na tela, e a próxima faz com o que o texto fique
-        // fixo na câmera, dessa forma não vai se deslocar quando a câmera mudar
-        this.scoreText = this.game.add.text(500, 50, "Score: 0", 
-                                {font: "25px Arial", fill: "#ffffff"});
-        this.scoreText.fixedToCamera = true;
         
         // Estado do jogo - Variáveis para guardar quaisquer informações pertinentes para as condições de 
         // vitória/derrota, ações do jogador, etc
@@ -167,7 +159,6 @@
     }
 
     Level2State.prototype.update = function() {
-        //this.menuSound.stop();
         // Detecção de colisões
         // Todas as colisões entre os objetos do jogo são avaliadas com arcade.collide() ou 
         // arcade.overlap(). O Phaser irá automaticamente calcular a colisão dos objetos
@@ -212,6 +203,7 @@
     // e então podemos manipular tais objetos
     Level2State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
+        this.music.stop();
         this.game.state.start('level3');
     }
 
