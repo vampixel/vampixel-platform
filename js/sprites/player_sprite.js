@@ -12,12 +12,18 @@
         this.imageUrlBatShot = 'assets/img/red_square_10x10.png';
         this.imageBatShot = null;
         
+        //Lives Blood
+        this.imageNameLives = 'lives_image';
+        this.imageUrlLives = 'assets/img/blood.png';
+        this.imageBloodLives = null;
+        
         this.gravity = 750;
         this.jumpVelocity = -450;
         this.isJumping = false;
         this.isDoubleJumping = false;
         this.initialPositionX = 50;
         this.initialPositionY = this.game.height - 500;
+        this.lives = 1;
         
         this.bullets;
         this.bulletTime = 0;
@@ -39,6 +45,7 @@
         //Load Imagens
         this.game.load.spritesheet(this.imageName, this.imageUrl, 48, 64);
         this.game.load.image(this.imageNameBatShot, this.imageUrlBatShot);
+        this.game.load.image(this.imageNameLives, this.imageUrlLives);
         
         //Load Sounds
         this.game.load.audio(this.soundNameJump, this.soundUrlJump);
@@ -46,7 +53,7 @@
     }
 
     Player.prototype.setup = function (stateContext) {       
-        //criando balas
+        //Criando balas
         this.bullets = this.game.add.group();
         this.bullets.enableBody = true; 
         this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
@@ -66,10 +73,16 @@
         this.sprite.animations.add('transform', [7,8,9], 22, true);
         this.sprite.animations.add('batGirl', [10,11,12,13,14,15,16,17,18,19], 22, true);
         //this.sprite.animations.add('jump', [], , true);
+        //this.sprite.animations.add('dead', [], , true);
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.gravity;
         this.stateContext = stateContext;
+        
+        //Img Blood Lives
+        this.imageBloodLives = this.game.add.sprite(40, 40, this.imageNameLives); 
+        this.imageBloodLives.anchor.set(0.5);
+        this.imageBloodLives.fixedToCamera = true;
                 
         //Sounds
         this.soundJump = this.game.add.audio(this.soundNameJump);
@@ -83,7 +96,7 @@
     }
 
     Player.prototype.jump = function () {    
-        console.log('jumping...');
+        //console.log('jumping...');
         if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = true;
             return doJump.apply(this);
@@ -107,7 +120,7 @@
         }
     }
 
-    Player.prototype.handleInputs = function () {
+    Player.prototype.handleInputs = function () {      
         if(this.keys.left.isDown){
             this.sprite.body.velocity.x = -150; // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
@@ -164,55 +177,46 @@
         bullet.kill();
     }
 
-    Player.prototype.bloodCollision = function (player, blood) {
+    Player.prototype.bloodLivesCollision = function (bloodLives) {
+        if (this.lives == 0){
+            this.lives = + 1;
+            //setando o coração de sangue para o local das vidas
+            this.imageBloodLives = this.game.add.sprite(40, 40, this.imageNameLives);
+            this.imageBloodLives.anchor.set(0.5);
+            this.imageBloodLives.fixedToCamera = true;
+        }
+                
         this.soundPickup.play();
+        /*
         this.bloodParticleEmitter.setSize(1, 1);
-        this.bloodParticleEmitter.x = blood.x;
-        this.bloodParticleEmitter.y = blood.y;
- 
+        this.bloodParticleEmitter.x = bloodLives.x;
+        this.bloodParticleEmitter.y = bloodLives.y;
+        this.bloodParticleEmitter.start(true, 500, null, 500);        
+        */
+    }
+    
+    Player.prototype.lose = function () {
+        if (this.lives == 1){
+            this.lives = 0
+            this.imageBloodLives.kill();
+        }
+        else if (this.lives == 0){
+            //this.sprite.animations.play('dead');
+            this.gameOver();            
+        }
+    
+        /*
+        this.bloodParticleEmitter.setSize(1, 1);
+        this.bloodParticleEmitter.x = bloodLives.x;
+        this.bloodParticleEmitter.y = bloodLives.y;
         this.bloodParticleEmitter.start(true, 500, null, 500);
-
-        // calculate new score
-        var newPoint = calculatePoints.call(this, (blood.y));
-
-        // display to the player
-        displayNewPoint.call(this, newPoint, blood.x, blood.y)
-
-        // update score
-        this.score = this.score + newPoint;
-        this.scoreText.setText(this.score);
-
-        // destroy blood
-        blood.kill();
-
-        /*if(this.score >= gameManager.globals.scoreToGoToLevel2) {
-            this.game.state.start('level2');
-        }*/
+        */
     }
-    // give points based on the Y of blood
-            /*function calculatePoints(bloodY) {
-                if(bloodY <= 150) {
-                    return 5;
-                }
-                if(bloodY <= 200) {
-                    return 3;
-                }
-                if(bloodY <= 300) {
-                    return 2;
-                }
-                    return 1;
-                }*/
-
-    function displayNewPoint(newPoint, x, y) {
-        var newPointText = this.game.add.text(x, y, '+' + newPoint, { fill: '#ffffff', align: 'center', fontSize: 15 });
-        newPointText.anchor.set(0.5);
-
-        this.game.add.tween(newPointText).to({ y: newPointText.y - 50, alpha: 0 }, 500, "Linear", true);
-        setTimeout(function () {
-            newPointText.kill();
-        }, 500)
+    
+    Player.prototype.gameOver = function (){
+        this.game.state.start('lose');  
     }
-
+    
     gameManager.addSprite('player', Player);
 
 })();

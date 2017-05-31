@@ -139,7 +139,9 @@
     
     Level1State.prototype.update = function() {
         this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.gameOver, null, this);
-        this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.gameOver, null, this);
+        if (this.game.physics.arcade.overlap(this.player.sprite, this.bats)){
+            this.player.lose();
+        }
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);        
         this.game.physics.arcade.overlap(this.player.sprite, this.fireBullets, this.fireBulletCollect, null, this);        
