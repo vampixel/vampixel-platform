@@ -169,9 +169,14 @@
         // Colisão com os diamantes - devem ser coletados
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);
         
-        // Colisão com os morcegos - depende de como foi a colisão, veremos abaixo
-        this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.gameover, null, this);
-        this.game.physics.arcade.overlap(this.player.sprite, this.nuns, this.gameover, null, this);
+        // Colisão com inimigos
+        if (this.game.physics.arcade.overlap(this.player.sprite, this.bats)){
+            this.player.lose();    
+        }
+        
+        if (this.game.physics.arcade.overlap(this.player.sprite, this.nuns)){
+            this.player.lose(); 
+        }
 
         // Adicionando colisão entre os morcegos e as paredes
         this.game.physics.arcade.collide(this.bats, this.wallsLayer);
@@ -205,12 +210,6 @@
         diamond.kill();
         this.music.stop();
         this.game.state.start('level3');
-    }
-
-    // Condição de derrota: guarde o score e siga para o próximo estado
-    Level2State.prototype.gameover = function(){
-        //player.kill();
-        this.game.state.start('lose');
     }
     
     gameManager.addState('level2', Level2State);

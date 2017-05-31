@@ -15,7 +15,7 @@
         //Lives Blood
         this.imageNameLives = 'lives_image';
         this.imageUrlLives = 'assets/img/blood.png';
-        this.imageBatShot = null;
+        this.imageBloodLives = null;
         
         this.gravity = 750;
         this.jumpVelocity = -450;
@@ -80,9 +80,9 @@
         this.stateContext = stateContext;
         
         //Img Blood Lives
-        this.bloodLives = this.game.add.sprite(20, 20, this.imageNameLives); 
-        this.sprite.anchor.set(0.5);
-        this.bloodLives.fixedToCamera = true;
+        this.imageBloodLives = this.game.add.sprite(40, 40, this.imageNameLives); 
+        this.imageBloodLives.anchor.set(0.5);
+        this.imageBloodLives.fixedToCamera = true;
                 
         //Sounds
         this.soundJump = this.game.add.audio(this.soundNameJump);
@@ -181,34 +181,36 @@
         if (this.lives == 0){
             this.lives = + 1;
             //setando o coração de sangue para o local das vidas
-            this.bloodLives = this.game.add.sprite(20, 20, this.imageNameLives);
-            this.sprite.anchor.set(0.5);
-            this.bloodLives.fixedToCamera = true;
+            this.imageBloodLives = this.game.add.sprite(40, 40, this.imageNameLives);
+            this.imageBloodLives.anchor.set(0.5);
+            this.imageBloodLives.fixedToCamera = true;
         }
                 
         this.soundPickup.play();
+        /*
         this.bloodParticleEmitter.setSize(1, 1);
-        this.bloodParticleEmitter.x = blood.x;
-        this.bloodParticleEmitter.y = blood.y;
- 
+        this.bloodParticleEmitter.x = bloodLives.x;
+        this.bloodParticleEmitter.y = bloodLives.y;
         this.bloodParticleEmitter.start(true, 500, null, 500);        
-       
+        */
     }
     
     Player.prototype.lose = function () {
         if (this.lives == 1){
             this.lives = 0
-            //this.sprite.animations.play('dead');
-            bloodLives.kill();
+            this.imageBloodLives.kill();
         }
         else if (this.lives == 0){
+            //this.sprite.animations.play('dead');
             this.gameOver();            
         }
     
+        /*
         this.bloodParticleEmitter.setSize(1, 1);
         this.bloodParticleEmitter.x = bloodLives.x;
         this.bloodParticleEmitter.y = bloodLives.y;
         this.bloodParticleEmitter.start(true, 500, null, 500);
+        */
     }
     
     Player.prototype.gameOver = function (){
