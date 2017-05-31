@@ -144,27 +144,17 @@
         });
     } 
 
-    // Tratamento da colisão entre o jogador e os diamantes
-    // As funções para esse fim sempre recebem os dois objetos que colidiram,
-    // e então podemos manipular tais objetos
     Level1State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
         this.game.state.start('level2');  
     }
     
-    // Tratamento da colisão entre o jogador e os diamantes
     Level1State.prototype.batCollision = function(player, bat){
-    // Se o jogador colidir por baixo e o morcego por cima, isso indica que o jogador pulou
-    // em cima do morcego, nesse caso vamos "matar" o morcego
-        if(player.body.touching.down && bat.body.touching.up){
-            this.player.sprite.body.velocity.y = -200; // adicionando um pequeno impulso vertical ao jogador
-            bat.kill();
-        }
-        else this.game.state.start('lose'); // caso contrário, ir para condição de derrota
+       bat.kill();
+       this.game.state.start('lose');
     }
     
     Level1State.prototype.fireDeath = function(player, fire){
-        console.debug("fireDeath");
         this.Level1.setCollision(29, false, this.fireLayer);
         this.game.state.start('lose');
     }
