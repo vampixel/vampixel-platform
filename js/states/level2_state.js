@@ -15,7 +15,9 @@
         // No caso do player.png, os sprites são de 32x32 pixels, e há 8 sprites no arquivo
         // this.game.load.spritesheet('player', 'Assets/spritesheets/player.png', 32, 32, 8);
         this.game.load.spritesheet('items', 'assets/spritesheets/items.png', 32, 32, 16);
-        this.game.load.spritesheet('enemies', 'assets/spritesheets/enemies.png', 32, 32, 12);
+        this.game.load.spritesheet('freira', 'assets/spritesheets/FREIRA-SPRITE.png', 64, 64, 4);
+        this.game.load.spritesheet('arqueiro', 'assets/spritesheets/ARQUEIRO-SPRITE.png', 64, 64, 3);
+
         
         // Para carregar um arquivo do Tiled, o mesmo precisa estar no formato JSON
         this.game.load.tilemap('level2', 'assets/maps/level21.json', null, Phaser.Tilemap.TILED_JSON);
@@ -109,26 +111,26 @@
             diamond.animations.play('spin');
         });
         
-        this.bats = this.game.add.physicsGroup();
-        this.level2.createFromObjects('Enemies', 'bat', 'enemies', 8, true, false, this.bats);
-        this.bats.forEach(function(bat){
-            bat.anchor.setTo(0.5, 0.5);
-            bat.body.immovable = true;
-            bat.animations.add('fly', [8, 9, 10], 6, true);
-            bat.animations.play('fly');
+        this.arqs = this.game.add.physicsGroup();
+        this.level2.createFromObjects('Enemies', 'arq', 'arqueiro', 8, true, false, this.arqs);
+        this.arqs.forEach(function(arq){
+            arq.anchor.setTo(0, 0);
+            arq.body.immovable = true;
+            arq.animations.add('fly', [1,2,3], 6, true);
+            arq.animations.play('fly');
             // Velocidade inicial do inimigo
-            bat.body.velocity.x = 100;
+            arq.body.velocity.x = 100;
             // bounce.x=1 indica que, se o objeto tocar num objeto no eixo x, a força deverá
             // ficar no sentido contrário; em outras palavras, o objeto é perfeitamente elástico
-            bat.body.bounce.x = 1;
+            arq.body.bounce.x = 1;
         });
         
         this.nuns = this.game.add.physicsGroup();
-        this.level2.createFromObjects('Enemies', 'nun', 'enemies', 8, true, false, this.nuns);
+        this.level2.createFromObjects('Enemies', 'nun', 'freira', 8, true, false, this.nuns);
         this.nuns.forEach(function(nun){
-            nun.anchor.setTo(0.5, 0.5);
+            nun.anchor.setTo(0, 0);
             nun.body.immovable = true;
-            nun.animations.add('fly', [5,6,7], 6, true);
+            nun.animations.add('fly', [1,2,3,4], 6, true);
             nun.animations.play('fly');
             // Velocidade inicial do inimigo
             nun.body.velocity.x = 100;
@@ -155,6 +157,7 @@
         this.totalDiamonds = this.diamonds.length;
         this.collectedDiamonds = 0;
         this.score = 0;
+    
 
     }
 
@@ -170,7 +173,7 @@
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);
         
         // Colisão com inimigos
-        if (this.game.physics.arcade.overlap(this.player.sprite, this.bats)){
+        if (this.game.physics.arcade.overlap(this.player.sprite, this.arqs)){
             this.player.lose();    
         }
         
@@ -179,7 +182,7 @@
         }
 
         // Adicionando colisão entre os morcegos e as paredes
-        this.game.physics.arcade.collide(this.bats, this.wallsLayer);
+        this.game.physics.arcade.collide(this.arqs, this.wallsLayer);
         this.game.physics.arcade.collide(this.nuns, this.wallsLayer);
         
         // Movimentação do player
@@ -188,10 +191,10 @@
         // Para cada morcego, verificar em que sentido ele está indo
         // Se a velocidade for positiva, a escala no eixo X será 1, caso
         // contrário -1
-        this.bats.forEach(function(bat){
-           if(bat.body.velocity.x != 0) {
+        this.arqs.forEach(function(arq){
+           if(arq.body.velocity.x != 0) {
                // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
-               bat.scale.x = 1 * Math.sign(bat.body.velocity.x);
+               arq.scale.x = 1 * Math.sign(arq.body.velocity.x);
            }
         });
         
