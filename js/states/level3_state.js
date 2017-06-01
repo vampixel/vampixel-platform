@@ -103,7 +103,7 @@
         //player.kill();
         this.game.state.start('lose');
     }
-    
+
     gameManager.addState('level3', Level3State);
 
 })();
