@@ -5,13 +5,12 @@
     };
 
     LoseState.prototype.create = function() {
-        var game = this.game;
-        var text = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'You lose!!!', { fill: '#ffffff', align: 'center' });
+        var self = this;
+        var text = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'GAME OVER', { fill: '#ffffff', align: 'center' });
         text.anchor.set(0.5);
-        
         setTimeout(function () {
-            this.game.state.start('menu');
-        }, 3000);
+            self.game.state.start('menu');
+        }, 2000);
     }
 
     gameManager.addState('lose', LoseState);

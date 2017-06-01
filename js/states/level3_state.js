@@ -98,12 +98,6 @@
         this.boss.move.apply(this.boss);
     }
 
-    // Condição de derrota: guarde o score e siga para o próximo estado
-    Level3State.prototype.gameover = function(){
-        //player.kill();
-        this.game.state.start('lose');
-    }
-
     gameManager.addState('level3', Level3State);
 
 })();

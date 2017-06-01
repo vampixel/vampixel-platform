@@ -23,7 +23,7 @@
         this.isDoubleJumping = false;
         this.initialPositionX = 50;
         this.initialPositionY = this.game.height - 500;
-        this.lives = 1;
+        this.lives = 3;
         
         this.bullets;
         this.bulletTime = 0;
@@ -52,7 +52,9 @@
         this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
     }
 
-    Player.prototype.setup = function (stateContext) {       
+    Player.prototype.setup = function (stateContext) {   
+        var self = this;
+
         //Criando balas
         this.bullets = this.game.add.group();
         this.bullets.enableBody = true; 
@@ -78,9 +80,17 @@
         this.stateContext = stateContext;
         
         //Img Blood Lives
-        this.imageBloodLives = this.game.add.sprite(40, 40, this.imageNameLives); 
-        this.imageBloodLives.anchor.set(0.5);
-        this.imageBloodLives.fixedToCamera = true;
+        this.imageBloodLives1 = this.game.add.sprite(40, 40, this.imageNameLives); 
+        this.imageBloodLives1.anchor.set(0.5);
+        this.imageBloodLives1.fixedToCamera = true;
+
+        this.imageBloodLives2 = this.game.add.sprite(90, 40, this.imageNameLives); 
+        this.imageBloodLives2.anchor.set(0.5);
+        this.imageBloodLives2.fixedToCamera = true;
+
+        this.imageBloodLives3 = this.game.add.sprite(140, 40, this.imageNameLives); 
+        this.imageBloodLives3.anchor.set(0.5);
+        this.imageBloodLives3.fixedToCamera = true;
                 
         //Sounds
         this.soundJump = this.game.add.audio(this.soundNameJump);
@@ -91,6 +101,27 @@
         this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.jumpButton.onDown.add(this.jump, this);
         this.shotButton = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+
+        setInterval(function () {
+            self.decreaseLives();
+        }, 1000);
+    }
+
+    Player.prototype.decreaseLives = function () {
+        this.lives--;
+
+        if(this.lives === 2) {
+            this.imageBloodLives3.kill();
+        }
+
+        if(this.lives === 1) {
+            this.imageBloodLives2.kill();
+        }
+
+        if(this.lives === 0) {
+            this.imageBloodLives1.kill();
+            this.game.state.start('lose');
+        }
     }
 
     Player.prototype.jump = function () {    
