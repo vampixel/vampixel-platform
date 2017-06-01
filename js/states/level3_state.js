@@ -76,11 +76,28 @@
         // HUD de score
         // A linha abaixo adiciona um texto na tela, e a próxima faz com o que o texto fique
         // fixo na câmera, dessa forma não vai se deslocar quando a câmera mudar
-        this.scoreText = this.game.add.text(500, 50, "Score: 0", {font: "25px Arial", fill: "#ffffff"});
-        this.scoreText.fixedToCamera = true;
-        
-        this.score = 0;
+        this.bossHP = this.game.add.text(620, 25, 'Boss: '+this.boss.HP+'%', {font: "25px Arial", fill: "#ffffff"});
+        this.bossHP.fixedToCamera = true;
 
+    }
+
+    Level3State.prototype.bossBulletCollision = function(player, bullet) {
+        bullet.kill();
+        this.player.decreaseLives.apply(this.player);
+    }
+
+    Level3State.prototype.playerBulletCollision = function(player, bullet) {
+        bullet.kill();
+        this.boss.HP--;
+        this.bossHP.setText('Boss: '+ this.boss.HP +'%');
+
+        if(this.boss.HP <= 0) {
+            this.game.state.start('win');
+        }
+
+        if(this.boss.state === 'normal' && this.boss.HP <= this.boss.limitHPToTransform) {
+            this.boss.transform.apply(this.boss);
+        }
     }
 
     Level3State.prototype.update = function() {
@@ -90,7 +107,10 @@
         this.game.physics.arcade.collide(this.player.sprite, this.platform1, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.platform2, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.platform3, this.player.groundCollision, null, this.player);        
-        
+
+        this.game.physics.arcade.overlap(this.player.sprite, this.boss.bullets, this.bossBulletCollision, null, this);
+        this.game.physics.arcade.overlap(this.boss.sprite, this.player.bullets, this.playerBulletCollision, null, this);
+
         // handle player inputs
         this.player.handleInputs();
 

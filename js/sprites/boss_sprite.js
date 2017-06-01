@@ -9,8 +9,15 @@
 
         this.imageName = 'boss_image';
         this.imageUrl = 'assets/img/padre-padre-vermelho2-64px.png';
+        this.imageDemonName = 'boss_demon_image';
+        this.imageDemonUrl = 'assets/img/DEMON-sprite-128px.png';
+        
         this.imageBullet = 'crucifixo_image';
         this.imageBulletUrl = 'assets/img/crucifixo2.png';
+        this.imageBulletFire = 'fire_image';
+        this.imageBulletFireUrl = 'assets/img/fire_bullet.png';
+        this.limitHPToTransform = 50;
+
         this.initialPositionX = 600;
         this.initialPositionY = 500;
         this.width = 100;
@@ -20,6 +27,7 @@
         this.jumpHeight = -450;
         this.stateContext = null;
         this.isGoing = 'left';
+        this.HP = 100;
 
         // bullets
         this.bullets;
@@ -32,7 +40,9 @@
 
     Boss.prototype.preload = function () {
         this.game.load.spritesheet(this.imageName, this.imageUrl, 64, 64);
+        this.game.load.spritesheet(this.imageDemonName, this.imageDemonUrl, 128, 128);
         this.game.load.image(this.imageBullet, this.imageBulletUrl);
+        this.game.load.image(this.imageBulletFire, this.imageBulletFireUrl);
     }
     
     Boss.prototype.setup = function (stateContext) {   
@@ -46,63 +56,92 @@
         this.stateContext = stateContext;
         this.sprite.scale.x = -1;
         this.sprite.body.gravity.y = this.gravity;
+        this.currentImageBullet = this.imageBullet;
+
+        // reset
+        this.HP = 100;
+        this.state = 'normal';
+        this.sprite.body.width = 64;
+        this.sprite.body.height = 100;
+        this.jumpHeight = -450;
 
         // create normal animation
         this.sprite.animations.add('normal', [0, 1, 2], 5, true);
         this.sprite.animations.add('normal_shooting', [3], 30, true);
         this.sprite.animations.play('normal');
 
+        // create demon animation
+        this.sprite.animations.add('demon', [0, 1, 2, 3, 4], 5, true);
+        
+
         // create bullets
         this.bullets = this.game.add.group();
-        this.bullets.enableBody = true; 
+        this.bullets.enableBody = true;
         this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-        for (var i = 0; i < 40; i++){
-            var b = this.bullets.create(0, 0, this.imageBullet);
-            b.name = 'imageBullet' + i;
-            b.exists = false;
-            b.visible = false;
-            b.checkWorldBounds = true;
-            b.events.onOutOfBounds.add(this.resetBullet, this);
-        }
 
-        setInterval(function () {
+        this.game.time.events.loop(Phaser.Timer.SECOND * 3, function () {
             self.sprite.body.velocity.y = self.jumpHeight;
-        }, 3000);
+        }, this);
 
-        setInterval(function () {
-            self.sprite.animations.play('normal_shooting');
+        this.game.time.events.loop(Phaser.Timer.SECOND, function () {
+            if(self.state === 'normal') {
+                self.sprite.animations.play('normal_shooting');
+            }
+
             self.fire();
 
             setTimeout(function () {
                 if(self.state === 'normal') {
                     self.sprite.animations.play('normal');
                 }
+                else if(self.state === 'demon'){
+                    self.sprite.animations.play('demon');
+                }
             }, 200)
-        }, 1000);
+        }, this);
 
     }
 
+    Boss.prototype.transform = function () {
+        this.state = 'demon';
+        this.sprite.body.velocity.y = -700;
+        this.sprite.body.width = 128;
+        this.sprite.body.height = 200;
+        this.jumpHeight = -700;
+        this.currentImageBullet = this.imageBulletFire;
+        this.sprite.loadTexture(this.imageDemonName);
+        this.sprite.animations.play('demon');
+    }
+
     Boss.prototype.move = function () {
-        if(this.isGoing === 'left' && this.sprite.body.x > 450) {
+        
+        if(this.state === 'normal') {
+            var min = 450;
+            var max = 700;
+        }
+        else if(this.state === 'demon') {
+            var min = 450;
+            var max = 650;
+        }
+
+        if(this.isGoing === 'left' && this.sprite.body.x > min) {
             this.sprite.body.x -= 1;
         }
         else {
             this.isGoing = 'right';
         }
 
-        if(this.isGoing === 'right' && this.sprite.body.x < 700) {
+        if(this.isGoing === 'right' && this.sprite.body.x < max) {
             this.sprite.body.x += 1;
         }
         else {
             this.isGoing = 'left';
         }
-        
     }
 
-
-     Boss.prototype.fire = function () {
+    Boss.prototype.fire = function () {
         if (this.game.time.now > this.bulletTime) {
-            this.bullet = this.bullets.getFirstExists(false);
+            this.bullet = this.bullets.create(0, 0, this.currentImageBullet);
             if (this.bullet) {
                 this.bullet.reset(this.sprite.x, this.sprite.y);
                 if (this.sprite.scale.x == 1) {

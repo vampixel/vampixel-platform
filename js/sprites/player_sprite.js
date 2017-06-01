@@ -55,6 +55,8 @@
     Player.prototype.setup = function (stateContext) {   
         var self = this;
 
+        this.lives = 3;
+
         //Criando balas
         this.bullets = this.game.add.group();
         this.bullets.enableBody = true; 
@@ -102,9 +104,6 @@
         this.jumpButton.onDown.add(this.jump, this);
         this.shotButton = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 
-        setInterval(function () {
-            self.decreaseLives();
-        }, 1000);
     }
 
     Player.prototype.decreaseLives = function () {
