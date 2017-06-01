@@ -10,6 +10,7 @@
     Level1State.prototype.preload = function() {
         // player
         this.player.preload();
+        this.game.load.spritesheet('rato', 'assets/spritesheets/rato-sprite.png', 64, 64, 3);
         this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
         this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.spritesheet('enemies', 'Assets/spritesheets/enemies.png', 32, 32, 12);
@@ -46,6 +47,18 @@
         
         //Movimentacao de camera
         this.game.camera.follow(this.player.sprite);
+        
+        //Ratos
+        this.ratos = this.game.add.physicsGroup();
+        this.Level1.createFromObjects('Enemies', 'rato', 'rato', 8, true, false, this.ratos);
+        this.ratos.forEach(function(rato){
+            rato.anchor.setTo(0, 0);
+            rato.body.immovable = true;
+            rato.animations.add('walk', [1,2,3], 6, true);
+            rato.animations.play('walk');
+            rato.body.velocity.x = 100;
+            rato.body.bounce.x = 1;
+        });
         
         // Grupo de fireBullets
         this.fireBullets = this.game.add.physicsGroup();
@@ -139,14 +152,14 @@
     
     Level1State.prototype.update = function() {
         this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.gameOver, null, this);
-        if (this.game.physics.arcade.overlap(this.player.sprite, this.bats)){
-            this.player.lose();
-        }
+        this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.batCollision, null, this);
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);        
-        this.game.physics.arcade.overlap(this.player.sprite, this.fireBullets, this.fireBulletCollect, null, this);        
+        this.game.physics.arcade.overlap(this.player.sprite, this.fireBullets, this.fireBullet, null, this);        
+        this.game.physics.arcade.overlap(this.player.sprite, this.ratos, this.ratosCollision, null, this);        
         this.game.physics.arcade.collide(this.bats, this.wallsLayer);
-        this.game.physics.arcade.collide(this.fireBullets, this.wallsLayer, this.fireBulletCollide, null, this);
+        this.game.physics.arcade.collide(this.ratos, this.wallsLayer);
+        this.game.physics.arcade.collide(this.fireBullets, this.wallsLayer, this.fireBulletCollideWall, null, this);
 
         this.player.handleInputs(); 
         
@@ -160,14 +173,20 @@
             }
         });
         
+        this.ratos.forEach(function(rato){
+            if(rato.body.velocity.x != 0) {
+                // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
+                rato.scale.x = 1 * Math.sign(rato.body.velocity.x);
+            }
+        });
+        
         this.fireBullets.forEach(function(fireBullet){
             if(fireBullet.body.velocity.x != 0) {
                 // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
                 fireBullet.scale.x = -1;
-                console.log(fireBullet.scale.x);
             }
         });
-        
+
     } 
 
     Level1State.prototype.diamondCollect = function(player, diamond){
@@ -175,29 +194,28 @@
         this.game.state.start('level2');  
     } 
     
-    Level1State.prototype.fireBulletCollide = function(fireBullet){
+    Level1State.prototype.fireBulletCollideWall = function(fireBullet){
         fireBullet.kill();
     }
     
-    Level1State.prototype.fireBulletCollect = function(player, fireBullet){
+    Level1State.prototype.fireBullet = function(player, fireBullet){
         fireBullet.kill();
-        this.game.state.start('lose');  
+        this.player.decreaseLives.apply(this.player); 
     }
     
     Level1State.prototype.batCollision = function(player, bat){
        bat.kill();
-       this.game.state.start('lose');
+       this.player.decreaseLives.apply(this.player);
+    }
+    Level1State.prototype.ratosCollision = function(player, rato){
+       rato.kill();
+       this.player.decreaseLives.apply(this.player);
     }
     
     Level1State.prototype.fireDeath = function(player, fire){
         this.Level1.setCollision(29, false, this.fireLayer);
-        this.game.state.start('lose');
     }
-    
-    Level1State.prototype.gameOver = function() {
-       this.game.state.start('lose'); 
-    }
-    
+
     gameManager.addState('level1', Level1State);
 
 })();
