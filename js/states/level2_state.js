@@ -3,6 +3,16 @@
 
     var Level2State = function() {
          this.player = gameManager.getSprite('player');
+        
+        this.bullets;
+        this.bulletTime = 0;
+        this.bullet;
+        
+        //BatShot
+        this.imageNameBatShot = 'batShot_image';
+        this.imageUrlBatShot = 'assets/img/red_square_10x10.png';
+        this.imageBatShot = null;
+        
     };
 
 
@@ -17,6 +27,9 @@
         this.game.load.spritesheet('items', 'assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.spritesheet('freira', 'assets/spritesheets/FREIRA-SPRITE.png', 64, 64, 4);
         this.game.load.spritesheet('arqueiro', 'assets/spritesheets/ARQUEIRO-SPRITE.png', 64, 64, 3);
+        
+        this.game.load.image('crucifixo_image', 'assets/img/crucifixo2.png');
+        
 
         
         // Para carregar um arquivo do Tiled, o mesmo precisa estar no formato JSON
@@ -28,6 +41,8 @@
         //this.game.load.audio('playerDeath', 'assets/sounds/hurt3.ogg');
         //this.game.load.audio('enemyDeath', 'assets/sounds/hit2.ogg');
         this.game.load.audio('music', 'assets/sounds/mystery.wav');
+        
+        this.game.load.image(this.imageNameBatShot, this.imageUrlBatShot);
 
         // player
         this.player.preload();
@@ -81,7 +96,11 @@
         //this.level1.setCollision([5, 6, 13], true, this.lavaLayer);
             
         // Inicializando jogador
+        //this.player.setup(this);
+        // setup initial player properties
         this.player.setup(this);
+        this.player.sprite.x = 85;
+        this.player.sprite.y = 844;
         this.game.camera.follow(this.player.sprite);
         
         // Adicionando objetos do Tiled, utilizando grupos
@@ -157,6 +176,25 @@
         this.totalDiamonds = this.diamonds.length;
         this.collectedDiamonds = 0;
         this.score = 0;
+        
+        this.bullets = this.game.add.group();
+        this.bullets.enableBody = true; 
+        this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
+        for (var i = 0; i < 40; i++){
+            var b = this.bullets.create(0, 0, this.imageNameBatShot);
+            b.name = 'imageNameBatShot' + i;
+            b.exists = false;
+            b.visible = false;
+            b.checkWorldBounds = true;
+            b.events.onOutOfBounds.add(this.resetBullet, this);
+        }
+        
+        this.game.time.events.loop(Phaser.Timer.SECOND, function () {
+            var self = this;
+            this.arqs.forEach(function(arq){
+                self.fire(arq);
+            })
+        }, this);
     
 
     }
@@ -173,13 +211,19 @@
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);
         
         // Colisão com inimigos
-        if (this.game.physics.arcade.overlap(this.player.sprite, this.arqs)){
-            this.player.lose();    
-        }
+//        if (this.game.physics.arcade.overlap(this.player.sprite, this.arqs)){
+//            this.player.lose();    
+//        }
         
-        if (this.game.physics.arcade.overlap(this.player.sprite, this.nuns)){
-            this.player.lose(); 
-        }
+        this.game.physics.arcade.overlap(this.player.sprite, this.nuns, this.enemiesCollision, null, this);
+        this.game.physics.arcade.overlap(this.player.sprite, this.arqs, this.enemiesCollision, null, this);
+
+        //        if (this.game.physics.arcade.overlap(this.player.sprite, this.nuns)){
+//            this.player.lose(); 
+//        }
+        
+        this.game.physics.arcade.overlap(this.nuns, this.player.bullets, this.playerBulletCollision, null, this);
+        this.game.physics.arcade.overlap(this.arqs, this.player.bullets, this.playerBulletCollision, null, this);
 
         // Adicionando colisão entre os morcegos e as paredes
         this.game.physics.arcade.collide(this.arqs, this.wallsLayer);
@@ -206,6 +250,18 @@
         });
     }
     
+    Level2State.prototype.enemiesCollision = function(player, enemie) {
+        enemie.kill();
+        this.player.decreaseLives.apply(this.player);
+        
+    }
+    
+    
+    Level2State.prototype.playerBulletCollision = function(enemies, bullet) {
+        bullet.kill();
+        enemies.kill();
+    }
+    
     // Tratamento da colisão entre o jogador e os diamantes
     // As funções para esse fim sempre recebem os dois objetos que colidiram,
     // e então podemos manipular tais objetos
@@ -214,6 +270,35 @@
         this.music.stop();
         this.game.state.start('level3');
     }
+    
+//     Level2State.prototype.render = function() {
+//         this.game.debug.inputInfo(32, 32);
+//     }
+    
+     //Shot Bats
+    Level2State.prototype.fire = function (arq) {
+        console.log("aa", this.game);
+        console.log('bullets', this.bullets.length);
+        
+        if (this.game.time.now > this.bulletTime) {
+            this.bullet = this.bullets.getFirstExists(false);
+            if (this.bullet) {
+                this.bullet.reset(arq.x, arq.y);
+                if (arq.scale.x == 1) {
+                    this.bullet.body.velocity.x = 300;
+                    this.bulletTime = this.game.time.now + 150;
+                } else {
+                    this.bullet.body.velocity.x = -300;
+                    this.bulletTime = this.game.time.now + 150;
+                }
+            }
+        }
+    }
+    
+    Level2State.prototype.resetBullet = function(bullet) {
+        bullet.kill();
+    }
+    
     
     gameManager.addState('level2', Level2State);
 
