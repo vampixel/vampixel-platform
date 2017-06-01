@@ -39,7 +39,6 @@
         this.items = this.level3.createLayer('Items');
         this.floor = this.level3.createLayer('Floor');
 
-
         /* PLATFORMS */
 	    this.platform1 = this.game.add.sprite(110, 210, 'platform');
 	    this.platform2 = this.game.add.sprite(280, 320, 'platform');
@@ -54,10 +53,6 @@
         this.platform2.body.checkCollision.down = false;
         this.platform3.body.checkCollision.down = false;
 
-        // Mais informações sobre tilemaps:
-        // https://photonstorm.github.io/phaser-ce/#toc14
-
-        // Redimensionando o tamanho do "mundo" do jogo
         this.bgLayer.resizeWorld();
         
         this.level3.setCollisionByExclusion([], true, this.items);
@@ -71,11 +66,8 @@
         // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true
         this.bossSound = this.game.add.audio('environmentSoundBoss');
         this.bossSound.loop = true;
-        // this.bossSound.play();
+        this.bossSound.play();
         
-        // HUD de score
-        // A linha abaixo adiciona um texto na tela, e a próxima faz com o que o texto fique
-        // fixo na câmera, dessa forma não vai se deslocar quando a câmera mudar
         this.bossHP = this.game.add.text(620, 25, 'Boss: '+this.boss.HP+'%', {font: "25px Arial", fill: "#ffffff"});
         this.bossHP.fixedToCamera = true;
 
@@ -83,16 +75,23 @@
 
     Level3State.prototype.bossBulletCollision = function(player, bullet) {
         bullet.kill();
+
+        // game over
+        if(this.player.lives === 1) {
+            this.bossSound.stop();
+        }
+
         this.player.decreaseLives.apply(this.player);
     }
 
     Level3State.prototype.playerBulletCollision = function(player, bullet) {
         bullet.kill();
-        this.boss.HP--;
+        this.boss.HP -= 2;
         this.bossHP.setText('Boss: '+ this.boss.HP +'%');
 
         if(this.boss.HP <= 0) {
             this.game.state.start('win');
+            this.bossSound.stop();
         }
 
         if(this.boss.state === 'normal' && this.boss.HP <= this.boss.limitHPToTransform) {
@@ -108,6 +107,7 @@
         this.game.physics.arcade.collide(this.player.sprite, this.platform2, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.platform3, this.player.groundCollision, null, this.player);        
 
+        // bullet colliders
         this.game.physics.arcade.overlap(this.player.sprite, this.boss.bullets, this.bossBulletCollision, null, this);
         this.game.physics.arcade.overlap(this.boss.sprite, this.player.bullets, this.playerBulletCollision, null, this);
 
