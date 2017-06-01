@@ -25,8 +25,8 @@
         //this.game.load.audio('jumpSound', 'assets/sounds/jump.wav');
         //this.game.load.audio('pickupSound', 'assets/sounds/pickup.wav');
         //this.game.load.audio('playerDeath', 'assets/sounds/hurt3.ogg');
-        this.game.load.audio('enemyDeath', 'assets/sounds/hit2.ogg');
-        this.game.load.audio('music', 'assets/sounds/mystery.wav');
+        //this.game.load.audio('enemyDeath', 'assets/sounds/hit2.ogg');
+        this.game.load.audio('environmentSoundBoss', 'assets/sounds/boss.ogg');
 
         // player
         this.player.preload();
@@ -112,6 +112,7 @@
         // true, false - estes dois parâmetros podem ficar com estes valores
         // grupo - qual grupo do Phaser devemos adicionar esses objetos
         
+        /*
         // Grupo de diamantes
         this.diamonds = this.game.add.physicsGroup();
         // this.level3.createFromObjects('Items', 'diamond', 'items', 5, true, false, this.diamonds);
@@ -122,21 +123,20 @@
             // Adicionando animações; o parâmetro true indica que a animação é em loop
             diamond.animations.add('spin', [4, 5, 6, 7, 6, 5], 6, true);
             diamond.animations.play('spin');
-        });
+        });*/
         
-        this.bats = this.game.add.physicsGroup();
+        //this.bats = this.game.add.physicsGroup();
         
         
         //this.jumpSound = this.game.add.audio('jumpSound');
         //this.pickupSound = this.game.add.audio('pickupSound');
         //this.playerDeathSound = this.game.add.audio('playerDeath');
-        this.enemyDeathSound = this.game.add.audio('enemyDeath');
+        //this.enemyDeathSound = this.game.add.audio('enemyDeath');
         
         // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true
-        this.music = this.game.add.audio('music');
-        this.music.loop = true;
-        // Já iniciamos a música aqui mesmo pra ficar tocando ao fundo
-        this.music.play();
+        this.bossSound = this.game.add.audio('environmentSoundBoss');
+        this.bossSound.loop = true;
+        this.bossSound.play();
         
         // HUD de score
         // A linha abaixo adiciona um texto na tela, e a próxima faz com o que o texto fique

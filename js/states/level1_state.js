@@ -10,7 +10,7 @@
     Level1State.prototype.preload = function() {
         // player
         this.player.preload();
-        this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
+        this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
         this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.spritesheet('enemies', 'Assets/spritesheets/enemies.png', 32, 32, 12);
         this.game.load.audio('environmentSound', 'assets/sounds/environment.ogg');
@@ -28,7 +28,7 @@
     
         //Tile maps
         this.Level1 = this.game.add.tilemap('Level1');
-        this.Level1.addTilesetImage('tiled-fases','mapTiles');
+        this.Level1.addTilesetImage('tiled-fases','tiledFases');
         
         this.bgLayer = this.Level1.createLayer('Bg');
         this.fireLayer = this.Level1.createLayer('Fire');
@@ -47,6 +47,21 @@
         //Movimentacao de camera
         this.game.camera.follow(this.player.sprite);
         
+        // Grupo de fireBullets
+        this.fireBullets = this.game.add.physicsGroup();
+        this.Level1.createFromObjects('Enemies', 'fireBullet', 'items', 5, true, false, this.fireBullets);
+        
+        // Para cada objeto do grupo, vamos executar uma função
+        this.fireBullets.forEach(function(fireBullet){
+            // body.immovable = true indica que o objeto não é afetado por forças externas
+            fireBullet.body.immovable = true;
+            // Adicionando animações; o parâmetro true indica que a animação é em loop
+            fireBullet.animations.add('go', [10, 11, 10], 3, true);
+            fireBullet.animations.play('go');
+            fireBullet.body.velocity.x = 100;
+            fireBullet.body.bounce.x = 1;
+        });
+        
         // Grupo de diamantes
         this.diamonds = this.game.add.physicsGroup();
         this.Level1.createFromObjects('Items', 'diamond', 'items', 5, true, false, this.diamonds);
@@ -59,8 +74,9 @@
             diamond.animations.play('spin');
         });
         
-        // Grupo de morcegos:
+        // Grupo de inimigos
         this.bats = this.game.add.physicsGroup();
+        
         this.Level1.createFromObjects('Enemies', 'bat', 'enemies', 8, true, false, this.bats);
         this.bats.forEach(function(bat){
             bat.anchor.setTo(0.5, 0.5);
@@ -120,17 +136,18 @@
     FireParticle.prototype = Object.create(Phaser.Particle.prototype);
     FireParticle.prototype.constructor = FireParticle;
     
+    
     Level1State.prototype.update = function() {
-        // Colisão com o fogo - o jogador morre
-        this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
+        this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.gameOver, null, this);
+        if (this.game.physics.arcade.overlap(this.player.sprite, this.bats)){
+            this.player.lose();
+        }
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
-        // Colisão com os diamantes - devem ser coletados
-        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);
-        // Colisão com os morcegos - depende de como foi a colisão, veremos abaixo
-        this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.batCollision, null, this);
-        // Adicionando colisão entre os morcegos e as paredes
+        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);        
+        this.game.physics.arcade.overlap(this.player.sprite, this.fireBullets, this.fireBulletCollect, null, this);        
         this.game.physics.arcade.collide(this.bats, this.wallsLayer);
-        
+        this.game.physics.arcade.collide(this.fireBullets, this.wallsLayer, this.fireBulletCollide, null, this);
+
         this.player.handleInputs(); 
         
         // Para cada morcego, verificar em que sentido ele está indo
@@ -142,31 +159,44 @@
                 bat.scale.x = 1 * Math.sign(bat.body.velocity.x);
             }
         });
+        
+        this.fireBullets.forEach(function(fireBullet){
+            if(fireBullet.body.velocity.x != 0) {
+                // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
+                fireBullet.scale.x = -1;
+                console.log(fireBullet.scale.x);
+            }
+        });
+        
+        this.game.debug.inputInfo(32, 32);
     } 
 
-    // Tratamento da colisão entre o jogador e os diamantes
-    // As funções para esse fim sempre recebem os dois objetos que colidiram,
-    // e então podemos manipular tais objetos
     Level1State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
         this.game.state.start('level2');  
+    } 
+    
+    Level1State.prototype.fireBulletCollide = function(fireBullet){
+        fireBullet.kill();
     }
     
-    // Tratamento da colisão entre o jogador e os diamantes
+    Level1State.prototype.fireBulletCollect = function(player, fireBullet){
+        fireBullet.kill();
+        this.game.state.start('lose');  
+    }
+    
     Level1State.prototype.batCollision = function(player, bat){
-    // Se o jogador colidir por baixo e o morcego por cima, isso indica que o jogador pulou
-    // em cima do morcego, nesse caso vamos "matar" o morcego
-        if(player.body.touching.down && bat.body.touching.up){
-            this.player.sprite.body.velocity.y = -200; // adicionando um pequeno impulso vertical ao jogador
-            bat.kill();
-        }
-        else this.game.state.start('lose'); // caso contrário, ir para condição de derrota
+       bat.kill();
+       this.game.state.start('lose');
     }
     
     Level1State.prototype.fireDeath = function(player, fire){
-        console.debug("fireDeath");
         this.Level1.setCollision(29, false, this.fireLayer);
         this.game.state.start('lose');
+    }
+    
+    Level1State.prototype.gameOver = function() {
+       this.game.state.start('lose'); 
     }
     
     gameManager.addState('level1', Level1State);
