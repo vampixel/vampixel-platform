@@ -200,47 +200,6 @@
     Player.prototype.resetBullet = function(bullet) {
         bullet.kill();
     }
-
-    Player.prototype.bloodLivesCollision = function (bloodLives) {
-        if (gameManager.globals.lives == 0){
-            gameManager.globals.lives = + 1;
-            //setando o coração de sangue para o local das vidas
-            this.imageBloodLives = this.game.add.sprite(40, 40, this.imageNameLives);
-            this.imageBloodLives.anchor.set(0.5);
-            this.imageBloodLives.fixedToCamera = true;
-        }
-                
-        this.soundPickup.play();
-        /*
-        this.bloodParticleEmitter.setSize(1, 1);
-        this.bloodParticleEmitter.x = bloodLives.x;
-        this.bloodParticleEmitter.y = bloodLives.y;
-        this.bloodParticleEmitter.start(true, 500, null, 500);        
-        */
-    }
-    
-    Player.prototype.lose = function () {
-        if (gameManager.globals.lives == 1){
-            gameManager.globals.lives = 0
-            this.imageBloodLives.kill();
-        }
-        else if (gameManager.globals.lives == 0){
-            //this.sprite.animations.play('dead');
-            this.gameOver();            
-        }
-    
-        /*
-        this.bloodParticleEmitter.setSize(1, 1);
-        this.bloodParticleEmitter.x = bloodLives.x;
-        this.bloodParticleEmitter.y = bloodLives.y;
-        this.bloodParticleEmitter.start(true, 500, null, 500);
-        */
-    }
-    
-    Player.prototype.gameOver = function (){
-        this.game.state.start('lose');  
-    }
-    
     gameManager.addSprite('player', Player);
 
 })();
