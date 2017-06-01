@@ -37,7 +37,8 @@
         this.wallsLayer.resizeWorld();
         
         //Tile maps - collision
-        this.Level1.setCollisionByExclusion([19,20,21,22,23,24], true, this.wallsLayer);
+        //this.Level1.setCollisionByExclusion([19,20,21,22,23,24], true, this.wallsLayer);
+        this.Level1.setCollisionByExclusion([], true, this.wallsLayer);
         this.Level1.setCollisionByExclusion([], true, this.fireLayer);
         
         // setup initial player properties
@@ -58,6 +59,7 @@
             rato.animations.play('walk');
             rato.body.velocity.x = 100;
             rato.body.bounce.x = 1;
+            rato.gravity = 10;
         });
         
         // Grupo de fireBullets
@@ -151,7 +153,8 @@
     
     
     Level1State.prototype.update = function() {
-        this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.gameOver, null, this);
+        this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
+        
         this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.batCollision, null, this);
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);        
@@ -213,7 +216,7 @@
     }
     
     Level1State.prototype.fireDeath = function(player, fire){
-        this.Level1.setCollision(29, false, this.fireLayer);
+        this.player.decreaseLives.apply(this.player);
     }
 
     gameManager.addState('level1', Level1State);
