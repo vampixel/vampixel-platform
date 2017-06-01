@@ -143,7 +143,15 @@
         if (this.game.time.now > this.bulletTime) {
             this.bullet = this.bullets.create(0, 0, this.currentImageBullet);
             if (this.bullet) {
-                this.bullet.reset(this.sprite.x, this.sprite.y);
+
+                if(this.state === 'normal') {
+                    var y = this.sprite.y;
+                }
+                else if(this.state === 'demon') {
+                    var y = this.sprite.y + 10;
+                }
+
+                this.bullet.reset(this.sprite.x, y);
                 if (this.sprite.scale.x == 1) {
                     this.bullet.body.velocity.x = 300;
                     this.bulletTime = this.game.time.now + 150;

@@ -42,16 +42,12 @@
         /* PLATFORMS */
 	    this.platform1 = this.game.add.sprite(110, 210, 'platform');
 	    this.platform2 = this.game.add.sprite(280, 320, 'platform');
-	    this.platform3 = this.game.add.sprite(110, 410, 'platform');
         this.game.physics.arcade.enable(this.platform1);
         this.game.physics.arcade.enable(this.platform2);
-        this.game.physics.arcade.enable(this.platform3);
         this.platform1.body.immovable = true;
         this.platform2.body.immovable = true;
-        this.platform3.body.immovable = true;
         this.platform1.body.checkCollision.down = false;
         this.platform2.body.checkCollision.down = false;
-        this.platform3.body.checkCollision.down = false;
 
         this.bgLayer.resizeWorld();
         
@@ -105,7 +101,6 @@
         this.game.physics.arcade.collide(this.boss.sprite, this.floor);
         this.game.physics.arcade.collide(this.player.sprite, this.platform1, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.platform2, this.player.groundCollision, null, this.player);
-        this.game.physics.arcade.collide(this.player.sprite, this.platform3, this.player.groundCollision, null, this.player);        
 
         // bullet colliders
         this.game.physics.arcade.overlap(this.player.sprite, this.boss.bullets, this.bossBulletCollision, null, this);
