@@ -114,7 +114,7 @@
             this.imageBloodLives2.kill();
         }
 
-        if(gameManager.globals.lives === 0) {
+        if(gameManager.globals.lives <= 0) {
             this.imageBloodLives1.kill();
             this.game.state.start('lose');
         }
