@@ -168,7 +168,6 @@
             }
         });
         
-        this.game.debug.inputInfo(32, 32);
     } 
 
     Level1State.prototype.diamondCollect = function(player, diamond){

@@ -71,9 +71,7 @@
         this.sprite.frame = 0;
         this.sprite.animations.add('walk', [0, 1, 2, 3], 22, true);
         this.sprite.animations.add('transform', [7,8,9], 22, true);
-        this.sprite.animations.add('batGirl', [10,11,12,13,14,15,16,17,18,19], 22, true);
-        //this.sprite.animations.add('jump', [], , true);
-        //this.sprite.animations.add('dead', [], , true);
+        this.sprite.animations.add('batTransformation', [10,11,12,13,14,15,16,17,18,19], 22, true);
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.gravity;
@@ -96,14 +94,13 @@
     }
 
     Player.prototype.jump = function () {    
-        //console.log('jumping...');
         if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = true;
             return doJump.apply(this);
         }
         else if(!this.isDoubleJumping) {
             this.isDoubleJumping = true;
-            this.sprite.animations.play('batGirl');
+            this.sprite.animations.play('batTransformation');
             return doJump.apply(this);
         }
 
@@ -130,7 +127,7 @@
                 this.sprite.animations.play('walk');
             }
         }
-        // Se a tecla direita estiver pressionada (this.keys.right.isDown == true),
+
         // mover o sprite para a direita
         else if(this.keys.right.isDown){
             // se a tecla direita estiver pressionada
