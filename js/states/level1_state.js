@@ -59,7 +59,6 @@
             rato.animations.play('walk');
             rato.body.velocity.x = 100;
             rato.body.bounce.x = 1;
-            rato.gravity = 10;
         });
         
         // Grupo de fireBullets
