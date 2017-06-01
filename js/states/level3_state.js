@@ -69,6 +69,11 @@
 
     }
 
+    Level3State.prototype.bossPlayerCollision = function(boss, player) {
+        gameManager.globals.lives === 0;
+        this.player.decreaseLives.apply(this.player);
+    }
+
     Level3State.prototype.bossBulletCollision = function(player, bullet) {
         bullet.kill();
 
@@ -99,6 +104,7 @@
         // player and boss collisions
         this.game.physics.arcade.collide(this.player.sprite, this.floor, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.boss.sprite, this.floor);
+        this.game.physics.arcade.collide(this.boss.sprite, this.player.sprite, this.bossPlayerCollision, null, this);
         this.game.physics.arcade.collide(this.player.sprite, this.platform1, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.platform2, this.player.groundCollision, null, this.player);
 
