@@ -6,7 +6,7 @@
          "name":"BG",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":40,
          "x":0,
          "y":0
@@ -48,7 +48,19 @@
          "draworder":"topdown",
          "height":30,
          "name":"Items",
-         "objects":[],
+         "objects":[
+                {
+                 "gid":90,
+                 "height":32,
+                 "id":36,
+                 "name":"diamond",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":1246,
+                 "y":261
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -164,7 +176,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":36,
+ "nextobjectid":37,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":32,
@@ -220,6 +232,19 @@
          "tilecount":4,
          "tileheight":64,
          "tilewidth":64
+        }, 
+        {
+         "columns":4,
+         "firstgid":85,
+         "image":"..\/spritesheets\/items.png",
+         "imageheight":128,
+         "imagewidth":128,
+         "margin":0,
+         "name":"items",
+         "spacing":0,
+         "tilecount":16,
+         "tileheight":32,
+         "tilewidth":32
         }],
  "tilewidth":32,
  "version":1,
