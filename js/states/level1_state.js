@@ -162,7 +162,9 @@
         this.game.physics.arcade.collide(this.bats, this.wallsLayer);
         this.game.physics.arcade.collide(this.ratos, this.wallsLayer);
         this.game.physics.arcade.collide(this.fireBullets, this.wallsLayer, this.fireBulletCollideWall, null, this);
-
+        
+        this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
+        
         this.player.handleInputs(); 
         
         // Para cada morcego, verificar em que sentido ele está indo
@@ -189,7 +191,12 @@
             }
         });
 
-    } 
+    }
+    
+    Level1State.prototype.playerBulletCollision = function(ratos, bullet) {
+        bullet.kill();
+        ratos.kill();
+    }
 
     Level1State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
