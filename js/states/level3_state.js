@@ -77,7 +77,7 @@
         bullet.kill();
 
         // game over
-        if(this.player.lives === 1) {
+        if(gameManager.globals.lives === 1) {
             this.bossSound.stop();
         }
 

@@ -14,6 +14,9 @@
     }   
     
     MenuState.prototype.create = function() {
+
+        // player lives
+        gameManager.globals.lives = 3;
         
         this.game.add.tileSprite(0, 0, 800, 600, 'background');
         

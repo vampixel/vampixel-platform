@@ -23,7 +23,6 @@
         this.isDoubleJumping = false;
         this.initialPositionX = 50;
         this.initialPositionY = this.game.height - 500;
-        this.lives = 3;
         
         this.bullets;
         this.bulletTime = 0;
@@ -54,8 +53,6 @@
 
     Player.prototype.setup = function (stateContext) {   
         var self = this;
-
-        this.lives = 3;
 
         //Criando balas
         this.bullets = this.game.add.group();
@@ -107,17 +104,17 @@
     }
 
     Player.prototype.decreaseLives = function () {
-        this.lives--;
+        gameManager.globals.lives--;
 
-        if(this.lives === 2) {
+        if(gameManager.globals.lives === 2) {
             this.imageBloodLives3.kill();
         }
 
-        if(this.lives === 1) {
+        if(gameManager.globals.lives === 1) {
             this.imageBloodLives2.kill();
         }
 
-        if(this.lives === 0) {
+        if(gameManager.globals.lives === 0) {
             this.imageBloodLives1.kill();
             this.game.state.start('lose');
         }
@@ -205,8 +202,8 @@
     }
 
     Player.prototype.bloodLivesCollision = function (bloodLives) {
-        if (this.lives == 0){
-            this.lives = + 1;
+        if (gameManager.globals.lives == 0){
+            gameManager.globals.lives = + 1;
             //setando o coração de sangue para o local das vidas
             this.imageBloodLives = this.game.add.sprite(40, 40, this.imageNameLives);
             this.imageBloodLives.anchor.set(0.5);
@@ -223,11 +220,11 @@
     }
     
     Player.prototype.lose = function () {
-        if (this.lives == 1){
-            this.lives = 0
+        if (gameManager.globals.lives == 1){
+            gameManager.globals.lives = 0
             this.imageBloodLives.kill();
         }
-        else if (this.lives == 0){
+        else if (gameManager.globals.lives == 0){
             //this.sprite.animations.play('dead');
             this.gameOver();            
         }
