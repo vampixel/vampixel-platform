@@ -125,7 +125,7 @@
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
             if(this.sprite.scale.x == -1) this.sprite.scale.x = 1;
 
-            if(!this.isJumping) {
+            if(!this.isDoubleJumping) {
                 this.sprite.animations.play('walk');
             }
         }
@@ -133,7 +133,7 @@
             // Ajustar velocidade para zero
             this.sprite.body.velocity.x = 0;
              
-            if(!this.isJumping) {
+            if(!this.isDoubleJumping) {
                 this.sprite.animations.play('');
             }
         }
