@@ -166,6 +166,11 @@
         //this.playerDeathSound = this.game.add.audio('playerDeath');
         //this.enemyDeathSound = this.game.add.audio('enemyDeath');
         
+        // texto do level
+        this.level2Text = this.game.add.text(400, 105, 'Level 2', { fill: '#ffffff', align: 'center', fontSize: 30 });
+        this.level2Text.anchor.set(0.5);
+        this.level2Text.fixedToCamera = true;  
+        
         // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true, para ficar repetindo
         this.music = this.game.add.audio('music');
         this.music.loop = true;
@@ -260,6 +265,7 @@
     Level2State.prototype.playerBulletCollision = function(enemies, bullet) {
         bullet.kill();
         enemies.kill();
+        this.player.increaseScoreEnemies.apply();
     }
     
     // Tratamento da colisão entre o jogador e os diamantes

@@ -49,6 +49,11 @@
         //Movimentacao de camera
         this.game.camera.follow(this.player.sprite);
         
+        // texto do level
+        this.level1Text = this.game.add.text(this.game.world.centerX, 105, 'Level 1', { fill: '#ffffff', align: 'center', fontSize: 30 });
+        this.level1Text.anchor.set(0.5);
+        this.level1Text.fixedToCamera = true;  
+        
         //Ratos
         this.ratos = this.game.add.physicsGroup();
         this.Level1.createFromObjects('Enemies', 'rato', 'rato', 8, true, false, this.ratos);
@@ -194,9 +199,9 @@
     }
         
     Level1State.prototype.playerBulletCollision = function(ratos, bullet) {
-        this.player.increaseScore.apply();
         bullet.kill();
         ratos.kill();
+        this.player.increaseScoreRatos.apply();
     }
 
     Level1State.prototype.diamondCollect = function(player, diamond){

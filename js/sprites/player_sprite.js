@@ -201,7 +201,12 @@
     }
     
     // Score
-    Player.prototype.increaseScore = function () {
+    Player.prototype.increaseScoreRatos = function () {
+        gameManager.globals.score = gameManager.globals.score + 50;
+        gameManager.globals.scoreText.setText(gameManager.globals.score);
+    }
+    
+    Player.prototype.increaseScoreEnemies = function () {
         gameManager.globals.score = gameManager.globals.score + 100;
         gameManager.globals.scoreText.setText(gameManager.globals.score);
     }
