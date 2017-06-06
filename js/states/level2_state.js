@@ -184,7 +184,7 @@
             var b = this.bullets.create(0, 0, this.imageNameBatShot);
             b.name = 'imageNameBatShot' + i;
             b.exists = false;
-            b.visible = false;
+            b.visible = true;
             b.checkWorldBounds = true;
             b.events.onOutOfBounds.add(this.resetBullet, this);
         }
