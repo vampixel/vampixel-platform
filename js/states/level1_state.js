@@ -192,8 +192,9 @@
         });
 
     }
-    
+        
     Level1State.prototype.playerBulletCollision = function(ratos, bullet) {
+        this.player.increaseScore.apply();
         bullet.kill();
         ratos.kill();
     }

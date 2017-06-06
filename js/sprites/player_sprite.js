@@ -17,6 +17,15 @@
         this.imageUrlLives = 'assets/img/blood.png';
         this.imageBloodLives = null;
         
+        // Score Images
+        this.imageNameScores = 'scores_image';
+        this.imageUrlScores = 'assets/img/score-highscore.png';
+        this.imageScores = null;
+        
+        gameManager.globals.score = 0;
+        gameManager.globals.highScore = 0;
+        gameManager.globals.scoreText = '';
+                
         this.gravity = 750;
         this.jumpVelocity = -450;
         this.isJumping = false;
@@ -45,6 +54,7 @@
         this.game.load.spritesheet(this.imageName, this.imageUrl, 48, 64);
         this.game.load.image(this.imageNameBatShot, this.imageUrlBatShot);
         this.game.load.image(this.imageNameLives, this.imageUrlLives);
+        this.game.load.image(this.imageNameScores, this.imageUrlScores);
         
         //Load Sounds
         this.game.load.audio(this.soundNameJump, this.soundUrlJump);
@@ -90,7 +100,17 @@
         this.imageBloodLives3 = this.game.add.sprite(140, 40, this.imageNameLives); 
         this.imageBloodLives3.anchor.set(0.5);
         this.imageBloodLives3.fixedToCamera = true;
-                
+        
+        // Img Scores
+        this.imageScores = this.game.add.sprite(400, 100, this.imageNameScores); 
+        this.imageScores.anchor.set(0.5);
+        this.imageScores.fixedToCamera = true;
+        
+        // Text Scores
+        gameManager.globals.scoreText = this.game.add.text(140, 85, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 32 });
+        gameManager.globals.scoreText.anchor.set(0,0);
+        gameManager.globals.scoreText.fixedToCamera = true;  
+        
         //Sounds
         this.soundJump = this.game.add.audio(this.soundNameJump);
         this.soundPickup = this.game.add.audio(this.soundNamePickupBlood);
@@ -102,7 +122,7 @@
         this.shotButton = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
 
     }
-
+    
     Player.prototype.decreaseLives = function () {
         gameManager.globals.lives--;
 
@@ -179,6 +199,13 @@
             this.fire();
         }
     }
+    
+    // Score
+    Player.prototype.increaseScore = function () {
+        gameManager.globals.score = gameManager.globals.score + 100;
+        gameManager.globals.scoreText.setText(gameManager.globals.score);
+    }
+    
     
     //Shot Bats
     Player.prototype.fire = function () {
