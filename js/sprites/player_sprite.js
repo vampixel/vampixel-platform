@@ -137,15 +137,12 @@
             this.sprite.body.velocity.y = this.jumpVelocity || -450;
         }
     }
-    
-    var externalForce = new Phaser.Point(1000,0);
-    
+        
     Player.prototype.run = function () {
-        if(this.sprite.body.velocity.x != 0) {
-            this.sprite.scale.x = 1 * Math.sign(this.sprite.body.velocity.x);
-            //this.sprite.body.velocity.x = (this.sprite.body.velocity.x * 15);
-            this.sprite.body.velocity.x = (this.sprite.body.velocity.x + externalForce.x);
+        if(this.sprite.body.velocity.x != 0 && this.isJumping == false) {  
             this.sprite.animations.play('transform');
+            this.sprite.scale.x = 1 * Math.sign(this.sprite.body.velocity.x);
+            this.sprite.body.velocity.x = (this.sprite.body.velocity.x * 15);
             console.log("correndo: ",this.sprite.body.velocity.x);
         }
     }
