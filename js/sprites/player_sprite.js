@@ -44,8 +44,7 @@
         //Load Imagens
         this.game.load.spritesheet(this.imageName, this.imageUrl, 48, 64);
         this.game.load.image(this.imageNameBatShot, this.imageUrlBatShot);
-        this.game.load.image(this.imageNameLives, this.imageUrlLives);
-        
+        this.game.load.image(this.imageNameLives, this.imageUrlLives);        
         //Load Sounds
         this.game.load.audio(this.soundNameJump, this.soundUrlJump);
         this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
@@ -73,6 +72,7 @@
         this.sprite.animations.add('walk', [0, 1, 2, 3], 22, true);
         this.sprite.animations.add('transform', [7,8,9], 22, true);
         this.sprite.animations.add('batTransformation', [10,11,12,13,14,15,16,17,18,19], 22, true);
+        this.sprite.animations.add('wolfRun', [10,11,12,13,14,15,16,17,18,19], 22, true);
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.gravity;
@@ -100,6 +100,8 @@
         this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.jumpButton.onDown.add(this.jump, this);
         this.shotButton = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+        this.runButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+        this.runButton.onDown.add(this.run,this)
 
     }
 
@@ -120,7 +122,7 @@
         }
     }
 
-    Player.prototype.jump = function () {    
+    Player.prototype.jump = function () { 
         if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = true;
             return doJump.apply(this);
@@ -133,6 +135,18 @@
 
         function doJump() {
             this.sprite.body.velocity.y = this.jumpVelocity || -450;
+        }
+    }
+    
+    var externalForce = new Phaser.Point(1000,0);
+    
+    Player.prototype.run = function () {
+        if(this.sprite.body.velocity.x != 0) {
+            this.sprite.scale.x = 1 * Math.sign(this.sprite.body.velocity.x);
+            //this.sprite.body.velocity.x = (this.sprite.body.velocity.x * 15);
+            this.sprite.body.velocity.x = (this.sprite.body.velocity.x + externalForce.x);
+            this.sprite.animations.play('transform');
+            console.log("correndo: ",this.sprite.body.velocity.x);
         }
     }
 
