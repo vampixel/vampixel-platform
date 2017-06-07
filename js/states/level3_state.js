@@ -119,6 +119,7 @@
 
         // handle player inputs
         this.player.handleInputs();
+        this.player.checkGravity.apply(this.player); 
 
         // move boss
         this.boss.move.apply(this.boss);

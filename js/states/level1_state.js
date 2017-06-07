@@ -171,6 +171,7 @@
         this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
         
         this.player.handleInputs(); 
+        this.player.checkGravity.apply(this.player); 
         // Para cada morcego, verificar em que sentido ele está indo
         // Se a velocidade for positiva, a escala no eixo X será 1, caso
         // contrário -1

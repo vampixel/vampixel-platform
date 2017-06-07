@@ -144,10 +144,24 @@
 
         if(gameManager.globals.lives <= 0) {
             this.imageBloodLives1.kill();
-            this.game.state.start('lose');
+            this.gameover();
         }
     }
 
+    Player.prototype.checkIsJumping = function () {
+        if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
+            this.isJumping = false;
+            this.isDoubleJumping = false;
+            this.sprite.animations.play('walk');
+            this.sprite.body.gravity.y = this.normalGravity;
+        }
+    }
+
+    Player.prototype.gameover = function () {
+        this.checkIsJumping();
+        this.game.state.start('lose');
+    }
+    
     Player.prototype.jump = function () { 
         if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = true;
@@ -174,12 +188,7 @@
     }
 
     Player.prototype.groundCollision = function (playerSprite) {
-        if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
-            this.isJumping = false;
-            this.isDoubleJumping = false;
-            this.sprite.animations.play('walk');
-            this.sprite.body.gravity.y = this.normalGravity;
-        }
+        this.checkIsJumping();
     }
 
     Player.prototype.handleInputs = function () {      
@@ -216,8 +225,9 @@
         if (this.shotButton.isDown){
             this.fire();
         }
+    }
 
-
+    Player.prototype.checkGravity = function () {
         if(this.sprite.body.velocity.y >= 0 && this.isDoubleJumping) {
             this.sprite.body.gravity.y = this.fallingGravity;
         }
