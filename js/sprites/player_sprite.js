@@ -122,10 +122,15 @@
         this.soundPickup = this.game.add.audio(this.soundNamePickupBlood);
         
         //Controles
-        this.keys = this.game.input.keyboard.createCursorKeys();
+        //this.keys = this.game.input.keyboard.createCursorKeys();
+        this.leftButton = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+        this.rightButton = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+        
         this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.jumpButton.onDown.add(this.jump, this);
+        
         this.shotButton = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+        
         this.runButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
         this.runButton.onDown.add(this.run,this)
 
@@ -192,7 +197,7 @@
     }
 
     Player.prototype.handleInputs = function () {      
-        if(this.keys.left.isDown){
+        if(this.leftButton.isDown){
             this.sprite.body.velocity.x = -150; // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
             if(this.sprite.scale.x == 1) this.sprite.scale.x = -1;
@@ -203,7 +208,7 @@
         }
 
         // mover o sprite para a direita
-        else if(this.keys.right.isDown){
+        else if(this.rightButton.isDown){
             // se a tecla direita estiver pressionada
             this.sprite.body.velocity.x = 150;  // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
