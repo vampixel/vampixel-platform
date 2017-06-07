@@ -86,6 +86,7 @@
         this.sprite = this.game.add.sprite(this.initialPositionX, this.initialPositionY, this.imageName);   
         this.sprite.frame = 0;
         this.sprite.animations.add('walk', [0, 1, 2, 3], 22, true);
+        this.sprite.animations.add('idle', [4,5,6], 4, true);
         this.sprite.animations.add('transform', [7,8,9], 22, true);
         this.sprite.animations.add('batTransformation', [10,11,12,13,14,15,16,17,18,19], 22, true);
         this.sprite.animations.add('wolfRun', [10,11,12,13,14,15,16,17,18,19], 22, true);
@@ -216,6 +217,10 @@
         else {
             // Ajustar velocidade para zero
             this.sprite.body.velocity.x = 0;
+            
+            if(!this.isJumping && !this.isDoubleJumping) {
+                this.sprite.animations.play('idle');   
+            }
              
             if(!this.isDoubleJumping) {
                 this.sprite.animations.play('');
