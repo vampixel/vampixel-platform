@@ -26,7 +26,8 @@
         gameManager.globals.highScore = 0;
         gameManager.globals.scoreText = '';
                 
-        this.gravity = 750;
+        this.normalGravity = 750;
+        this.fallingGravity = 50;
         this.jumpVelocity = -450;
         this.isJumping = false;
         this.isDoubleJumping = false;
@@ -90,7 +91,7 @@
         this.sprite.animations.add('wolfRun', [10,11,12,13,14,15,16,17,18,19], 22, true);
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
-        this.sprite.body.gravity.y = this.gravity;
+        this.sprite.body.gravity.y = this.normalGravity;
         this.stateContext = stateContext;
         
         //Img Blood Lives
@@ -154,7 +155,7 @@
         }
         else if(!this.isDoubleJumping) {
             this.isDoubleJumping = true;
-            this.sprite.animations.play('batTransformation');
+            this.sprite.animations.play('batTransformation');            
             return doJump.apply(this);
         }
 
@@ -176,7 +177,8 @@
         if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
             this.isJumping = false;
             this.isDoubleJumping = false;
-             this.sprite.animations.play('walk');
+            this.sprite.animations.play('walk');
+            this.sprite.body.gravity.y = this.normalGravity;
         }
     }
 
@@ -213,6 +215,11 @@
         
         if (this.shotButton.isDown){
             this.fire();
+        }
+
+
+        if(this.sprite.body.velocity.y >= 0 && this.isDoubleJumping) {
+            this.sprite.body.gravity.y = this.fallingGravity;
         }
     }
     
