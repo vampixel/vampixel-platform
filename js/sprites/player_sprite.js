@@ -9,7 +9,7 @@
         
         //BatShot
         this.imageNameBatShot = 'batShot_image';
-        this.imageUrlBatShot = 'assets/img/red_square_10x10.png';
+        this.imageUrlBatShot = 'assets/spritesheets/Sprites-morcego-bala-16x16.png';
         this.imageBatShot = null;
         
         //Lives Blood
@@ -52,14 +52,14 @@
 
     Player.prototype.preload = function () {
         //Load Imagens
+        // Player
         this.game.load.spritesheet(this.imageName, this.imageUrl, 48, 64);
-        this.game.load.image(this.imageNameBatShot, this.imageUrlBatShot);
-
+        // Bullet Bat
+        this.game.load.spritesheet(this.imageNameBatShot, this.imageUrlBatShot, 16, 16);
+        // Lives
         this.game.load.image(this.imageNameLives, this.imageUrlLives);
+        // Bg Score
         this.game.load.image(this.imageNameScores, this.imageUrlScores);
-
-
-        
 
         //Load Sounds
         this.game.load.audio(this.soundNameJump, this.soundUrlJump);
@@ -76,6 +76,7 @@
         for (var i = 0; i < 40; i++){
             var b = this.bullets.create(0, 0, this.imageNameBatShot);
             b.name = 'imageNameBatShot' + i;
+            b.animations.add('shotBat', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
             b.exists = false;
             b.visible = false;
             b.checkWorldBounds = true;
@@ -124,14 +125,15 @@
         
         //Controles
         //this.keys = this.game.input.keyboard.createCursorKeys();
+        // Movement Player
         this.leftButton = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
         this.rightButton = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
-        
+        // Jump
         this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.jumpButton.onDown.add(this.jump, this);
-        
+        // Shot
         this.shotButton = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-        
+        // Run
         this.runButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
         this.runButton.onDown.add(this.run,this)
 
@@ -263,9 +265,11 @@
                 this.bullet.reset(this.sprite.x, this.sprite.y);
                 if (this.sprite.scale.x == 1) {
                     this.bullet.body.velocity.x = 300;
+                    this.bullet.animations.play('shotBat');
                     this.bulletTime = this.game.time.now + 150;
                 } else {
                     this.bullet.body.velocity.x = -300;
+                    this.bullet.animations.play('shotBat');
                     this.bulletTime = this.game.time.now + 150;
                 }
             }
