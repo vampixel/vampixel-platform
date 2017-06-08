@@ -64,6 +64,11 @@
         this.bossSound.loop = true;
         this.bossSound.play();
         
+        // texto do level
+        this.level3Text = this.game.add.text(this.game.world.centerX, 105, 'Level 3', { fill: '#ffffff', align: 'center', fontSize: 30 });
+        this.level3Text.anchor.set(0.5);
+        this.level3Text.fixedToCamera = true;  
+        
         this.bossHP = this.game.add.text(620, 25, 'Boss: '+this.boss.HP+'%', {font: "25px Arial", fill: "#ffffff"});
         this.bossHP.fixedToCamera = true;
 
@@ -114,6 +119,7 @@
 
         // handle player inputs
         this.player.handleInputs();
+        this.player.checkGravity.apply(this.player); 
 
         // move boss
         this.boss.move.apply(this.boss);

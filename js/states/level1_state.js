@@ -49,6 +49,11 @@
         //Movimentacao de camera
         this.game.camera.follow(this.player.sprite);
         
+        // texto do level
+        this.level1Text = this.game.add.text(this.game.world.centerX, 105, 'Level 1', { fill: '#ffffff', align: 'center', fontSize: 30 });
+        this.level1Text.anchor.set(0.5);
+        this.level1Text.fixedToCamera = true;  
+        
         //Ratos
         this.ratos = this.game.add.physicsGroup();
         this.Level1.createFromObjects('Enemies', 'rato', 'rato', 8, true, false, this.ratos);
@@ -165,7 +170,8 @@
         
         this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
         
-        this.player.handleInputs(); 
+        this.player.handleInputs();
+        this.player.checkGravity.apply(this.player); 
         // Para cada morcego, verificar em que sentido ele está indo
         // Se a velocidade for positiva, a escala no eixo X será 1, caso
         // contrário -1
@@ -191,10 +197,11 @@
         });
 
     }
-    
+        
     Level1State.prototype.playerBulletCollision = function(ratos, bullet) {
         bullet.kill();
         ratos.kill();
+        this.player.increaseScoreRatos.apply();
     }
 
     Level1State.prototype.diamondCollect = function(player, diamond){
