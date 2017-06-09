@@ -60,7 +60,6 @@
         this.game.load.image(this.imageNameLives, this.imageUrlLives);
         // Bg Score
         this.game.load.image(this.imageNameScores, this.imageUrlScores);
-
         //Load Sounds
         this.game.load.audio(this.soundNameJump, this.soundUrlJump);
         this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
