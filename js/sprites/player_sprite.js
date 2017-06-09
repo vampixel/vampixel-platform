@@ -34,8 +34,15 @@
         this.imageCapHud = 'capa_hud_image';
         this.imageUrlCapHud = 'assets/spritesheets/capa_hud.png';    
         
+        //Select Item Hud
+        this.imageSelectHud = 'select_hud_image';
+        this.imageUrlSelectHud = 'assets/spritesheets/select-item.png';
+                
+        
         gameManager.globals.score = 0;
         gameManager.globals.scoreText = '';
+
+        this.amountOfBats = 0;
                 
         this.normalGravity = 750;
         this.fallingGravity = 50;
@@ -48,6 +55,7 @@
         this.bullets;
         this.bulletTime = 0;
         this.bullet;
+        this.canFire = true;
         
         //Sound Dead
         this.soundNameDead = 'deadSound';
@@ -332,22 +340,37 @@
     
     //Shot Bats
     Player.prototype.fire = function () {
-        if (this.game.time.now > this.bulletTime) {
-            this.bullet = this.bullets.getFirstExists(false);
-            if (this.bullet) {
-                this.bullet.reset(this.sprite.x, this.sprite.y);
-                if (this.sprite.scale.x == 1) {
-                    this.bullet.body.velocity.x = 300;
-                    this.soundShot.play();
-                    this.bullet.animations.play('shotBat');
-                    this.bulletTime = this.game.time.now + 150;
+        var self = this;
+        if (self.canFire && self.game.time.now > self.bulletTime) {
+            self.bullet = self.bullets.getFirstExists(false);
+            if (self.bullet) {                
+                self.bullet.reset(self.sprite.x, self.sprite.y);
+                if (self.sprite.scale.x == 1) {
+                    self.bullet.body.velocity.x = 300;
+                    self.bullet.animations.play('shotBat');
+                    self.bulletTime = self.game.time.now + 150;
                 } else {
-                    this.bullet.body.velocity.x = -300;
-                    this.bullet.scale.x = -1;
-                    this.soundShot.play()
-                    this.bullet.animations.play('shotBat');
-                    this.bulletTime = this.game.time.now + 150;
+                    self.bullet.body.velocity.x = -300;
+                    self.bullet.scale.x = -1;
+                    self.bullet.animations.play('shotBat');
+                    self.bulletTime = self.game.time.now + 150;
                 }
+
+                if(!self.amountOfBats) {
+                    self.soundShot.play();
+                }
+
+                self.amountOfBats++;
+                self.canFire = false;
+
+                self.game.time.events.add(Phaser.Timer.SECOND / 2, function () {
+                    self.amountOfBats--;
+                    self.bullet.kill();
+                    if(!self.amountOfBats) {
+                        self.soundShot.stop();
+                    }
+                    self.canFire = true;
+                }, this).autoDestroy = true;
             }
         }
     }
