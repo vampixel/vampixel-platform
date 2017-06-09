@@ -305,6 +305,7 @@
                     this.bulletTime = this.game.time.now + 150;
                 } else {
                     this.bullet.body.velocity.x = -300;
+                    this.bullet.scale.x = -1;
                     this.soundShot.play()
                     this.bullet.animations.play('shotBat');
                     this.bulletTime = this.game.time.now + 150;

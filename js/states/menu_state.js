@@ -12,10 +12,7 @@
         this.game.load.image('startButton', 'assets/img/startButton.png');
         this.game.load.image('chooseLevelButton', 'assets/img/chooseLevelButton.png');
 
-        this.game.load.image('instructionButton', 'assets/img/start.png');
-        
-        this.game.load.audio('menuSound', 'assets/sounds/gameSoundMenu.ogg');
-        this.game.load.audio('clickSound', 'assets/sounds/click.ogg');
+        //this.game.load.image('instructionButton', 'assets/img/start.png');
         
         // Sounds
         this.game.load.audio('menuSound', 'assets/sounds/ui/gameSoundMenu.ogg');
@@ -47,8 +44,8 @@
         var chooseLevelButton = this.game.add.button(this.game.world.centerX, this.game.world.centerY +150, 'chooseLevelButton', chooseLevelButton, this);
         chooseLevelButton.anchor.set(0.5);
         
-        var instructionButton = this.game.add.button(this.game.world.centerX + 230, this.game.world.centerY +150, 'instructionButton', instructionButton, this);
-        instructionButton.anchor.set(0.5);
+        /*var instructionButton = this.game.add.button(this.game.world.centerX + 230, this.game.world.centerY +150, 'instructionButton', instructionButton, this);
+        instructionButton.anchor.set(0.5);}*/
 
         function startButtonClicked() {
             this.clickSound.play();
@@ -62,7 +59,7 @@
             this.menuSound.stop();
         }
 
-        function  instructionButton() {
+        function instructionButton() {
             this.clickSound.play();
             this.menuSound.stop();
             this.game.state.start('menuInstructions');

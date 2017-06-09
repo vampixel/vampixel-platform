@@ -8,7 +8,7 @@
         this.game.load.image('background', 'assets/spritesheets/tela-instrucoes.png');
         this.game.load.image('back', 'assets/img/voltarButton.png');
         this.game.load.audio('clickSound', 'assets/sounds/click.ogg');
-        this.game.load.audio('menuInstructionSound', 'assets/sounds/mystery.wav');
+        this.game.load.audio('menuInstructionSound', 'assets/sounds/ui/mystery.wav');
     }   
     
     MenuInstructions.prototype.create = function() {
