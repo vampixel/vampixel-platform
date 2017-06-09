@@ -156,26 +156,22 @@
         this.imageBloodLives3.fixedToCamera = true;
         
         //Hud
-        this.imageSelectHudView = this.game.add.sprite(200, 40, this.imageSelectHud); 
-        this.imageSelectHudView.anchor.set(0.5);
-        this.imageSelectHudView.fixedToCamera = true;
+        this.imageSelectHudBat = this.game.add.sprite(200, 40, this.imageSelectHud); 
+        this.imageSelectHudBat.anchor.set(0.5);
+        this.imageSelectHudBat.fixedToCamera = true;
         
         this.imageBatHudView = this.game.add.sprite(204, 45, this.imageBatHud); 
         this.imageBatHudView.anchor.set(0.5);
         this.imageBatHudView.fixedToCamera = true;
         
-        this.imageSelectHudView2 = this.game.add.sprite(280, 40, this.imageSelectHud); 
-        this.imageSelectHudView2.anchor.set(0.5);
-        this.imageSelectHudView2.fixedToCamera = true;
-        this.imageSelectHudView2.kill();
+        this.imageSelectHudCapa = this.game.add.sprite(280, 40, this.imageSelectHud); 
+        this.imageSelectHudCapa.anchor.set(0.5);
+        this.imageSelectHudCapa.fixedToCamera = true;
+        
         
         this.imageCapHudView = this.game.add.sprite(280, 40, this.imageCapHud); 
         this.imageCapHudView.anchor.set(0.5);
         this.imageCapHudView.fixedToCamera = true;
-        
-        
-        
-        
                 
         // Text Scores
         gameManager.globals.scoreText = this.game.add.text(640, 10, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 32 });
@@ -201,6 +197,10 @@
         // Run
         this.runButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
         this.runButton.onDown.add(this.run,this)
+        
+        //hud
+        this.butButton = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+        this.capaButton = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
 
     }
     
@@ -280,7 +280,21 @@
         this.checkIsJumping();
     }
 
-    Player.prototype.handleInputs = function () {      
+    Player.prototype.handleInputs = function () {     
+        
+        
+        
+        if(this.butButton.isDown){
+            this.imageSelectHudBat.reset(200, 40);
+            this.imageSelectHudCapa.kill();
+        }
+        
+        if(this.capaButton.isDown){
+            this.imageSelectHudCapa.reset(280, 40);
+            this.imageSelectHudBat.kill();
+        }
+        
+        
         if(this.leftButton.isDown){
             this.sprite.body.velocity.x = -150; // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
