@@ -50,8 +50,8 @@
         this.game.camera.follow(this.player.sprite);
         
         // texto do level
-        this.level1Text = this.game.add.text(this.game.world.centerX, 105, 'Level 1', { fill: '#ffffff', align: 'center', fontSize: 30 });
-        this.level1Text.anchor.set(0.5);
+        this.level1Text = this.game.add.text(this.game.world.centerX, 10, 'Level 1', { fill: '#ffffff', align: 'center', fontSize: 30 });
+        this.level1Text.anchor.set(0.0);
         this.level1Text.fixedToCamera = true;  
         
         //Ratos
