@@ -22,18 +22,17 @@
         this.imageNameLives = 'lives_image';
         this.imageUrlLives = 'assets/img/blood.png';
         
+        //Select Item Hud
+        this.imageSelectHud = 'select_hud_image';
+        this.imageUrlSelectHud = 'assets/spritesheets/select-item.png';
+        
         //Bat Hud
         this.imageBatHud = 'bat_hud_image';
         this.imageUrlBatHud = 'assets/spritesheets/bat_hud.png';
         
-        //Bat Hud
+        //Capa Hud
         this.imageCapHud = 'capa_hud_image';
-        this.imageUrlCapHud = 'assets/spritesheets/capa_hud.png';
-        
-        //Select Item Hud
-        this.imageSelectHud = 'select_hud_image';
-        this.imageUrlSelectHud = 'assets/spritesheets/select-item.png';
-                
+        this.imageUrlCapHud = 'assets/spritesheets/capa_hud.png';    
         
         gameManager.globals.score = 0;
         gameManager.globals.scoreText = '';
@@ -88,10 +87,10 @@
         // Bg Score
         this.game.load.image(this.imageNameScores, this.imageUrlScores);
          // hud
+        this.game.load.image(this.imageSelectHud, this.imageUrlSelectHud);
         this.game.load.image(this.imageBatHud, this.imageUrlBatHud);
         this.game.load.image(this.imageCapHud, this.imageUrlCapHud);
-        this.game.load.image(this.imageSelectHud, this.imageUrlSelectHud);
-
+        
         //Load Sounds
         this.game.load.audio(this.soundNameDead, this.soundUrlDead);
         this.game.load.audio(this.soundNameShot, this.soundUrlShot);
@@ -149,13 +148,24 @@
         this.imageBloodLives3.fixedToCamera = true;
         
         //Hud
-        this.imageBatHudView = this.game.add.sprite(200, 25, this.imageBatHud); 
+        this.imageSelectHudView = this.game.add.sprite(200, 40, this.imageSelectHud); 
+        this.imageSelectHudView.anchor.set(0.5);
+        this.imageSelectHudView.fixedToCamera = true;
+        
+        this.imageBatHudView = this.game.add.sprite(204, 45, this.imageBatHud); 
         this.imageBatHudView.anchor.set(0.5);
         this.imageBatHudView.fixedToCamera = true;
         
-        this.imageCapHudView = this.game.add.sprite(280, 25, this.imageCapHud); 
+        this.imageSelectHudView2 = this.game.add.sprite(280, 40, this.imageSelectHud); 
+        this.imageSelectHudView2.anchor.set(0.5);
+        this.imageSelectHudView2.fixedToCamera = true;
+        this.imageSelectHudView2.kill();
+        
+        this.imageCapHudView = this.game.add.sprite(280, 40, this.imageCapHud); 
         this.imageCapHudView.anchor.set(0.5);
         this.imageCapHudView.fixedToCamera = true;
+        
+        
         
         
                 
