@@ -6,6 +6,14 @@
         this.imageName = 'player_image';
         this.imageUrl = 'assets/spritesheets/walk-idle-transform-BAT.png';
         
+        //SpriteSheet Player Jump
+        this.imageJumpName = 'player_jump_image';
+        this.imageJumpUrl = 'assets/spritesheets/jump-vampixel-128x128.png';
+        
+        //SpriteSheet Player Bat Fly
+        this.imageBatFlyName = 'player_batfly_image';
+        this.imageBatFlyUrl = 'assets/spritesheets/batflyItems.png';
+        
         //BatShot
         this.imageNameBatShot = 'batShot_image';
         this.imageUrlBatShot = 'assets/spritesheets/Sprites-morcego-bala-16x16.png';
@@ -69,19 +77,21 @@
         //Load Imagens
         // Player
         this.game.load.spritesheet(this.imageName, this.imageUrl, 48, 64);
-        
+        //Player Jump
+        this.game.load.spritesheet(this.imageJumpName, this.imageJumpUrl, 128, 128);
+        //Player Bat Fly
+        this.game.load.spritesheet(this.imageBatFlyName, this.imageBatFlyUrl, 64, 64);
         // Bullet Bat
         this.game.load.spritesheet(this.imageNameBatShot, this.imageUrlBatShot, 16, 16);
-        
         // Lives
         this.game.load.image(this.imageNameLives, this.imageUrlLives);
-        
+        // Bg Score
+        this.game.load.image(this.imageNameScores, this.imageUrlScores);
          // hud
         this.game.load.image(this.imageBatHud, this.imageUrlBatHud);
         this.game.load.image(this.imageCapHud, this.imageUrlCapHud);
         this.game.load.image(this.imageSelectHud, this.imageUrlSelectHud);
-        
-        
+
         //Load Sounds
         this.game.load.audio(this.soundNameDead, this.soundUrlDead);
         this.game.load.audio(this.soundNameShot, this.soundUrlShot);
@@ -114,8 +124,12 @@
         this.sprite.animations.add('walk', [0, 1, 2, 3], 22, true);
         this.sprite.animations.add('idle', [4,5,6], 4, true);
         this.sprite.animations.add('transform', [7,8,9], 22, true);
-        this.sprite.animations.add('batTransformation', [10,11,12,13,14,15,16,17,18,19], 22, true);
+        this.sprite.animations.add('batTransformation', [11,12,13,14,15,16,17,18,19], 10, true);
         this.sprite.animations.add('wolfRun', [10,11,12,13,14,15,16,17,18,19], 22, true);
+        // Animations Player Jump
+        this.sprite.animations.add('singleJump', [0,1,2,3,4,5,6,7], 10, false);
+        // Animations Player Bat Fly
+        this.sprite.animations.add('batFly', [0,1,2,3,4,5,6,7,8,9], 66, true);
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.normalGravity;
@@ -194,8 +208,11 @@
         if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
             this.isJumping = false;
             this.isDoubleJumping = false;
+            this.sprite.loadTexture(this.imageName);
+            this.sprite.anchor.set(0.5);
             this.sprite.animations.play('walk');
             this.sprite.body.gravity.y = this.normalGravity;
+            console.log("checkIsJumping()");
         }
     }
 
@@ -207,11 +224,22 @@
     Player.prototype.jump = function () { 
         if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = true;
+            this.sprite.loadTexture(this.imageJumpName);
+            this.sprite.animations.play('singleJump');
+            this.sprite.events.onAnimationComplete.add(function(){
+                this.sprite.loadTexture(this.imageName);
+                this.sprite.anchor.set(0.5);
+            },this);
             return doJump.apply(this);
         }
         else if(!this.isDoubleJumping) {
             this.isDoubleJumping = true;
-            this.sprite.animations.play('batTransformation');            
+            this.sprite.loadTexture(this.imageBatFlyName);
+            this.sprite.animations.play('batFly');
+            this.sprite.events.onAnimationComplete.add(function(){
+                this.sprite.loadTexture(this.imageName);
+                //this.sprite.anchor.set(0.5);
+            },this);
             return doJump.apply(this);
         }
 
@@ -252,7 +280,7 @@
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
             if(this.sprite.scale.x == -1) this.sprite.scale.x = 1;
 
-            if(!this.isDoubleJumping) {
+            if(!this.isJumping) {
                 this.sprite.animations.play('walk');
             }
         }
