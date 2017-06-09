@@ -186,7 +186,6 @@
             this.sprite.loadTexture(this.imageJumpName);
             this.sprite.animations.play('singleJump');
             this.sprite.events.onAnimationComplete.add(function(){
-                console.log("complete");
                 this.sprite.loadTexture(this.imageName);
                 this.sprite.anchor.set(0.5);
             },this);
@@ -200,8 +199,6 @@
         }
 
         function doJump() {
-            
-            //this.sprite.loadTexture(this.imageName);
             this.sprite.body.velocity.y = this.jumpVelocity || -450;
         }
     }
@@ -237,7 +234,7 @@
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
             if(this.sprite.scale.x == -1) this.sprite.scale.x = 1;
 
-            if(!this.isDoubleJumping) {
+            if(!this.isJumping) {
                 this.sprite.animations.play('walk');
             }
         }
