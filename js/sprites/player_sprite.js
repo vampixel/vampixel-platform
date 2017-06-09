@@ -129,7 +129,7 @@
         // Animations Player Jump
         this.sprite.animations.add('singleJump', [0,1,2,3,4,5,6,7], 10, false);
         // Animations Player Bat Fly
-        this.sprite.animations.add('batFly', [0,1,2,3,4,5,6,7,8,9], 66, true);
+        this.sprite.animations.add('batFly', [1,2,3,4,5,6,7,8,9], 66, true);
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.normalGravity;
@@ -224,7 +224,8 @@
     Player.prototype.jump = function () { 
         if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = true;
-            this.sprite.loadTexture(this.imageJumpName);
+            this.sprite.loadTexture(this.imageJumpName, 0, true);
+            this.sprite.anchor.set(0.5,0.7);
             this.sprite.animations.play('singleJump');
             this.sprite.events.onAnimationComplete.add(function(){
                 this.sprite.loadTexture(this.imageName);
