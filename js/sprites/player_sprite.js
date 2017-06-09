@@ -206,15 +206,15 @@
         this.soundDead.play();
 
         if(gameManager.globals.lives === 2) {
-            this.imageBloodLives3.destroy();
+            this.imageBloodLives3.alpha = 0;
         }
 
         if(gameManager.globals.lives === 1) {
-            this.imageBloodLives2.destroy();
+            this.imageBloodLives2.alpha = 0;
         }
 
         if(gameManager.globals.lives === 0) {
-            this.imageBloodLives1.destroy();
+            this.imageBloodLives1.alpha = 0;
             this.gameover();
         }
     }
@@ -223,16 +223,12 @@
         this.soundPickup.play();
         
         if(gameManager.globals.lives === 2) { // jogador com 2 corações e adicionando mais uma vida
-            this.imageBloodLives2 = this.game.add.sprite(140, 25, this.imageNameLives); 
-            this.imageBloodLives2.anchor.set(0.5);
-            this.imageBloodLives2.fixedToCamera = true;
+            this.imageBloodLives2.alpha = 1;
             gameManager.globals.lives++;
         }
 
         if(gameManager.globals.lives === 1) { // jogador com 1 coração e adicionando mais uma vida
-            this.imageBloodLives1 = this.game.add.sprite(90, 25, this.imageNameLives);
-            this.imageBloodLives1.anchor.set(0.5);
-            this.imageBloodLives1.fixedToCamera = true;
+            this.imageBloodLives2.alpha = 1;
             gameManager.globals.lives++;
         }
     }
@@ -395,7 +391,7 @@
                 self.amountOfBats++;
                 self.canFire = false;
 
-                self.game.time.events.add(Phaser.Timer.SECOND / 2, function () {
+                self.game.time.events.add(Phaser.Timer.SECOND, function () {
                     self.amountOfBats--;
                     self.bullet.kill();
                     if(!self.amountOfBats) {
