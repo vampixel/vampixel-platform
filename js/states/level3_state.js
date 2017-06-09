@@ -14,7 +14,7 @@
 
         this.game.load.tilemap('level3', 'assets/maps/level3.json', null, Phaser.Tilemap.TILED_JSON);
 
-        this.game.load.audio('environmentSoundBoss', 'assets/sounds/boss.ogg');
+        this.game.load.audio('environmentSoundBoss', 'assets/sounds/levels/VLAD8BitBull.ogg');
 
         // player preload
         this.player.preload();
