@@ -15,7 +15,6 @@
         
     };
 
-
     Level2State.prototype.preload = function() {
         // Para carregar um sprite, basta informar uma chave e dizer qual é o arquivo
         //this.game.load.image('mapTiles', 'assets/spritesheets/tiles.png');
@@ -29,8 +28,7 @@
         this.game.load.spritesheet('arqueiro', 'assets/spritesheets/ARQUEIRO-SPRITE.png', 64, 64, 3);
         
         this.game.load.image('crucifixo_image', 'assets/img/crucifixo2.png');
-        
-
+        this.game.load.spritesheet('blood', 'assets/img/blood.png', 42, 42, 1);
         
         // Para carregar um arquivo do Tiled, o mesmo precisa estar no formato JSON
         this.game.load.tilemap('level2', 'assets/maps/level21.json', null, Phaser.Tilemap.TILED_JSON);
@@ -117,6 +115,14 @@
         // frame do spritesheet, basta setar para um dos frames do objeto em questão
         // true, false - estes dois parâmetros podem ficar com estes valores
         // grupo - qual grupo do Phaser devemos adicionar esses objetos
+        
+        // Lifes
+        this.addlifesLevel2 = this.game.add.physicsGroup();
+        this.level2.createFromObjects('Items', 'life2', 'blood', 0, true, false, this.addlifesLevel2);
+        this.addlifesLevel2.forEach(function(addlifeLevel2) {
+            addlifeLevel2.anchor.setTo(0.5);
+            addlifeLevel2.body.immovable = true;
+        });
         
         // Grupo de diamantes
         this.diamonds = this.game.add.physicsGroup();
@@ -229,6 +235,9 @@
         
         this.game.physics.arcade.overlap(this.nuns, this.player.bullets, this.playerBulletCollision, null, this);
         this.game.physics.arcade.overlap(this.arqs, this.player.bullets, this.playerBulletCollision, null, this);
+        
+        // Colisão dos corações de vida
+        this.game.physics.arcade.overlap(this.player.sprite, this.addlifesLevel2, this.LiveCollisionLevel2, null, this);
 
         // Adicionando colisão entre os morcegos e as paredes
         this.game.physics.arcade.collide(this.arqs, this.wallsLayer);
@@ -262,6 +271,10 @@
         
     }
     
+    Level2State.prototype.LiveCollisionLevel2 = function(player, addlifeLevel2){
+        addlifeLevel2.kill();
+        this.player.addLives.apply(this.player); 
+    }
     
     Level2State.prototype.playerBulletCollision = function(enemies, bullet) {
         bullet.kill();

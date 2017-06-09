@@ -50,9 +50,21 @@
          "tilecount":64,
          "tileheight":32,
          "tilewidth":32
+        }, 
+        {
+         "columns":1,
+         "firstgid":65,
+         "image":"..\/img\/blood.png",
+         "imageheight":42,
+         "imagewidth":42,
+         "margin":0,
+         "name":"blood",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":42,
+         "tilewidth":42
         }],
  "tilewidth":32,
- "type":"map",
- "version":"2017.05.16",
+ "version":1,
  "width":25
 }

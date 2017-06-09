@@ -26,7 +26,6 @@
         this.imageSelectHud = 'select_hud_image';
         this.imageUrlSelectHud = 'assets/spritesheets/select-item.png';
                 
-        
         gameManager.globals.score = 0;
         gameManager.globals.scoreText = '';
                 
@@ -58,9 +57,10 @@
         this.soundJump = null;
         
         // Sound Pickup
-        //this.soundNamePickupBlood = 'pickupSound';
-        //this.soundUrlPickupBlood = 'assets/sounds/sipBlood.ogg';
-        //this.soundPickup = null;
+        this.soundNamePickupBlood = 'pickupSound';
+        this.soundUrlPickupBlood = 'assets/sounds/player/sipBlood.ogg';
+        this.soundPickup = null;
+        
         this.stateContext = null;
         
     }
@@ -81,14 +81,11 @@
         this.game.load.image(this.imageCapHud, this.imageUrlCapHud);
         this.game.load.image(this.imageSelectHud, this.imageUrlSelectHud);
         
-        
         //Load Sounds
         this.game.load.audio(this.soundNameDead, this.soundUrlDead);
         this.game.load.audio(this.soundNameShot, this.soundUrlShot);
         this.game.load.audio(this.soundNameJump, this.soundUrlJump); 
-        
-        
-        //this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
+        this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
     }
 
     Player.prototype.setup = function (stateContext) {   
@@ -142,11 +139,9 @@
         this.imageCapHudView = this.game.add.sprite(280, 25, this.imageCapHud); 
         this.imageCapHudView.anchor.set(0.5);
         this.imageCapHudView.fixedToCamera = true;
-        
-        
                 
         // Text Scores
-        gameManager.globals.scoreText = this.game.add.text(640, 10, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 32 });
+        gameManager.globals.scoreText = this.game.add.text(670, 10, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 32 });
         gameManager.globals.scoreText.anchor.set(0,0);
         gameManager.globals.scoreText.fixedToCamera = true;  
         
@@ -154,7 +149,7 @@
         this.soundDead = this.game.add.audio(this.soundNameDead);
         this.soundShot = this.game.add.audio(this.soundNameShot);
         this.soundJump = this.game.add.audio(this.soundNameJump);
-        //this.soundPickup = this.game.add.audio(this.soundNamePickupBlood);
+        this.soundPickup = this.game.add.audio(this.soundNamePickupBlood);
         
         //Controles
         //this.keys = this.game.input.keyboard.createCursorKeys();
@@ -177,16 +172,34 @@
         this.soundDead.play();
 
         if(gameManager.globals.lives === 2) {
-            this.imageBloodLives3.kill();
+            this.imageBloodLives3.destroy();
         }
 
         if(gameManager.globals.lives === 1) {
-            this.imageBloodLives2.kill();
+            this.imageBloodLives2.destroy();
         }
 
-        if(gameManager.globals.lives <= 0) {
-            this.imageBloodLives1.kill();
+        if(gameManager.globals.lives === 0) {
+            this.imageBloodLives1.destroy();
             this.gameover();
+        }
+    }
+    
+    Player.prototype.addLives = function () {
+        this.soundPickup.play();
+        
+        if(gameManager.globals.lives === 2) { // jogador com 2 corações e adicionando mais uma vida
+            this.imageBloodLives2 = this.game.add.sprite(140, 25, this.imageNameLives); 
+            this.imageBloodLives2.anchor.set(0.5);
+            this.imageBloodLives2.fixedToCamera = true;
+            gameManager.globals.lives++;
+        }
+
+        if(gameManager.globals.lives === 1) { // jogador com 1 coração e adicionando mais uma vida
+            this.imageBloodLives1 = this.game.add.sprite(90, 25, this.imageNameLives);
+            this.imageBloodLives1.anchor.set(0.5);
+            this.imageBloodLives1.fixedToCamera = true;
+            gameManager.globals.lives++;
         }
     }
 
