@@ -295,11 +295,13 @@
     
     // Score
     Player.prototype.increaseScoreRatos = function () {
+        //this.soundShot.stop();
         gameManager.globals.score = gameManager.globals.score + 50;
         gameManager.globals.scoreText.setText(gameManager.globals.score);
     }
     
     Player.prototype.increaseScoreEnemies = function () {
+        //this.soundShot.stop();
         gameManager.globals.score = gameManager.globals.score + 100;
         gameManager.globals.scoreText.setText(gameManager.globals.score);
     }
@@ -328,6 +330,7 @@
     }
     
     Player.prototype.resetBullet = function(bullet) {
+        this.soundShot.stop();
         bullet.kill();
     }
     gameManager.addSprite('player', Player);
