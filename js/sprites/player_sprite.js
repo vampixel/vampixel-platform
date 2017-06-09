@@ -170,6 +170,7 @@
         this.imageSelectHudCapa = this.game.add.sprite(280, 40, this.imageSelectHud); 
         this.imageSelectHudCapa.anchor.set(0.5);
         this.imageSelectHudCapa.fixedToCamera = true;
+        this.imageSelectHudCapa.kill();
        
         this.imageCapHudView = this.game.add.sprite(280, 40, this.imageCapHud); 
         this.imageCapHudView.anchor.set(0.5);
