@@ -42,15 +42,25 @@
         this.bulletTime = 0;
         this.bullet;
         
-        //Sound Jump
+        //Sound Dead
+        this.soundNameDead = 'deadSound';
+        this.soundUrlDead = 'assets/sounds/player/die1.ogg';
+        this.soundDead = null;
+        
+        // Sound ShotBats
+        this.soundNameShot = 'shotSound';
+        this.soundUrlShot = 'assets/sounds/player/longRangeHitBat2.ogg';
+        this.soundShot = null;
+        
+        // Sound Jump
         this.soundNameJump = 'jumpSound';
-        this.soundUrlJump = 'assets/sounds/jump2.ogg';
+        this.soundUrlJump = 'assets/sounds/player/jump1.ogg';
         this.soundJump = null;
         
-        //Sound Pickup
-        this.soundNamePickupBlood = 'pickupSound';
-        this.soundUrlPickupBlood = 'assets/sounds/sipBlood.ogg';
-        this.soundPickup = null;
+        // Sound Pickup
+        //this.soundNamePickupBlood = 'pickupSound';
+        //this.soundUrlPickupBlood = 'assets/sounds/sipBlood.ogg';
+        //this.soundPickup = null;
         this.stateContext = null;
         
     }
@@ -73,8 +83,12 @@
         
         
         //Load Sounds
-        this.game.load.audio(this.soundNameJump, this.soundUrlJump);
-        this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
+        this.game.load.audio(this.soundNameDead, this.soundUrlDead);
+        this.game.load.audio(this.soundNameShot, this.soundUrlShot);
+        this.game.load.audio(this.soundNameJump, this.soundUrlJump); 
+        
+        
+        //this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
     }
 
     Player.prototype.setup = function (stateContext) {   
@@ -137,8 +151,10 @@
         gameManager.globals.scoreText.fixedToCamera = true;  
         
         //Sounds
+        this.soundDead = this.game.add.audio(this.soundNameDead);
+        this.soundShot = this.game.add.audio(this.soundNameShot);
         this.soundJump = this.game.add.audio(this.soundNameJump);
-        this.soundPickup = this.game.add.audio(this.soundNamePickupBlood);
+        //this.soundPickup = this.game.add.audio(this.soundNamePickupBlood);
         
         //Controles
         //this.keys = this.game.input.keyboard.createCursorKeys();
@@ -158,6 +174,7 @@
     
     Player.prototype.decreaseLives = function () {
         gameManager.globals.lives--;
+        this.soundDead.play();
 
         if(gameManager.globals.lives === 2) {
             this.imageBloodLives3.kill();
@@ -200,6 +217,7 @@
 
         function doJump() {
             this.sprite.body.velocity.y = this.jumpVelocity || -450;
+            this.soundJump.play();
         }
     }
         
@@ -282,10 +300,12 @@
                 this.bullet.reset(this.sprite.x, this.sprite.y);
                 if (this.sprite.scale.x == 1) {
                     this.bullet.body.velocity.x = 300;
+                    this.soundShot.play();
                     this.bullet.animations.play('shotBat');
                     this.bulletTime = this.game.time.now + 150;
                 } else {
                     this.bullet.body.velocity.x = -300;
+                    this.soundShot.play()
                     this.bullet.animations.play('shotBat');
                     this.bulletTime = this.game.time.now + 150;
                 }

@@ -40,7 +40,7 @@
         //this.game.load.audio('pickupSound', 'assets/sounds/pickup.wav');
         //this.game.load.audio('playerDeath', 'assets/sounds/hurt3.ogg');
         //this.game.load.audio('enemyDeath', 'assets/sounds/hit2.ogg');
-        this.game.load.audio('music', 'assets/sounds/mystery.wav');
+        this.game.load.audio('environmentSound', 'assets/sounds/levels/gumbelElSiniestroYLaVelz.ogg');
         
         this.game.load.image(this.imageNameBatShot, this.imageUrlBatShot);
 
@@ -172,7 +172,7 @@
         this.level2Text.fixedToCamera = true;  
         
         // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true, para ficar repetindo
-        this.music = this.game.add.audio('music');
+        this.music = this.game.add.audio('environmentSound');
         this.music.loop = true;
         this.music.play();
         
