@@ -76,6 +76,10 @@
         this.soundUrlPickupBlood = 'assets/sounds/player/sipBlood.ogg';
         this.soundPickup = null;
         
+        // Sound Player Death
+        this.soundNamePlayerDeath = 'playerDeathSound';
+        this.soundUrlPlayerDeath = 'assets/sounds/player/playerDeath.ogg';
+        
         this.stateContext = null;
         
     }
@@ -104,6 +108,7 @@
         this.game.load.audio(this.soundNameShot, this.soundUrlShot);
         this.game.load.audio(this.soundNameJump, this.soundUrlJump); 
         this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
+        this.game.load.audio(this.soundNamePlayerDeath, this.soundUrlPlayerDeath);
     }
 
     Player.prototype.setup = function (stateContext) {   
@@ -180,6 +185,7 @@
         this.soundShot = this.game.add.audio(this.soundNameShot);
         this.soundJump = this.game.add.audio(this.soundNameJump);
         this.soundPickup = this.game.add.audio(this.soundNamePickupBlood);
+        this.soundPlayerDeath = this.game.add.audio(this.soundNamePlayerDeath);
         
         //Controles
         //this.keys = this.game.input.keyboard.createCursorKeys();
@@ -247,6 +253,8 @@
 
     Player.prototype.gameover = function () {
         this.checkIsJumping();
+        this.soundDead.stop();
+        this.soundPlayerDeath.play();
         this.game.state.start('lose');
     }
     
