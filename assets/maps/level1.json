@@ -17,7 +17,7 @@
          "name":"Fire",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":25,
          "x":0,
          "y":0
@@ -253,6 +253,18 @@
                  "width":32,
                  "x":760.666666666667,
                  "y":2760
+                }, 
+                {
+                 "gid":96,
+                 "height":42,
+                 "id":68,
+                 "name":"life1",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":42,
+                 "x":655,
+                 "y":2272
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -261,7 +273,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":65,
+ "nextobjectid":69,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":32,
@@ -317,6 +329,19 @@
          "tilecount":3,
          "tileheight":64,
          "tilewidth":64
+        }, 
+        {
+         "columns":1,
+         "firstgid":96,
+         "image":"..\/img\/blood.png",
+         "imageheight":42,
+         "imagewidth":42,
+         "margin":0,
+         "name":"blood",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":42,
+         "tilewidth":42
         }],
  "tilewidth":32,
  "version":1,

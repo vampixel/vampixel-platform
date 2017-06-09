@@ -15,6 +15,7 @@
         this.game.load.spritesheet('rato', 'assets/spritesheets/rato-sprite.png', 64, 64, 3);
         this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.spritesheet('enemies', 'Assets/spritesheets/enemies.png', 32, 32, 12);
+        this.game.load.spritesheet('blood', 'assets/img/blood.png', 42, 42, 1);
         
         // Images
         this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
@@ -29,9 +30,9 @@
     Level1State.prototype.create = function() {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         
-        this.environmentSound = this.game.add.audio('environmentSoundLevel1');
-        this.environmentSound.loop = true;
-        this.environmentSound.play();
+        this.environmentSoundLevel1 = this.game.add.audio('environmentSoundLevel1');
+        this.environmentSoundLevel1.loop = true;
+        this.environmentSoundLevel1.play();
     
         //Tile maps
         this.Level1 = this.game.add.tilemap('Level1');
@@ -59,6 +60,14 @@
         this.level1Text = this.game.add.text(this.game.world.centerX, 10, 'Level 1', { fill: '#ffffff', align: 'center', fontSize: 30 });
         this.level1Text.anchor.set(0.0);
         this.level1Text.fixedToCamera = true;  
+        
+        // Life
+        this.addlifesLevel1 = this.game.add.physicsGroup();
+        this.Level1.createFromObjects('Items', 'life1', 'blood', 0, true, false, this.addlifesLevel1);
+        this.addlifesLevel1.forEach(function(addlifeLevel1) {
+            addlifeLevel1.anchor.setTo(0.5);
+            addlifeLevel1.body.immovable = true;
+        });
         
         //Ratos
         this.ratos = this.game.add.physicsGroup();
@@ -163,6 +172,7 @@
     
     
     Level1State.prototype.update = function() {
+        console.log("Vidas", gameManager.globals.lives);
         this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
         
         this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.batCollision, null, this);
@@ -175,6 +185,8 @@
         this.game.physics.arcade.collide(this.fireBullets, this.wallsLayer, this.fireBulletCollideWall, null, this);
         
         this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
+        
+        this.game.physics.arcade.overlap(this.player.sprite, this.addlifesLevel1, this.LiveCollisionLevel1, null, this);    
         
         this.player.handleInputs();
         //console.log("Animation: ", this.player.sprite.animations.currentAnim.name);
@@ -202,7 +214,6 @@
                 fireBullet.scale.x = -1;
             }
         });
-
     }
         
     Level1State.prototype.playerBulletCollision = function(ratos, bullet) {
@@ -213,6 +224,7 @@
 
     Level1State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
+        this.environmentSoundLevel1.stop();
         this.game.state.start('level2');  
     } 
     
@@ -222,20 +234,35 @@
     
     Level1State.prototype.fireBullet = function(player, fireBullet){
         fireBullet.kill();
+            if(gameManager.globals.lives === 0) {
+                this.environmentSoundLevel1.stop();
+            }
         this.player.decreaseLives.apply(this.player); 
     }
     
     Level1State.prototype.batCollision = function(player, bat){
        bat.kill();
+            if(gameManager.globals.lives === 0) {
+                this.environmentSoundLevel1.stop();
+            }
        this.player.decreaseLives.apply(this.player);
     }
     Level1State.prototype.ratosCollision = function(player, rato){
        rato.kill();
+        if(gameManager.globals.lives === 0) {
+            this.environmentSoundLevel1.stop();
+        }
        this.player.decreaseLives.apply(this.player);
     }
     
     Level1State.prototype.fireDeath = function(player, fire){
+        this.environmentSoundLevel1.stop();
         this.player.decreaseLives.apply(this.player);
+    }
+    
+    Level1State.prototype.LiveCollisionLevel1 = function(player, addlifeLevel1){
+        addlifeLevel1.kill();
+        this.player.addLives.apply(this.player); 
     }
 
     gameManager.addState('level1', Level1State);

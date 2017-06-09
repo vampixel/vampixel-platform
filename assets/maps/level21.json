@@ -60,6 +60,18 @@
                  "width":32,
                  "x":1246,
                  "y":261
+                }, 
+                {
+                 "gid":101,
+                 "height":42,
+                 "id":37,
+                 "name":"life2",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":42,
+                 "x":1192.33333333333,
+                 "y":501
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -176,7 +188,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":37,
+ "nextobjectid":38,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":32,
@@ -245,6 +257,19 @@
          "tilecount":16,
          "tileheight":32,
          "tilewidth":32
+        }, 
+        {
+         "columns":1,
+         "firstgid":101,
+         "image":"..\/img\/blood.png",
+         "imageheight":42,
+         "imagewidth":42,
+         "margin":0,
+         "name":"blood",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":42,
+         "tilewidth":42
         }],
  "tilewidth":32,
  "version":1,
