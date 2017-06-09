@@ -6,6 +6,14 @@
         this.imageName = 'player_image';
         this.imageUrl = 'assets/spritesheets/walk-idle-transform-BAT.png';
         
+        //SpriteSheet Player Jump
+        this.imageJumpName = 'player_jump_image';
+        this.imageJumpUrl = 'assets/spritesheets/jump-vampixel-128x128.png';
+        
+        //SpriteSheet Player Bat Fly
+        this.imageBatFlyName = 'player_batfly_image';
+        this.imageBatFlyUrl = 'assets/spritesheets/batflyItems.png';
+        
         //BatShot
         this.imageNameBatShot = 'batShot_image';
         this.imageUrlBatShot = 'assets/spritesheets/Sprites-morcego-bala-16x16.png';
@@ -14,13 +22,17 @@
         this.imageNameLives = 'lives_image';
         this.imageUrlLives = 'assets/img/blood.png';
         
+        //Select Item Hud
+        this.imageSelectHud = 'select_hud_image';
+        this.imageUrlSelectHud = 'assets/spritesheets/select-item.png';
+        
         //Bat Hud
         this.imageBatHud = 'bat_hud_image';
         this.imageUrlBatHud = 'assets/spritesheets/bat_hud.png';
         
-        //Bat Hud
+        //Capa Hud
         this.imageCapHud = 'capa_hud_image';
-        this.imageUrlCapHud = 'assets/spritesheets/capa_hud.png';
+        this.imageUrlCapHud = 'assets/spritesheets/capa_hud.png';    
         
         //Select Item Hud
         this.imageSelectHud = 'select_hud_image';
@@ -28,6 +40,8 @@
                 
         gameManager.globals.score = 0;
         gameManager.globals.scoreText = '';
+
+        this.amountOfBats = 0;
                 
         this.normalGravity = 750;
         this.fallingGravity = 50;
@@ -40,6 +54,7 @@
         this.bullets;
         this.bulletTime = 0;
         this.bullet;
+        this.canFire = true;
         
         //Sound Dead
         this.soundNameDead = 'deadSound';
@@ -69,17 +84,20 @@
         //Load Imagens
         // Player
         this.game.load.spritesheet(this.imageName, this.imageUrl, 48, 64);
-        
+        //Player Jump
+        this.game.load.spritesheet(this.imageJumpName, this.imageJumpUrl, 128, 128);
+        //Player Bat Fly
+        this.game.load.spritesheet(this.imageBatFlyName, this.imageBatFlyUrl, 64, 64);
         // Bullet Bat
         this.game.load.spritesheet(this.imageNameBatShot, this.imageUrlBatShot, 16, 16);
-        
         // Lives
         this.game.load.image(this.imageNameLives, this.imageUrlLives);
-        
+        // Bg Score
+        this.game.load.image(this.imageNameScores, this.imageUrlScores);
          // hud
+        this.game.load.image(this.imageSelectHud, this.imageUrlSelectHud);
         this.game.load.image(this.imageBatHud, this.imageUrlBatHud);
         this.game.load.image(this.imageCapHud, this.imageUrlCapHud);
-        this.game.load.image(this.imageSelectHud, this.imageUrlSelectHud);
         
         //Load Sounds
         this.game.load.audio(this.soundNameDead, this.soundUrlDead);
@@ -111,8 +129,12 @@
         this.sprite.animations.add('walk', [0, 1, 2, 3], 22, true);
         this.sprite.animations.add('idle', [4,5,6], 4, true);
         this.sprite.animations.add('transform', [7,8,9], 22, true);
-        this.sprite.animations.add('batTransformation', [10,11,12,13,14,15,16,17,18,19], 22, true);
+        this.sprite.animations.add('batTransformation', [11,12,13,14,15,16,17,18,19], 10, true);
         this.sprite.animations.add('wolfRun', [10,11,12,13,14,15,16,17,18,19], 22, true);
+        // Animations Player Jump
+        this.sprite.animations.add('singleJump', [0,1,2,3,4,5,6,7], 10, false);
+        // Animations Player Bat Fly
+        this.sprite.animations.add('batFly', [1,2,3,4,5,6,7,8,9], 66, true);
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.normalGravity;
@@ -132,11 +154,19 @@
         this.imageBloodLives3.fixedToCamera = true;
         
         //Hud
-        this.imageBatHudView = this.game.add.sprite(200, 25, this.imageBatHud); 
+        this.imageSelectHudBat = this.game.add.sprite(200, 40, this.imageSelectHud); 
+        this.imageSelectHudBat.anchor.set(0.5);
+        this.imageSelectHudBat.fixedToCamera = true;
+        
+        this.imageBatHudView = this.game.add.sprite(204, 45, this.imageBatHud); 
         this.imageBatHudView.anchor.set(0.5);
         this.imageBatHudView.fixedToCamera = true;
         
-        this.imageCapHudView = this.game.add.sprite(280, 25, this.imageCapHud); 
+        this.imageSelectHudCapa = this.game.add.sprite(280, 40, this.imageSelectHud); 
+        this.imageSelectHudCapa.anchor.set(0.5);
+        this.imageSelectHudCapa.fixedToCamera = true;
+       
+        this.imageCapHudView = this.game.add.sprite(280, 40, this.imageCapHud); 
         this.imageCapHudView.anchor.set(0.5);
         this.imageCapHudView.fixedToCamera = true;
                 
@@ -164,6 +194,10 @@
         // Run
         this.runButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
         this.runButton.onDown.add(this.run,this)
+        
+        //hud
+        this.butButton = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+        this.capaButton = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
 
     }
     
@@ -207,8 +241,11 @@
         if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
             this.isJumping = false;
             this.isDoubleJumping = false;
+            this.sprite.loadTexture(this.imageName);
+            this.sprite.anchor.set(0.5);
             this.sprite.animations.play('walk');
             this.sprite.body.gravity.y = this.normalGravity;
+            console.log("checkIsJumping()");
         }
     }
 
@@ -220,11 +257,23 @@
     Player.prototype.jump = function () { 
         if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = true;
+            this.sprite.loadTexture(this.imageJumpName, 0, true);
+            this.sprite.anchor.set(0.5,0.7);
+            this.sprite.animations.play('singleJump');
+            this.sprite.events.onAnimationComplete.add(function(){
+                this.sprite.loadTexture(this.imageName);
+                this.sprite.anchor.set(0.5);
+            },this);
             return doJump.apply(this);
         }
         else if(!this.isDoubleJumping) {
             this.isDoubleJumping = true;
-            this.sprite.animations.play('batTransformation');            
+            this.sprite.loadTexture(this.imageBatFlyName);
+            this.sprite.animations.play('batFly');
+            this.sprite.events.onAnimationComplete.add(function(){
+                this.sprite.loadTexture(this.imageName);
+                //this.sprite.anchor.set(0.5);
+            },this);
             return doJump.apply(this);
         }
 
@@ -247,7 +296,21 @@
         this.checkIsJumping();
     }
 
-    Player.prototype.handleInputs = function () {      
+    Player.prototype.handleInputs = function () {     
+        
+        
+        
+        if(this.butButton.isDown){
+            this.imageSelectHudBat.reset(200, 40);
+            this.imageSelectHudCapa.kill();
+        }
+        
+        if(this.capaButton.isDown){
+            this.imageSelectHudCapa.reset(280, 40);
+            this.imageSelectHudBat.kill();
+        }
+        
+        
         if(this.leftButton.isDown){
             this.sprite.body.velocity.x = -150; // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
@@ -265,7 +328,7 @@
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
             if(this.sprite.scale.x == -1) this.sprite.scale.x = 1;
 
-            if(!this.isDoubleJumping) {
+            if(!this.isJumping) {
                 this.sprite.animations.play('walk');
             }
         }
@@ -309,22 +372,37 @@
     
     //Shot Bats
     Player.prototype.fire = function () {
-        if (this.game.time.now > this.bulletTime) {
-            this.bullet = this.bullets.getFirstExists(false);
-            if (this.bullet) {
-                this.bullet.reset(this.sprite.x, this.sprite.y);
-                if (this.sprite.scale.x == 1) {
-                    this.bullet.body.velocity.x = 300;
-                    this.soundShot.play();
-                    this.bullet.animations.play('shotBat');
-                    this.bulletTime = this.game.time.now + 150;
+        var self = this;
+        if (self.canFire && self.game.time.now > self.bulletTime) {
+            self.bullet = self.bullets.getFirstExists(false);
+            if (self.bullet) {                
+                self.bullet.reset(self.sprite.x, self.sprite.y);
+                if (self.sprite.scale.x == 1) {
+                    self.bullet.body.velocity.x = 300;
+                    self.bullet.animations.play('shotBat');
+                    self.bulletTime = self.game.time.now + 150;
                 } else {
-                    this.bullet.body.velocity.x = -300;
-                    this.bullet.scale.x = -1;
-                    this.soundShot.play()
-                    this.bullet.animations.play('shotBat');
-                    this.bulletTime = this.game.time.now + 150;
+                    self.bullet.body.velocity.x = -300;
+                    self.bullet.scale.x = -1;
+                    self.bullet.animations.play('shotBat');
+                    self.bulletTime = self.game.time.now + 150;
                 }
+
+                if(!self.amountOfBats) {
+                    self.soundShot.play();
+                }
+
+                self.amountOfBats++;
+                self.canFire = false;
+
+                self.game.time.events.add(Phaser.Timer.SECOND / 2, function () {
+                    self.amountOfBats--;
+                    self.bullet.kill();
+                    if(!self.amountOfBats) {
+                        self.soundShot.stop();
+                    }
+                    self.canFire = true;
+                }, this).autoDestroy = true;
             }
         }
     }
