@@ -5,7 +5,6 @@
         //SpriteSheet Player
         this.imageName = 'player_image';
         this.imageUrl = 'assets/spritesheets/walk-idle-transform-BAT.png';
-        this.sprite = null;
         
         //SpriteSheet Player Jump
         this.imageJumpName = 'player_jump_image';
@@ -18,20 +17,25 @@
         //BatShot
         this.imageNameBatShot = 'batShot_image';
         this.imageUrlBatShot = 'assets/spritesheets/Sprites-morcego-bala-16x16.png';
-        this.imageBatShot = null;
         
         //Lives Blood
         this.imageNameLives = 'lives_image';
         this.imageUrlLives = 'assets/img/blood.png';
-        this.imageBloodLives = null;
         
-        // Score Images
-        this.imageNameScores = 'scores_image';
-        this.imageUrlScores = 'assets/img/score-highscore.png';
-        this.imageScores = null;
+        //Bat Hud
+        this.imageBatHud = 'bat_hud_image';
+        this.imageUrlBatHud = 'assets/spritesheets/bat_hud.png';
+        
+        //Bat Hud
+        this.imageCapHud = 'capa_hud_image';
+        this.imageUrlCapHud = 'assets/spritesheets/capa_hud.png';
+        
+        //Select Item Hud
+        this.imageSelectHud = 'select_hud_image';
+        this.imageUrlSelectHud = 'assets/spritesheets/select-item.png';
+                
         
         gameManager.globals.score = 0;
-        gameManager.globals.highScore = 0;
         gameManager.globals.scoreText = '';
                 
         this.normalGravity = 750;
@@ -46,16 +50,27 @@
         this.bulletTime = 0;
         this.bullet;
         
-        //Sound Jump
+        //Sound Dead
+        this.soundNameDead = 'deadSound';
+        this.soundUrlDead = 'assets/sounds/player/die1.ogg';
+        this.soundDead = null;
+        
+        // Sound ShotBats
+        this.soundNameShot = 'shotSound';
+        this.soundUrlShot = 'assets/sounds/player/longRangeHitBat2.ogg';
+        this.soundShot = null;
+        
+        // Sound Jump
         this.soundNameJump = 'jumpSound';
-        this.soundUrlJump = 'assets/sounds/jump2.ogg';
+        this.soundUrlJump = 'assets/sounds/player/jump1.ogg';
         this.soundJump = null;
         
-        //Sound Pickup
-        this.soundNamePickupBlood = 'pickupSound';
-        this.soundUrlPickupBlood = 'assets/sounds/sipBlood.ogg';
-        this.soundPickup = null;
+        // Sound Pickup
+        //this.soundNamePickupBlood = 'pickupSound';
+        //this.soundUrlPickupBlood = 'assets/sounds/sipBlood.ogg';
+        //this.soundPickup = null;
         this.stateContext = null;
+        
     }
 
     Player.prototype.preload = function () {
@@ -72,9 +87,18 @@
         this.game.load.image(this.imageNameLives, this.imageUrlLives);
         // Bg Score
         this.game.load.image(this.imageNameScores, this.imageUrlScores);
+         // hud
+        this.game.load.image(this.imageBatHud, this.imageUrlBatHud);
+        this.game.load.image(this.imageCapHud, this.imageUrlCapHud);
+        this.game.load.image(this.imageSelectHud, this.imageUrlSelectHud);
+
         //Load Sounds
-        this.game.load.audio(this.soundNameJump, this.soundUrlJump);
-        this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
+        this.game.load.audio(this.soundNameDead, this.soundUrlDead);
+        this.game.load.audio(this.soundNameShot, this.soundUrlShot);
+        this.game.load.audio(this.soundNameJump, this.soundUrlJump); 
+        
+        
+        //this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
     }
 
     Player.prototype.setup = function (stateContext) {   
@@ -87,7 +111,7 @@
         for (var i = 0; i < 40; i++){
             var b = this.bullets.create(0, 0, this.imageNameBatShot);
             b.name = 'imageNameBatShot' + i;
-            b.animations.add('shotBat', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
+            b.animations.add('shotBat', [0, 1, 2, 3, 4, 5, 6, 7], 100, true);
             b.exists = false;
             b.visible = false;
             b.checkWorldBounds = true;
@@ -112,31 +136,39 @@
         this.stateContext = stateContext;
         
         //Img Blood Lives
-        this.imageBloodLives1 = this.game.add.sprite(40, 40, this.imageNameLives); 
+        this.imageBloodLives1 = this.game.add.sprite(40, 25, this.imageNameLives); 
         this.imageBloodLives1.anchor.set(0.5);
         this.imageBloodLives1.fixedToCamera = true;
 
-        this.imageBloodLives2 = this.game.add.sprite(90, 40, this.imageNameLives); 
+        this.imageBloodLives2 = this.game.add.sprite(90, 25, this.imageNameLives); 
         this.imageBloodLives2.anchor.set(0.5);
         this.imageBloodLives2.fixedToCamera = true;
 
-        this.imageBloodLives3 = this.game.add.sprite(140, 40, this.imageNameLives); 
+        this.imageBloodLives3 = this.game.add.sprite(140, 25, this.imageNameLives); 
         this.imageBloodLives3.anchor.set(0.5);
         this.imageBloodLives3.fixedToCamera = true;
         
-        // Img Scores
-        this.imageScores = this.game.add.sprite(400, 100, this.imageNameScores); 
-        this.imageScores.anchor.set(0.5);
-        this.imageScores.fixedToCamera = true;
+        //Hud
+        this.imageBatHudView = this.game.add.sprite(200, 25, this.imageBatHud); 
+        this.imageBatHudView.anchor.set(0.5);
+        this.imageBatHudView.fixedToCamera = true;
         
+        this.imageCapHudView = this.game.add.sprite(280, 25, this.imageCapHud); 
+        this.imageCapHudView.anchor.set(0.5);
+        this.imageCapHudView.fixedToCamera = true;
+        
+        
+                
         // Text Scores
-        gameManager.globals.scoreText = this.game.add.text(140, 85, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 32 });
+        gameManager.globals.scoreText = this.game.add.text(640, 10, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 32 });
         gameManager.globals.scoreText.anchor.set(0,0);
         gameManager.globals.scoreText.fixedToCamera = true;  
         
         //Sounds
+        this.soundDead = this.game.add.audio(this.soundNameDead);
+        this.soundShot = this.game.add.audio(this.soundNameShot);
         this.soundJump = this.game.add.audio(this.soundNameJump);
-        this.soundPickup = this.game.add.audio(this.soundNamePickupBlood);
+        //this.soundPickup = this.game.add.audio(this.soundNamePickupBlood);
         
         //Controles
         //this.keys = this.game.input.keyboard.createCursorKeys();
@@ -156,6 +188,7 @@
     
     Player.prototype.decreaseLives = function () {
         gameManager.globals.lives--;
+        this.soundDead.play();
 
         if(gameManager.globals.lives === 2) {
             this.imageBloodLives3.kill();
@@ -212,6 +245,7 @@
 
         function doJump() {
             this.sprite.body.velocity.y = this.jumpVelocity || -450;
+            this.soundJump.play();
         }
     }
         
@@ -294,10 +328,12 @@
                 this.bullet.reset(this.sprite.x, this.sprite.y);
                 if (this.sprite.scale.x == 1) {
                     this.bullet.body.velocity.x = 300;
+                    this.soundShot.play();
                     this.bullet.animations.play('shotBat');
                     this.bulletTime = this.game.time.now + 150;
                 } else {
                     this.bullet.body.velocity.x = -300;
+                    this.soundShot.play()
                     this.bullet.animations.play('shotBat');
                     this.bulletTime = this.game.time.now + 150;
                 }
