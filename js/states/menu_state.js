@@ -6,11 +6,15 @@
 
     MenuState.prototype.preload = function() {
         this.onMenu = true;
+        
+        // Images
         this.game.load.image('background', 'assets/img/menu.png');
         this.game.load.image('start', 'assets/img/start.png');
         this.game.load.image('chooseLevelButton', 'assets/img/chooseLevelButton.png');
-        this.game.load.audio('menuSound', 'assets/sounds/gameSoundMenu.ogg');
-        this.game.load.audio('clickSound', 'assets/sounds/click.ogg');
+        
+        // Sounds
+        this.game.load.audio('menuSound', 'assets/sounds/ui/gameSoundMenu.ogg');
+        this.game.load.audio('clickSound', 'assets/sounds/ui/click.ogg');
     }   
     
     MenuState.prototype.create = function() {

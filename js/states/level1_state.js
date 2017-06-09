@@ -10,11 +10,17 @@
     Level1State.prototype.preload = function() {
         // player
         this.player.preload();
+        
+        // SpriteSheet
         this.game.load.spritesheet('rato', 'assets/spritesheets/rato-sprite.png', 64, 64, 3);
-        this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
         this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.spritesheet('enemies', 'Assets/spritesheets/enemies.png', 32, 32, 12);
-        this.game.load.audio('environmentSound', 'assets/sounds/environment.ogg');
+        
+        // Images
+        this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
+        
+        // Sounds
+        this.game.load.audio('environmentSound', '/assets/sounds/levels/simonMathewson8bitEnergyDrinkComedown1.ogg');
         
         //Tile maps
         this.game.load.tilemap('Level1','assets/maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
