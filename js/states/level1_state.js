@@ -20,7 +20,7 @@
         this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
         
         // Sounds
-        this.game.load.audio('environmentSound', '/assets/sounds/levels/simonMathewson8bitEnergyDrinkComedown1.ogg');
+        this.game.load.audio('environmentSoundLevel1', 'assets/sounds/levels/simonMathewson8bitEnergyDrinkComedown1.ogg');
         
         //Tile maps
         this.game.load.tilemap('Level1','assets/maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
@@ -29,7 +29,7 @@
     Level1State.prototype.create = function() {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         
-        this.environmentSound = this.game.add.audio('environmentSound');
+        this.environmentSound = this.game.add.audio('environmentSoundLevel1');
         this.environmentSound.loop = true;
         this.environmentSound.play();
     
