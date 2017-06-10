@@ -224,7 +224,6 @@
 
     Level1State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
-        this.environmentSoundLevel1.stop();
         this.game.state.start('level2');  
     } 
     
@@ -234,29 +233,19 @@
     
     Level1State.prototype.fireBullet = function(player, fireBullet){
         fireBullet.kill();
-            if(gameManager.globals.lives === 0) {
-                this.environmentSoundLevel1.stop();
-            }
         this.player.decreaseLives.apply(this.player); 
     }
     
     Level1State.prototype.batCollision = function(player, bat){
        bat.kill();
-            if(gameManager.globals.lives === 0) {
-                this.environmentSoundLevel1.stop();
-            }
        this.player.decreaseLives.apply(this.player);
     }
     Level1State.prototype.ratosCollision = function(player, rato){
        rato.kill();
-        if(gameManager.globals.lives === 0) {
-            this.environmentSoundLevel1.stop();
-        }
        this.player.decreaseLives.apply(this.player);
     }
     
     Level1State.prototype.fireDeath = function(player, fire){
-        this.environmentSoundLevel1.stop();
         this.player.decreaseLives.apply(this.player);
     }
     

@@ -16,7 +16,7 @@
         this.imageBulletUrl = 'assets/img/crucifixo2.png';
         this.imageBulletFire = 'fire_image';
         this.imageBulletFireUrl = 'assets/img/fire_bullet.png';
-        this.limitHPToTransform = 50;
+        this.limitHPToTransform = 98;
 
         this.initialPositionX = 600;
         this.initialPositionY = 500;
