@@ -40,8 +40,6 @@
                 
         gameManager.globals.score = 0;
         gameManager.globals.scoreText = '';
-
-        this.amountOfBats = 0;
                 
         this.normalGravity = 750;
         this.fallingGravity = 50;
@@ -393,19 +391,12 @@
                     self.bulletTime = self.game.time.now + 150;
                 }
 
-                if(!self.amountOfBats) {
-                    self.soundShot.play();
-                }
-
-                self.amountOfBats++;
+                self.soundShot.play();
                 self.canFire = false;
 
                 self.game.time.events.add(Phaser.Timer.SECOND, function () {
-                    self.amountOfBats--;
                     self.bullet.kill();
-                    if(!self.amountOfBats) {
-                        self.soundShot.stop();
-                    }
+                    self.soundShot.stop();
                     self.canFire = true;
                 }, this).autoDestroy = true;
             }
