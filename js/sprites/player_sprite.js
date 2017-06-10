@@ -90,13 +90,14 @@
         this.game.load.spritesheet(this.imageJumpName, this.imageJumpUrl, 128, 128);
         //Player Bat Fly
         this.game.load.spritesheet(this.imageBatFlyName, this.imageBatFlyUrl, 64, 64);
+        
         // Bullet Bat
         this.game.load.spritesheet(this.imageNameBatShot, this.imageUrlBatShot, 16, 16);
+        
         // Lives
         this.game.load.image(this.imageNameLives, this.imageUrlLives);
-        // Bg Score
-        this.game.load.image(this.imageNameScores, this.imageUrlScores);
-         // hud
+        
+        // hud
         this.game.load.image(this.imageSelectHud, this.imageUrlSelectHud);
         this.game.load.image(this.imageBatHud, this.imageUrlBatHud);
         this.game.load.image(this.imageCapHud, this.imageUrlCapHud);
@@ -144,17 +145,36 @@
         this.stateContext = stateContext;
         
         //Img Blood Lives
-        this.imageBloodLives1 = this.game.add.sprite(40, 25, this.imageNameLives); 
-        this.imageBloodLives1.anchor.set(0.5);
-        this.imageBloodLives1.fixedToCamera = true;
+        if (gameManager.globals.lives === 3) {
+            this.imageBloodLives1 = this.game.add.sprite(40, 25, this.imageNameLives); 
+            this.imageBloodLives1.anchor.set(0.5);
+            this.imageBloodLives1.fixedToCamera = true;
 
-        this.imageBloodLives2 = this.game.add.sprite(90, 25, this.imageNameLives); 
-        this.imageBloodLives2.anchor.set(0.5);
-        this.imageBloodLives2.fixedToCamera = true;
+            this.imageBloodLives2 = this.game.add.sprite(90, 25, this.imageNameLives); 
+            this.imageBloodLives2.anchor.set(0.5);
+            this.imageBloodLives2.fixedToCamera = true;
 
-        this.imageBloodLives3 = this.game.add.sprite(140, 25, this.imageNameLives); 
-        this.imageBloodLives3.anchor.set(0.5);
-        this.imageBloodLives3.fixedToCamera = true;
+            this.imageBloodLives3 = this.game.add.sprite(140, 25, this.imageNameLives); 
+            this.imageBloodLives3.anchor.set(0.5);
+            this.imageBloodLives3.fixedToCamera = true;
+        }
+        
+        if (gameManager.globals.lives === 2) {
+            this.imageBloodLives1 = this.game.add.sprite(40, 25, this.imageNameLives); 
+            this.imageBloodLives1.anchor.set(0.5);
+            this.imageBloodLives1.fixedToCamera = true;
+
+            this.imageBloodLives2 = this.game.add.sprite(90, 25, this.imageNameLives); 
+            this.imageBloodLives2.anchor.set(0.5);
+            this.imageBloodLives2.fixedToCamera = true;
+        }
+        
+        if (gameManager.globals.lives === 1) {
+            this.imageBloodLives1 = this.game.add.sprite(40, 25, this.imageNameLives); 
+            this.imageBloodLives1.anchor.set(0.5);
+            this.imageBloodLives1.fixedToCamera = true;
+        }
+        
         
         //Hud
         this.imageSelectHudBat = this.game.add.sprite(200, 40, this.imageSelectHud); 
@@ -203,7 +223,6 @@
         //hud
         this.butButton = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
         this.capaButton = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
-
     }
     
     Player.prototype.decreaseLives = function () {
@@ -211,15 +230,15 @@
         this.soundDead.play();
 
         if(gameManager.globals.lives === 2) {
-            this.imageBloodLives3.alpha = 0;
+            this.imageBloodLives3.destroy();
         }
 
         if(gameManager.globals.lives === 1) {
-            this.imageBloodLives2.alpha = 0;
+            this.imageBloodLives2.destroy();
         }
 
         if(gameManager.globals.lives === 0) {
-            this.imageBloodLives1.alpha = 0;
+            this.imageBloodLives1.destroy();
             this.gameover();
         }
     }
@@ -228,12 +247,12 @@
         this.soundPickup.play();
         
         if(gameManager.globals.lives === 2) { // jogador com 2 corações e adicionando mais uma vida
-            this.imageBloodLives2.alpha = 1;
+            this.imageBloodLives3.reset(140, 25);
             gameManager.globals.lives++;
         }
 
         if(gameManager.globals.lives === 1) { // jogador com 1 coração e adicionando mais uma vida
-            this.imageBloodLives2.alpha = 1;
+            this.imageBloodLives2.reset(90, 25);
             gameManager.globals.lives++;
         }
     }
@@ -300,20 +319,15 @@
     }
 
     Player.prototype.handleInputs = function () {     
-        
-        
-        
         if(this.butButton.isDown){
             this.imageSelectHudBat.reset(200, 40);
             this.imageSelectHudCapa.kill();
         }
-        
         if(this.capaButton.isDown){
             this.imageSelectHudCapa.reset(280, 40);
             this.imageSelectHudBat.kill();
         }
-        
-        
+
         if(this.leftButton.isDown){
             this.sprite.body.velocity.x = -150; // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado

@@ -56,19 +56,23 @@
             
         // Inicializando jogador
         this.player.setup(this);
+        this.player.sprite.x = 170;
+        this.player.sprite.y = 100;
+        
+        // Inicializando Boss
         this.boss.setup(this);
-        this.game.camera.follow(this.player.sprite);
 
         // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true
         this.bossSound = this.game.add.audio('environmentSoundBoss');
         this.bossSound.loop = true;
         this.bossSound.play();
         
-        // texto do level
+        // Texto do level
         this.level3Text = this.game.add.text(this.game.world.centerX, 105, 'Level 3', { fill: '#ffffff', align: 'center', fontSize: 30 });
         this.level3Text.anchor.set(0.5);
         this.level3Text.fixedToCamera = true;  
         
+        // Text HP BOSS
         this.bossHP = this.game.add.text(620, 25, 'Boss: '+this.boss.HP+'%', {font: "25px Arial", fill: "#ffffff"});
         this.bossHP.fixedToCamera = true;
 

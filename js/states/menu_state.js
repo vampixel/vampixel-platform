@@ -21,6 +21,8 @@
     }   
     
     MenuState.prototype.create = function() {
+        // Levels
+        gameManager.globals.level1 = false;
 
         // player lives
         gameManager.globals.lives = 3;
@@ -47,6 +49,7 @@
         function startButtonClicked() {
             this.clickSound.play();
             this.menuSound.stop();
+            gameManager.globals.level1 = true;
             this.game.state.start('level1');
         }
         
