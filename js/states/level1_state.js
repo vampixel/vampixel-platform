@@ -13,7 +13,7 @@
         
         // SpriteSheet
         this.game.load.spritesheet('rato', 'assets/spritesheets/rato-sprite.png', 64, 64, 3);
-        this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
+        this.game.load.spritesheet('items', 'assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.spritesheet('blood', 'assets/img/blood.png', 42, 42, 1);
         
         // Images
@@ -56,8 +56,8 @@
         this.game.camera.follow(this.player.sprite);
         
         // texto do level
-        this.level1Text = this.game.add.text(this.game.world.centerX, 10, 'Level 1', { fill: '#ffffff', align: 'center', fontSize: 30 });
-        this.level1Text.anchor.set(0.0);
+        this.level1Text = this.game.add.text(this.game.world.centerX + 180, 30, 'Level 1', { fill: '#ffffff', align: 'center', fontSize: 27 });
+        this.level1Text.anchor.set(0.5);
         this.level1Text.fixedToCamera = true;  
         
         // Life
