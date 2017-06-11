@@ -171,20 +171,25 @@
     
     
     Level1State.prototype.update = function() {
-        console.log("Vidas", gameManager.globals.lives);
         this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
-        this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.batCollision, null, this);
-        this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
-        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);        
-        this.game.physics.arcade.overlap(this.player.sprite, this.fireBullets, this.fireBullet, null, this);        
-        this.game.physics.arcade.overlap(this.player.sprite, this.ratos, this.ratosCollision, null, this);        
-        this.game.physics.arcade.collide(this.bats, this.wallsLayer);
-        this.game.physics.arcade.collide(this.ratos, this.wallsLayer);
-        this.game.physics.arcade.collide(this.fireBullets, this.wallsLayer, this.fireBulletCollideWall, null, this);
+    
+        // Colisão do Player com os Diamantes e com os Inimigos "Ratos"
+        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this); 
+        this.game.physics.arcade.overlap(this.player.sprite, this.ratos, this.ratosCollision, null, this);
         
+        // Rato morrendo ao ser atingido pelos morcegos do player
         this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
         
-        this.game.physics.arcade.overlap(this.player.sprite, this.addlifesLevel1, this.LiveCollisionLevel1, null, this);    
+        // Player pegando coração "vida"
+        this.game.physics.arcade.overlap(this.player.sprite, this.addlifesLevel1, this.LiveCollisionLevel1, null, this); 
+        
+        // Objetos com as paredes e Plataformas
+        this.game.physics.arcade.collide(this.bats, this.wallsLayer);
+        this.game.physics.arcade.collide(this.ratos, this.wallsLayer);
+        this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
+        
+        this.game.physics.arcade.overlap(this.player.sprite, this.fireBullets, this.fireBullet, null, this);            
+        this.game.physics.arcade.collide(this.fireBullets, this.wallsLayer, this.fireBulletCollideWall, null, this);
         
         this.player.handleInputs();
         //console.log("Animation: ", this.player.sprite.animations.currentAnim.name);
@@ -214,16 +219,14 @@
         });
     }
         
-    Level1State.prototype.playerBulletCollision = function(ratos, bullet) {
+    Level1State.prototype.playerBulletCollision = function(ratos, bullet) { //Bala do player colidindo com o inimigos "RATO"
         bullet.kill();
         ratos.kill();
         this.player.increaseScoreRatos.apply();
     }
 
-    Level1State.prototype.diamondCollect = function(player, diamond){
+    Level1State.prototype.diamondCollect = function(player, diamond){ //Jogando Colidindo com o Diamante e indo para o Level 2
         diamond.kill();
-        gameManager.globals.level1 = false;
-        gameManager.globals.level2 = true;
         this.game.state.start('level2');  
     } 
     
@@ -236,13 +239,11 @@
         this.player.decreaseLives.apply(this.player); 
     }
     
-    Level1State.prototype.batCollision = function(player, bat){
-       bat.kill();
-       this.player.decreaseLives.apply(this.player);
-    }
     Level1State.prototype.ratosCollision = function(player, rato){
-       rato.kill();
-       this.player.decreaseLives.apply(this.player);
+       if (gameManager.globals.isColliderRatos){
+            rato.kill();
+            this.player.decreaseLives.apply(this.player);
+       }
     }
     
     Level1State.prototype.fireDeath = function(player, fire){

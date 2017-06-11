@@ -195,7 +195,6 @@
     }
 
     Level2State.prototype.update = function() {
-        console.log("Vidas", gameManager.globals.lives);
         // Detecção de colisões
         // Todas as colisões entre os objetos do jogo são avaliadas com arcade.collide() ou 
         // arcade.overlap(). O Phaser irá automaticamente calcular a colisão dos objetos
