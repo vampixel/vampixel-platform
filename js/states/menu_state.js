@@ -11,19 +11,15 @@
         this.game.load.image('background', 'assets/img/menu.png');
         this.game.load.image('startButton', 'assets/img/startButton.png');
         this.game.load.image('chooseLevelButton', 'assets/img/chooseLevelButton.png');
-
         this.game.load.image('instructionButton', 'assets/img/controlsButton.png');
+        this.game.load.image('creditsButton', 'assets/img/creditButton.png');
         
         // Sounds
         this.game.load.audio('menuSound', 'assets/sounds/ui/gameSoundMenu.ogg');
         this.game.load.audio('clickSound', 'assets/sounds/ui/click.ogg');
-
     }   
     
     MenuState.prototype.create = function() {
-        // Levels
-        gameManager.globals.level1 = false;
-
         // player lives
         gameManager.globals.lives = 3;
         
@@ -45,11 +41,13 @@
         
         var instructionButton = this.game.add.button(this.game.world.centerX + 230, this.game.world.centerY +150, 'instructionButton', instructionButton, this);
         instructionButton.anchor.set(0.5);
+        
+        var creditsButton = this.game.add.button(710, 40, 'creditsButton', creditsButton, this);
+        creditsButton.anchor.set(0.5);
 
         function startButtonClicked() {
             this.clickSound.play();
             this.menuSound.stop();
-            gameManager.globals.level1 = true;
             this.game.state.start('level1');
         }
         
@@ -63,6 +61,12 @@
             this.clickSound.play();
             this.menuSound.stop();
             this.game.state.start('menuInstructions');
+        }
+        
+        function creditsButton() {
+            this.clickSound.play();
+            this.menuSound.stop();
+            this.game.state.start('menuCredits');
         }
     }
     

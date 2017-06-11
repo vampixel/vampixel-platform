@@ -223,6 +223,7 @@
     Level1State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
         gameManager.globals.level1 = false;
+        gameManager.globals.level2 = true;
         this.game.state.start('level2');  
     } 
     

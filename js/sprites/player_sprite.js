@@ -145,36 +145,17 @@
         this.stateContext = stateContext;
         
         //Img Blood Lives
-        if (gameManager.globals.lives === 3) {
-            this.imageBloodLives1 = this.game.add.sprite(40, 25, this.imageNameLives); 
-            this.imageBloodLives1.anchor.set(0.5);
-            this.imageBloodLives1.fixedToCamera = true;
+        this.imageBloodLives1 = this.game.add.sprite(40, 25, this.imageNameLives); 
+        this.imageBloodLives1.anchor.set(0.5);
+        this.imageBloodLives1.fixedToCamera = true;
 
-            this.imageBloodLives2 = this.game.add.sprite(90, 25, this.imageNameLives); 
-            this.imageBloodLives2.anchor.set(0.5);
-            this.imageBloodLives2.fixedToCamera = true;
+        this.imageBloodLives2 = this.game.add.sprite(90, 25, this.imageNameLives); 
+        this.imageBloodLives2.anchor.set(0.5);
+        this.imageBloodLives2.fixedToCamera = true;
 
-            this.imageBloodLives3 = this.game.add.sprite(140, 25, this.imageNameLives); 
-            this.imageBloodLives3.anchor.set(0.5);
-            this.imageBloodLives3.fixedToCamera = true;
-        }
-        
-        if (gameManager.globals.lives === 2) {
-            this.imageBloodLives1 = this.game.add.sprite(40, 25, this.imageNameLives); 
-            this.imageBloodLives1.anchor.set(0.5);
-            this.imageBloodLives1.fixedToCamera = true;
-
-            this.imageBloodLives2 = this.game.add.sprite(90, 25, this.imageNameLives); 
-            this.imageBloodLives2.anchor.set(0.5);
-            this.imageBloodLives2.fixedToCamera = true;
-        }
-        
-        if (gameManager.globals.lives === 1) {
-            this.imageBloodLives1 = this.game.add.sprite(40, 25, this.imageNameLives); 
-            this.imageBloodLives1.anchor.set(0.5);
-            this.imageBloodLives1.fixedToCamera = true;
-        }
-        
+        this.imageBloodLives3 = this.game.add.sprite(140, 25, this.imageNameLives); 
+        this.imageBloodLives3.anchor.set(0.5);
+        this.imageBloodLives3.fixedToCamera = true;
         
         //Hud
         this.imageSelectHudBat = this.game.add.sprite(200, 40, this.imageSelectHud); 
@@ -230,15 +211,15 @@
         this.soundDead.play();
 
         if(gameManager.globals.lives === 2) {
-            this.imageBloodLives3.destroy();
+            this.imageBloodLives3.kill();
         }
 
         if(gameManager.globals.lives === 1) {
-            this.imageBloodLives2.destroy();
+            this.imageBloodLives2.kill();
         }
 
         if(gameManager.globals.lives === 0) {
-            this.imageBloodLives1.destroy();
+            this.imageBloodLives1.kill();
             this.gameover();
         }
     }
@@ -373,13 +354,15 @@
         }
     }
     
-    // Score
+    // Scores
+    // Score Rato
     Player.prototype.increaseScoreRatos = function () {
         //this.soundShot.stop();
         gameManager.globals.score = gameManager.globals.score + 50;
         gameManager.globals.scoreText.setText(gameManager.globals.score);
     }
     
+    // Score Enemies
     Player.prototype.increaseScoreEnemies = function () {
         //this.soundShot.stop();
         gameManager.globals.score = gameManager.globals.score + 100;
@@ -421,6 +404,7 @@
         this.soundShot.stop();
         bullet.kill();
     }
+    
     gameManager.addSprite('player', Player);
 
 })();
