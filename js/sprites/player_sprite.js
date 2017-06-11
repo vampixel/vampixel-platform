@@ -34,14 +34,9 @@
         this.imageCapHud = 'capa_hud_image';
         this.imageUrlCapHud = 'assets/spritesheets/capa_hud.png';    
         
-        //Select Item Hud
-        this.imageSelectHud = 'select_hud_image';
-        this.imageUrlSelectHud = 'assets/spritesheets/select-item.png';
-        
-        // Load Itens
-        this.imageNameLoadHud = 'load_hud_image';
-        this.imageUrlLoadHud = 'assets/spritesheets/timer-64x64.png'
-        this.imageLoadHud = null;
+        //Charger Hud
+        this.imageChargerHud = 'charger_hud_image';
+        this.imageUrlChargerHud = 'assets/spritesheets/timer-64x64.png';
                 
         gameManager.globals.score = 0;
         gameManager.globals.scoreText = '';
@@ -53,6 +48,7 @@
         this.isDoubleJumping = false;
         this.initialPositionX = 50;
         this.initialPositionY = this.game.height - 500;
+        this.isInvisible = false;
         
         this.bullets;
         this.bulletTime = 0;
@@ -110,6 +106,8 @@
         this.game.load.image(this.imageBatHud, this.imageUrlBatHud);
         this.game.load.image(this.imageCapHud, this.imageUrlCapHud);
         
+        this.game.load.spritesheet(this.imageChargerHud, this.imageUrlChargerHud, 64, 64);
+        
         //Load Sounds
         this.game.load.audio(this.soundNameDead, this.soundUrlDead);
         this.game.load.audio(this.soundNameShot, this.soundUrlShot);
@@ -166,31 +164,33 @@
         this.imageBloodLives3.fixedToCamera = true;
         
         //Hud
-        this.imageSelectHudBat = this.game.add.sprite(200, 40, this.imageSelectHud); 
+        // 
+        this.imageSelectHudBat = this.game.add.sprite(266, 40, this.imageSelectHud); 
         this.imageSelectHudBat.anchor.set(0.5);
         this.imageSelectHudBat.fixedToCamera = true;
         
-        this.imageBatHudView = this.game.add.sprite(204, 45, this.imageBatHud); 
+        this.imageBatHudView = this.game.add.sprite(270, 45, this.imageBatHud); 
         this.imageBatHudView.anchor.set(0.5);
         this.imageBatHudView.fixedToCamera = true;
         
-        this.imageSelectHudCapa = this.game.add.sprite(280, 40, this.imageSelectHud); 
+        this.imageSelectHudCapa = this.game.add.sprite(346, 40, this.imageSelectHud); 
         this.imageSelectHudCapa.anchor.set(0.5);
         this.imageSelectHudCapa.fixedToCamera = true;
         this.imageSelectHudCapa.kill();
        
-        this.imageCapHudView = this.game.add.sprite(280, 40, this.imageCapHud); 
+        this.imageCapHudView = this.game.add.sprite(346, 40, this.imageCapHud); 
         this.imageCapHudView.anchor.set(0.5);
         this.imageCapHudView.fixedToCamera = true;
-        
-        this.imageLoadHud = this.game.add.sprite(360, 40, this.imageNameLoadHud); 
-        this.imageLoadHud.animations.add('load', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 1, true);
-        this.imageLoadHud.animations.play('load');
-        this.imageLoadHud.anchor.set(0.5);
-        this.imageLoadHud.fixedToCamera = true;
+      
+        // charger
+        this.imageChargerHudView = this.game.add.sprite(422, 40, this.imageChargerHud); 
+        this.imageChargerHudView .frame = 0;
+        this.imageChargerHudView .animations.add('charger', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 1, true);
+        this.imageChargerHudView.anchor.set(0.5);
+        this.imageChargerHudView.fixedToCamera = true;
                 
         // Text Scores
-        gameManager.globals.scoreText = this.game.add.text(670, 10, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 32 });
+        gameManager.globals.scoreText = this.game.add.text(690, 12, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 30 });
         gameManager.globals.scoreText.anchor.set(0,0);
         gameManager.globals.scoreText.fixedToCamera = true;  
         
@@ -202,22 +202,27 @@
         this.soundPlayerDeath = this.game.add.audio(this.soundNamePlayerDeath);
         
         //Controles
-        //this.keys = this.game.input.keyboard.createCursorKeys();
-        // Movement Player
-        this.leftButton = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
-        this.rightButton = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
-        // Jump
-        this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        // Player Movement
+        this.leftButton = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+        this.rightButton = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        //this.downButtom = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+        this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
         this.jumpButton.onDown.add(this.jump, this);
+        
         // Shot
-        this.shotButton = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+        this.shotButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        
         // Run
         this.runButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
         this.runButton.onDown.add(this.run,this)
         
-        //hud
-        this.butButton = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-        this.capaButton = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
+        //hud of items
+        this.butButton = this.game.input.keyboard.addKey(Phaser.Keyboard.Q);
+        this.butButton.inputEnabled = true;
+       
+        this.capaButton = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+        this.capaButton.inputEnabled = true;
+        //this.capaButton = this.game.input.keyboard.addKey(Phaser.Keyboard.R); //Acharia Melhor  utilizar a letra "E"
     }
     
     Player.prototype.decreaseLives = function () {
@@ -314,16 +319,28 @@
     }
 
     Player.prototype.handleInputs = function () {     
-        if(this.butButton.isDown){
+        // Itens do HUD
+        if(this.butButton.isDown && this.butButton.inputEnabled){
             this.imageSelectHudBat.reset(200, 40);
             this.imageSelectHudCapa.kill();
         }
         if(this.capaButton.isDown){
+            this.isInvisible = true;
+            this.butButton.inputEnabled = false;
             this.imageSelectHudCapa.reset(280, 40);
             this.imageSelectHudBat.kill();
+            this.imageChargerHudView.animations.play('charger');
+            this.game.time.events.add(11000, function () {
+                this.butButton.inputEnabled = true;
+                this.imageChargerHudView.animations.stop('charger');
+                this.imageChargerHudView.frame = 0;
+                this.imageSelectHudBat.reset(200, 40);
+                this.imageSelectHudCapa.kill();
+                this.isInvisible = false;
+            }, this);
         }
-        
-        
+
+        // Movimentação Esquerda e Direita do Player
         if(this.leftButton.isDown){
             this.sprite.body.velocity.x = -150; // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
@@ -332,11 +349,8 @@
             if(!this.isJumping) {
                 this.sprite.animations.play('walk');
             }
-        }
-
-        // mover o sprite para a direita
-        else if(this.rightButton.isDown){
-            // se a tecla direita estiver pressionada
+        } else if(this.rightButton.isDown){
+                // se a tecla direita estiver pressionada
             this.sprite.body.velocity.x = 150;  // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
             if(this.sprite.scale.x == -1) this.sprite.scale.x = 1;
@@ -344,20 +358,18 @@
             if(!this.isJumping) {
                 this.sprite.animations.play('walk');
             }
-        }
-        else {
-            // Ajustar velocidade para zero
-            this.sprite.body.velocity.x = 0;
-            
-            if(!this.isJumping && !this.isDoubleJumping) {
-                this.sprite.animations.play('idle');   
+          } else {
+                // Player Parado
+                this.sprite.body.velocity.x = 0;
+                if(!this.isJumping && !this.isDoubleJumping) {
+                    this.sprite.animations.play('idle');   
+                }
+                if(!this.isDoubleJumping) {
+                    this.sprite.animations.play('');
+                }
             }
-             
-            if(!this.isDoubleJumping) {
-                this.sprite.animations.play('');
-            }
-        }
         
+        // Player Atirando        
         if (this.shotButton.isDown){
             this.fire();
         }
@@ -388,7 +400,7 @@
     //Shot Bats
     Player.prototype.fire = function () {
         var self = this;
-        if (self.canFire && self.game.time.now > self.bulletTime) {
+        if (self.canFire && !this.isInvisible && self.game.time.now > self.bulletTime) {
             self.bullet = self.bullets.getFirstExists(false);
             if (self.bullet) {                
                 self.bullet.reset(self.sprite.x, self.sprite.y);
