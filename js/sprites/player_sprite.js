@@ -40,6 +40,7 @@
                 
         gameManager.globals.score = 0;
         gameManager.globals.scoreText = '';
+        gameManager.globals.isColliderRatos = true;
                 
         this.normalGravity = 750;
         this.fallingGravity = 50;
@@ -79,6 +80,10 @@
         this.soundNamePlayerDeath = 'playerDeathSound';
         this.soundUrlPlayerDeath = 'assets/sounds/player/playerDeath.ogg';
         
+        // Modificando Itens
+        this.soundNameModItens = 'soundModItens';
+        this.soundUrlModItens = 'assets/sounds/ui/click.ogg';
+        
         this.stateContext = null;
         
     }
@@ -114,6 +119,7 @@
         this.game.load.audio(this.soundNameJump, this.soundUrlJump); 
         this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
         this.game.load.audio(this.soundNamePlayerDeath, this.soundUrlPlayerDeath);
+        this.game.load.audio(this.soundNameModItens, this.soundUrlModItens);
     }
 
     Player.prototype.setup = function (stateContext) {   
@@ -200,6 +206,7 @@
         this.soundJump = this.game.add.audio(this.soundNameJump);
         this.soundPickup = this.game.add.audio(this.soundNamePickupBlood);
         this.soundPlayerDeath = this.game.add.audio(this.soundNamePlayerDeath);
+        this.soundModItens = this.game.add.audio(this.soundNameModItens);
         
         //Controles
         // Player Movement
@@ -321,12 +328,18 @@
     Player.prototype.handleInputs = function () {     
         // Itens do HUD
         if(this.butButton.isDown && this.butButton.inputEnabled){
+            this.soundModItens.play();
             this.imageSelectHudBat.reset(200, 40);
             this.imageSelectHudCapa.kill();
         }
         if(this.capaButton.isDown){
+            this.soundModItens.play();
             this.isInvisible = true;
             this.butButton.inputEnabled = false;
+            this.sprite.alpha = 0.1;
+            gameManager.globals.isColliderRatos = false;
+            gameManager.globals.bossBulletCollision = false;
+            this.sprite.body.collider = false;
             this.imageSelectHudCapa.reset(280, 40);
             this.imageSelectHudBat.kill();
             this.imageChargerHudView.animations.play('charger');
@@ -336,7 +349,10 @@
                 this.imageChargerHudView.frame = 0;
                 this.imageSelectHudBat.reset(200, 40);
                 this.imageSelectHudCapa.kill();
+                this.sprite.alpha = 1;
                 this.isInvisible = false;
+                gameManager.globals.isColliderRatos = true;
+                gameManager.globals.bossBulletCollision = true;
             }, this);
         }
 

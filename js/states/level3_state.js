@@ -84,7 +84,8 @@
     }
 
     Level3State.prototype.bossBulletCollision = function(player, bullet) {
-        bullet.kill();
+        if (gameManager.globals.bossBulletCollision) {
+            bullet.kill();
 
         // game over
         if(gameManager.globals.lives === 1) {
@@ -92,6 +93,7 @@
         }
 
         this.player.decreaseLives.apply(this.player);
+        }
     }
 
     Level3State.prototype.playerBulletCollision = function(player, bullet) {
@@ -112,11 +114,11 @@
     Level3State.prototype.update = function() {
         // player and boss collisions
         this.game.physics.arcade.collide(this.player.sprite, this.floor, this.player.groundCollision, null, this.player);
-        this.game.physics.arcade.collide(this.boss.sprite, this.floor);
-        this.game.physics.arcade.collide(this.boss.sprite, this.player.sprite, this.bossPlayerCollision, null, this);
         this.game.physics.arcade.collide(this.player.sprite, this.platform1, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.platform2, this.player.groundCollision, null, this.player);
-
+        this.game.physics.arcade.collide(this.boss.sprite, this.floor);
+        this.game.physics.arcade.collide(this.boss.sprite, this.player.sprite, this.C, null, this);
+        
         // bullet colliders
         this.game.physics.arcade.overlap(this.player.sprite, this.boss.bullets, this.bossBulletCollision, null, this);
         this.game.physics.arcade.overlap(this.boss.sprite, this.player.bullets, this.playerBulletCollision, null, this);

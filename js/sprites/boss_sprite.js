@@ -28,6 +28,8 @@
         this.stateContext = null;
         this.isGoing = 'left';
         this.HP = 100;
+        
+        gameManager.globals.bossBulletCollision = true;
 
         // bullets
         this.bullets;
