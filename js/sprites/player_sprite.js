@@ -37,6 +37,11 @@
         //Select Item Hud
         this.imageSelectHud = 'select_hud_image';
         this.imageUrlSelectHud = 'assets/spritesheets/select-item.png';
+        
+        // Load Itens
+        this.imageNameLoadHud = 'load_hud_image';
+        this.imageUrlLoadHud = 'assets/spritesheets/timer-64x64.png'
+        this.imageLoadHud = null;
                 
         gameManager.globals.score = 0;
         gameManager.globals.scoreText = '';
@@ -94,6 +99,9 @@
         this.game.load.spritesheet(this.imageBatFlyName, this.imageBatFlyUrl, 64, 64);
         // Bullet Bat
         this.game.load.spritesheet(this.imageNameBatShot, this.imageUrlBatShot, 16, 16);
+        // load
+        this.game.load.spritesheet(this.imageNameLoadHud, this.imageUrlLoadHud, 64, 64);
+        
         // Lives
         this.game.load.image(this.imageNameLives, this.imageUrlLives);
         // Bg Score
@@ -175,9 +183,15 @@
         this.imageCapHudView = this.game.add.sprite(280, 40, this.imageCapHud); 
         this.imageCapHudView.anchor.set(0.5);
         this.imageCapHudView.fixedToCamera = true;
+        
+        this.imageLoadHud = this.game.add.sprite(360, 40, this.imageNameLoadHud); 
+        this.imageLoadHud.animations.add('load', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 1, true);
+        this.imageLoadHud.animations.play('load');
+        this.imageLoadHud.anchor.set(0.5);
+        this.imageLoadHud.fixedToCamera = true;
                 
         // Text Scores
-        gameManager.globals.scoreText = this.game.add.text(670, 10, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 32 });
+        gameManager.globals.scoreText = this.game.add.text(680, 10, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 32 });
         gameManager.globals.scoreText.anchor.set(0,0);
         gameManager.globals.scoreText.fixedToCamera = true;  
         
@@ -302,9 +316,6 @@
     }
 
     Player.prototype.handleInputs = function () {     
-        
-        
-        
         if(this.butButton.isDown){
             this.imageSelectHudBat.reset(200, 40);
             this.imageSelectHudCapa.kill();
@@ -314,7 +325,6 @@
             this.imageSelectHudCapa.reset(280, 40);
             this.imageSelectHudBat.kill();
         }
-        
         
         if(this.leftButton.isDown){
             this.sprite.body.velocity.x = -150; // Ajustar velocidade
