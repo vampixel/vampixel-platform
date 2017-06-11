@@ -2,7 +2,7 @@
     'use strict'; 
 
     var Level2State = function() {
-         this.player = gameManager.getSprite('player');
+        this.player = gameManager.getSprite('player');
         
         this.bullets;
         this.bulletTime = 0;
@@ -12,42 +12,31 @@
         this.imageNameBatShot = 'batShot_image';
         this.imageUrlBatShot = 'assets/img/red_square_10x10.png';
         this.imageBatShot = null;
-        
     };
 
     Level2State.prototype.preload = function() {
+        // player
+        this.player.preload();
+        
         // Para carregar um sprite, basta informar uma chave e dizer qual é o arquivo
-        //this.game.load.image('mapTiles', 'assets/spritesheets/tiles.png');
         this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
+        this.game.load.image('crucifixo_image', 'assets/img/crucifixo2.png');
+        this.game.load.image(this.imageNameBatShot, this.imageUrlBatShot);
 
         // Para carregar um spritesheet, é necessário saber a altura e largura de cada sprite, e o número de sprites no arquivo
-        // No caso do player.png, os sprites são de 32x32 pixels, e há 8 sprites no arquivo
-        // this.game.load.spritesheet('player', 'Assets/spritesheets/player.png', 32, 32, 8);
         this.game.load.spritesheet('items', 'assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.spritesheet('freira', 'assets/spritesheets/FREIRA-SPRITE.png', 64, 64, 4);
         this.game.load.spritesheet('arqueiro', 'assets/spritesheets/ARQUEIRO-SPRITE.png', 64, 64, 3);
-        
-        this.game.load.image('crucifixo_image', 'assets/img/crucifixo2.png');
         this.game.load.spritesheet('blood', 'assets/img/blood.png', 42, 42, 1);
         
         // Para carregar um arquivo do Tiled, o mesmo precisa estar no formato JSON
         this.game.load.tilemap('level2', 'assets/maps/level21.json', null, Phaser.Tilemap.TILED_JSON);
 
         // Para carregar os sons, basta informar a chave e dizer qual é o arquivo
-        //this.game.load.audio('jumpSound', 'assets/sounds/jump.wav');
-        //this.game.load.audio('pickupSound', 'assets/sounds/pickup.wav');
-        //this.game.load.audio('playerDeath', 'assets/sounds/hurt3.ogg');
-        //this.game.load.audio('enemyDeath', 'assets/sounds/hit2.ogg');
         this.game.load.audio('environmentSound', 'assets/sounds/levels/gumbelElSiniestroYLaVelz.ogg');
-        
-        this.game.load.image(this.imageNameBatShot, this.imageUrlBatShot);
-
-        // player
-        this.player.preload();
     }
 
     Level2State.prototype.create = function() {
-
         // Inicializando sistema de física
         // o sistema Arcade é o mais simples de todos, mas também é o mais eficiente em termos de processamento.
         // https://photonstorm.github.io/phaser-ce/Phaser.Physics.Arcade.html
@@ -67,9 +56,9 @@
         
         this.bgLayer = this.level2.createLayer('BG');
         this.itemLayer = this.level2.createLayer('Item');
-        //this.lavaLayer = this.level1.createLayer('Lava');
         this.floor = this.level2.createLayer('Floor');
         this.wallsLayer = this.level2.createLayer('Wall');
+        
         // Mais informações sobre tilemaps:
         // https://photonstorm.github.io/phaser-ce/#toc14
 
@@ -89,17 +78,8 @@
         this.level2.setCollisionByExclusion([9, 10, 11, 12, 17, 18, 19, 20], true, this.wallsLayer);
         this.level2.setCollisionByExclusion([11, 12, 17, 19, 20], true, this.floor);
         
-        // Para o layer de lava é o caso oposto: poucos tiles colidem, então é mais fácil 
-        // informar diretamente quais são.
+        // Para o caso oposto: poucos tiles colidindo, então é mais fácil informar diretamente quais sã0
         //this.level1.setCollision([5, 6, 13], true, this.lavaLayer);
-            
-        // Inicializando jogador
-        //this.player.setup(this);
-        // setup initial player properties
-        this.player.setup(this);
-        this.player.sprite.x = 85;
-        this.player.sprite.y = 844;
-        this.game.camera.follow(this.player.sprite);
         
         // Adicionando objetos do Tiled, utilizando grupos
         // Um grupo é como se fosse um array de sprites, mas com várias facilidades adicionais, 
@@ -115,6 +95,13 @@
         // frame do spritesheet, basta setar para um dos frames do objeto em questão
         // true, false - estes dois parâmetros podem ficar com estes valores
         // grupo - qual grupo do Phaser devemos adicionar esses objetos
+        
+        // Inicializando jogador
+        // setup initial player properties        
+        this.player.setup(this);
+        this.player.sprite.x = 85;
+        this.player.sprite.y = 844;
+        this.game.camera.follow(this.player.sprite);
         
         // Lifes
         this.addlifesLevel2 = this.game.add.physicsGroup();
@@ -136,6 +123,7 @@
             diamond.animations.play('spin');
         });
         
+        // Grupo de Arqueiros        
         this.arqs = this.game.add.physicsGroup();
         this.level2.createFromObjects('Enemies', 'arq', 'arqueiro', 8, true, false, this.arqs);
         this.arqs.forEach(function(arq){
@@ -150,6 +138,7 @@
             arq.body.bounce.x = 1;
         });
         
+        // Grupo de Freiras        
         this.nuns = this.game.add.physicsGroup();
         this.level2.createFromObjects('Enemies', 'nun', 'freira', 8, true, false, this.nuns);
         this.nuns.forEach(function(nun){
@@ -166,28 +155,25 @@
 
         // Criando assets de som com this.game.add.audio()
         // O parâmetro é o nome do asset definido no preload()
-        
         //this.jumpSound = this.game.add.audio('jumpSound');
-        //this.pickupSound = this.game.add.audio('pickupSound');
-        //this.playerDeathSound = this.game.add.audio('playerDeath');
-        //this.enemyDeathSound = this.game.add.audio('enemyDeath');
-        
-        // texto do level
-        this.level2Text = this.game.add.text(400, 105, 'Level 2', { fill: '#ffffff', align: 'center', fontSize: 30 });
-        this.level2Text.anchor.set(0.5);
-        this.level2Text.fixedToCamera = true;  
         
         // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true, para ficar repetindo
         this.music = this.game.add.audio('environmentSound');
         this.music.loop = true;
         this.music.play();
-        
+
+        // Texto do level
+        this.level2Text = this.game.add.text(400, 105, 'Level 2', { fill: '#ffffff', align: 'center', fontSize: 30 });
+        this.level2Text.anchor.set(0.5);
+        this.level2Text.fixedToCamera = true;  
+       
         // Estado do jogo - Variáveis para guardar quaisquer informações pertinentes para as condições de 
         // vitória/derrota, ações do jogador, etc
-        this.totalDiamonds = this.diamonds.length;
-        this.collectedDiamonds = 0;
-        this.score = 0;
+        // this.totalDiamonds = this.diamonds.length;
+        // this.collectedDiamonds = 0;
+        // this.score = 0;
         
+        // Bullets dos Arqueiros
         this.bullets = this.game.add.group();
         this.bullets.enableBody = true; 
         this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
@@ -206,46 +192,37 @@
                 self.fire(arq);
             })
         }, this);
-    
-
     }
 
     Level2State.prototype.update = function() {
+        console.log("Vidas", gameManager.globals.lives);
         // Detecção de colisões
         // Todas as colisões entre os objetos do jogo são avaliadas com arcade.collide() ou 
         // arcade.overlap(). O Phaser irá automaticamente calcular a colisão dos objetos
         // Inicialmente, adicionando colisões do player com as paredes da fase, que é um layer:
-        //this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.floor, this.player.groundCollision, null, this.player);
-        
+    
         // Colisão com os diamantes - devem ser coletados
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);
         
-        // Colisão com inimigos
-//        if (this.game.physics.arcade.overlap(this.player.sprite, this.arqs)){
-//            this.player.lose();    
-//        }
-        
+        // Colisão do Player com os Inimigos
         this.game.physics.arcade.overlap(this.player.sprite, this.nuns, this.enemiesCollision, null, this);
         this.game.physics.arcade.overlap(this.player.sprite, this.arqs, this.enemiesCollision, null, this);
-
-        //        if (this.game.physics.arcade.overlap(this.player.sprite, this.nuns)){
-//            this.player.lose(); 
-//        }
         
+        // Colisão dos Inimigos com as balas do player    
         this.game.physics.arcade.overlap(this.nuns, this.player.bullets, this.playerBulletCollision, null, this);
         this.game.physics.arcade.overlap(this.arqs, this.player.bullets, this.playerBulletCollision, null, this);
         
-        // Colisão dos corações de vida
+        // Colisão do Player com os as bolsas de Sangue
         this.game.physics.arcade.overlap(this.player.sprite, this.addlifesLevel2, this.LiveCollisionLevel2, null, this);
 
-        // Adicionando colisão entre os morcegos e as paredes
+        // Colisão dos Arqueiros e freias com as paredes
         this.game.physics.arcade.collide(this.arqs, this.wallsLayer);
         this.game.physics.arcade.collide(this.nuns, this.wallsLayer);
         
         // Movimentação do player
-         this.player.handleInputs();
-         this.player.checkGravity.apply(this.player); 
+        this.player.handleInputs();
+        this.player.checkGravity.apply(this.player); 
          
         // Para cada morcego, verificar em que sentido ele está indo
         // Se a velocidade for positiva, a escala no eixo X será 1, caso
@@ -268,7 +245,6 @@
     Level2State.prototype.enemiesCollision = function(player, enemie) {
         enemie.kill();
         this.player.decreaseLives.apply(this.player);
-        
     }
     
     Level2State.prototype.LiveCollisionLevel2 = function(player, addlifeLevel2){
@@ -291,15 +267,8 @@
         this.game.state.start('level3');
     }
     
-//     Level2State.prototype.render = function() {
-//         this.game.debug.inputInfo(32, 32);
-//     }
-    
-     //Shot Bats
-    Level2State.prototype.fire = function (arq) {
-        console.log("aa", this.game);
-        console.log('bullets', this.bullets.length);
-        
+    //Shot Bats
+    Level2State.prototype.fire = function (arq) {        
         if (this.game.time.now > this.bulletTime) {
             this.bullet = this.bullets.getFirstExists(false);
             if (this.bullet) {
@@ -318,7 +287,6 @@
     Level2State.prototype.resetBullet = function(bullet) {
         bullet.kill();
     }
-    
     
     gameManager.addState('level2', Level2State);
 

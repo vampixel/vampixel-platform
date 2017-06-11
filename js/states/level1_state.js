@@ -8,28 +8,29 @@
     };
     
     Level1State.prototype.preload = function() {
-        // player
+        // Carregando o Player
         this.player.preload();
         
         // SpriteSheet
         this.game.load.spritesheet('rato', 'assets/spritesheets/rato-sprite.png', 64, 64, 3);
         this.game.load.spritesheet('items', 'Assets/spritesheets/items.png', 32, 32, 16);
-        this.game.load.spritesheet('enemies', 'Assets/spritesheets/enemies.png', 32, 32, 12);
         this.game.load.spritesheet('blood', 'assets/img/blood.png', 42, 42, 1);
         
         // Images
         this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
         
-        // Sounds
-        this.game.load.audio('environmentSoundLevel1', 'assets/sounds/levels/simonMathewson8bitEnergyDrinkComedown1.ogg');
-        
         //Tile maps
         this.game.load.tilemap('Level1','assets/maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
+        
+        // Sounds
+        this.game.load.audio('environmentSoundLevel1', 'assets/sounds/levels/simonMathewson8bitEnergyDrinkComedown1.ogg');
     }
 
     Level1State.prototype.create = function() {
+        // Física
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         
+        // Áudios
         this.environmentSoundLevel1 = this.game.add.audio('environmentSoundLevel1');
         this.environmentSoundLevel1.loop = true;
         this.environmentSoundLevel1.play();
@@ -48,12 +49,10 @@
         this.Level1.setCollisionByExclusion([], true, this.wallsLayer);
         this.Level1.setCollisionByExclusion([], true, this.fireLayer);
         
-        // setup initial player properties
+        // setup initial player properties and camera follow
         this.player.setup(this);
-        this.player.sprite.x = this.game.world.centerX;
+        this.player.sprite.x = this.game.world.centerX - 100;
         this.player.sprite.y = 70;
-        
-        //Movimentacao de camera
         this.game.camera.follow(this.player.sprite);
         
         // texto do level
@@ -174,7 +173,6 @@
     Level1State.prototype.update = function() {
         console.log("Vidas", gameManager.globals.lives);
         this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
-        
         this.game.physics.arcade.overlap(this.player.sprite, this.bats, this.batCollision, null, this);
         this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);        
@@ -224,7 +222,8 @@
 
     Level1State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
-        this.environmentSoundLevel1.stop();
+        gameManager.globals.level1 = false;
+        gameManager.globals.level2 = true;
         this.game.state.start('level2');  
     } 
     
@@ -234,29 +233,19 @@
     
     Level1State.prototype.fireBullet = function(player, fireBullet){
         fireBullet.kill();
-            if(gameManager.globals.lives === 0) {
-                this.environmentSoundLevel1.stop();
-            }
         this.player.decreaseLives.apply(this.player); 
     }
     
     Level1State.prototype.batCollision = function(player, bat){
        bat.kill();
-            if(gameManager.globals.lives === 0) {
-                this.environmentSoundLevel1.stop();
-            }
        this.player.decreaseLives.apply(this.player);
     }
     Level1State.prototype.ratosCollision = function(player, rato){
        rato.kill();
-        if(gameManager.globals.lives === 0) {
-            this.environmentSoundLevel1.stop();
-        }
        this.player.decreaseLives.apply(this.player);
     }
     
     Level1State.prototype.fireDeath = function(player, fire){
-        this.environmentSoundLevel1.stop();
         this.player.decreaseLives.apply(this.player);
     }
     

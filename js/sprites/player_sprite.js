@@ -45,8 +45,6 @@
                 
         gameManager.globals.score = 0;
         gameManager.globals.scoreText = '';
-
-        this.amountOfBats = 0;
                 
         this.normalGravity = 750;
         this.fallingGravity = 50;
@@ -97,6 +95,7 @@
         this.game.load.spritesheet(this.imageJumpName, this.imageJumpUrl, 128, 128);
         //Player Bat Fly
         this.game.load.spritesheet(this.imageBatFlyName, this.imageBatFlyUrl, 64, 64);
+        
         // Bullet Bat
         this.game.load.spritesheet(this.imageNameBatShot, this.imageUrlBatShot, 16, 16);
         // load
@@ -191,7 +190,7 @@
         this.imageLoadHud.fixedToCamera = true;
                 
         // Text Scores
-        gameManager.globals.scoreText = this.game.add.text(680, 10, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 32 });
+        gameManager.globals.scoreText = this.game.add.text(670, 10, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 32 });
         gameManager.globals.scoreText.anchor.set(0,0);
         gameManager.globals.scoreText.fixedToCamera = true;  
         
@@ -219,7 +218,6 @@
         //hud
         this.butButton = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
         this.capaButton = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
-
     }
     
     Player.prototype.decreaseLives = function () {
@@ -227,15 +225,15 @@
         this.soundDead.play();
 
         if(gameManager.globals.lives === 2) {
-            this.imageBloodLives3.alpha = 0;
+            this.imageBloodLives3.kill();
         }
 
         if(gameManager.globals.lives === 1) {
-            this.imageBloodLives2.alpha = 0;
+            this.imageBloodLives2.kill();
         }
 
         if(gameManager.globals.lives === 0) {
-            this.imageBloodLives1.alpha = 0;
+            this.imageBloodLives1.kill();
             this.gameover();
         }
     }
@@ -244,12 +242,12 @@
         this.soundPickup.play();
         
         if(gameManager.globals.lives === 2) { // jogador com 2 corações e adicionando mais uma vida
-            this.imageBloodLives2.alpha = 1;
+            this.imageBloodLives3.reset(140, 25);
             gameManager.globals.lives++;
         }
 
         if(gameManager.globals.lives === 1) { // jogador com 1 coração e adicionando mais uma vida
-            this.imageBloodLives2.alpha = 1;
+            this.imageBloodLives2.reset(90, 25);
             gameManager.globals.lives++;
         }
     }
@@ -320,11 +318,11 @@
             this.imageSelectHudBat.reset(200, 40);
             this.imageSelectHudCapa.kill();
         }
-        
         if(this.capaButton.isDown){
             this.imageSelectHudCapa.reset(280, 40);
             this.imageSelectHudBat.kill();
         }
+        
         
         if(this.leftButton.isDown){
             this.sprite.body.velocity.x = -150; // Ajustar velocidade
@@ -371,13 +369,15 @@
         }
     }
     
-    // Score
+    // Scores
+    // Score Rato
     Player.prototype.increaseScoreRatos = function () {
         //this.soundShot.stop();
         gameManager.globals.score = gameManager.globals.score + 50;
         gameManager.globals.scoreText.setText(gameManager.globals.score);
     }
     
+    // Score Enemies
     Player.prototype.increaseScoreEnemies = function () {
         //this.soundShot.stop();
         gameManager.globals.score = gameManager.globals.score + 100;
@@ -426,6 +426,7 @@
         this.soundShot.stop();
         bullet.kill();
     }
+    
     gameManager.addSprite('player', Player);
 
 })();
