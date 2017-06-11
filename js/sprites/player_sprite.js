@@ -94,11 +94,14 @@
         
         // Bullet Bat
         this.game.load.spritesheet(this.imageNameBatShot, this.imageUrlBatShot, 16, 16);
+        // load
+        this.game.load.spritesheet(this.imageNameLoadHud, this.imageUrlLoadHud, 64, 64);
         
         // Lives
         this.game.load.image(this.imageNameLives, this.imageUrlLives);
-        
-        // hud
+        // Bg Score
+        this.game.load.image(this.imageNameScores, this.imageUrlScores);
+         // hud
         this.game.load.image(this.imageSelectHud, this.imageUrlSelectHud);
         this.game.load.image(this.imageBatHud, this.imageUrlBatHud);
         this.game.load.image(this.imageCapHud, this.imageUrlCapHud);
@@ -178,6 +181,7 @@
         this.imageCapHudView = this.game.add.sprite(346, 40, this.imageCapHud); 
         this.imageCapHudView.anchor.set(0.5);
         this.imageCapHudView.fixedToCamera = true;
+      
         // charger
         this.imageChargerHudView = this.game.add.sprite(422, 40, this.imageChargerHud); 
         this.imageChargerHudView .frame = 0;
@@ -411,12 +415,19 @@
                     self.bulletTime = self.game.time.now + 150;
                 }
 
-                self.soundShot.play();
+                if(!self.amountOfBats) {
+                    self.soundShot.play();
+                }
+
+                self.amountOfBats++;
                 self.canFire = false;
 
                 self.game.time.events.add(Phaser.Timer.SECOND, function () {
+                    self.amountOfBats--;
                     self.bullet.kill();
-                    self.soundShot.stop();
+                    if(!self.amountOfBats) {
+                        self.soundShot.stop();
+                    }
                     self.canFire = true;
                 }, this).autoDestroy = true;
             }
