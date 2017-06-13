@@ -279,6 +279,9 @@
 
         if(gameManager.globals.lives === 0) {
             this.imageBloodLives1.alpha = 0;
+            if (gameManager.globals.isLevel1){
+               gameManager.globals.environmentSoundLevel1.stop(); 
+            } 
             this.gameover();
         }
     }

@@ -22,6 +22,9 @@
     MenuState.prototype.create = function() {
         // player lives
         gameManager.globals.lives = 3;
+        gameManager.globals.isLevel1 = false;
+        gameManager.globals.isLevel2 = false;
+        gameManager.globals.isLevel3 = false;
         
         this.game.add.tileSprite(0, 0, 800, 600, 'background');
         
@@ -33,13 +36,13 @@
         
         this.onMenu = true;
         
-        var startButton = this.game.add.button(this.game.world.centerX -230, this.game.world.centerY +150, 'startButton', startButtonClicked, this);
+        var startButton = this.game.add.button(150, 450, 'startButton', startButtonClicked, this);
         startButton.anchor.set(0.5);
         
-        var chooseLevelButton = this.game.add.button(this.game.world.centerX, this.game.world.centerY +150, 'chooseLevelButton', chooseLevelButton, this);
+        var chooseLevelButton = this.game.add.button(400, 450, 'chooseLevelButton', chooseLevelButton, this);
         chooseLevelButton.anchor.set(0.5);
         
-        var instructionButton = this.game.add.button(this.game.world.centerX + 230, this.game.world.centerY +150, 'instructionButton', instructionButton, this);
+        var instructionButton = this.game.add.button(640, 450, 'instructionButton', instructionButton, this);
         instructionButton.anchor.set(0.5);
         
         var creditsButton = this.game.add.button(710, 40, 'creditsButton', creditsButton, this);
@@ -48,6 +51,7 @@
         function startButtonClicked() {
             this.clickSound.play();
             this.menuSound.stop();
+            gameManager.globals.isLevel1 = true;
             this.game.state.start('level1');
         }
         

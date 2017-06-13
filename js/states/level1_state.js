@@ -35,9 +35,9 @@
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         
         // Áudios
-        this.environmentSoundLevel1 = this.game.add.audio('environmentSoundLevel1');
-        this.environmentSoundLevel1.loop = true;
-        this.environmentSoundLevel1.play();
+        gameManager.globals.environmentSoundLevel1 = this.game.add.audio('environmentSoundLevel1');
+        gameManager.globals.environmentSoundLevel1.lopp = true;
+        gameManager.globals.environmentSoundLevel1.play();
     
         //Tile maps
         this.Level1 = this.game.add.tilemap('Level1');
@@ -245,6 +245,8 @@
 
     Level1State.prototype.diamondCollect = function(player, diamond){ //Jogando Colidindo com o Diamante e indo para o Level 2
         diamond.kill();
+        gameManager.globals.isLevel1 = false
+        gameManager.globals.isLevel2 = true;
         this.game.state.start('level2');  
     } 
     
