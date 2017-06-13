@@ -102,11 +102,11 @@
         this.player.sprite.x = 85;
         this.player.sprite.y = 844;
         this.game.camera.follow(this.player.sprite);
-        
-        // Lifes
-        this.addlifesLevel2 = this.game.add.physicsGroup();
-        this.level2.createFromObjects('Items', 'life2', 'blood', 0, true, false, this.addlifesLevel2);
-        this.addlifesLevel2.forEach(function(addlifeLevel2) {
+
+        // Life
+        this.livesToCollect = this.game.add.physicsGroup();
+        this.level2.createFromObjects('Items', 'life', 'blood', 0, true, false, this.livesToCollect);
+        this.livesToCollect.forEach(function(addlifeLevel2) {
             addlifeLevel2.anchor.setTo(0.5);
             addlifeLevel2.body.immovable = true;
         });
@@ -212,8 +212,8 @@
         this.game.physics.arcade.overlap(this.nuns, this.player.bullets, this.playerBulletCollision, null, this);
         this.game.physics.arcade.overlap(this.arqs, this.player.bullets, this.playerBulletCollision, null, this);
         
-        // Colisão do Player com os as bolsas de Sangue
-        this.game.physics.arcade.overlap(this.player.sprite, this.addlifesLevel2, this.LiveCollisionLevel2, null, this);
+        // Player pegando coração "vida"
+        this.game.physics.arcade.overlap(this.player.sprite, this.livesToCollect, this.player.livesToCollectCollision, null, this.player); 
 
         // Colisão dos Arqueiros e freias com as paredes
         this.game.physics.arcade.collide(this.arqs, this.wallsLayer);

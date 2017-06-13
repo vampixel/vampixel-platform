@@ -46,11 +46,10 @@
         }, 
         {
          "draworder":"topdown",
-         "height":30,
          "name":"Items",
          "objects":[
                 {
-                 "gid":90,
+                 "gid":78,
                  "height":32,
                  "id":36,
                  "name":"diamond",
@@ -62,31 +61,41 @@
                  "y":261
                 }, 
                 {
-                 "gid":101,
+                 "gid":89,
                  "height":42,
                  "id":37,
-                 "name":"life2",
+                 "name":"life",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":42,
                  "x":698.999999999997,
                  "y":779.666666666667
+                }, 
+                {
+                 "gid":89,
+                 "height":42,
+                 "id":38,
+                 "name":"life",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":42,
+                 "x":237,
+                 "y":909
                 }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":40,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
-         "height":30,
          "name":"Enemies",
          "objects":[
                 {
-                 "gid":77,
+                 "gid":65,
                  "height":64,
                  "id":21,
                  "name":"arq",
@@ -98,7 +107,7 @@
                  "y":413
                 }, 
                 {
-                 "gid":81,
+                 "gid":69,
                  "height":64,
                  "id":22,
                  "name":"nun",
@@ -110,7 +119,7 @@
                  "y":413
                 }, 
                 {
-                 "gid":81,
+                 "gid":69,
                  "height":64,
                  "id":23,
                  "name":"nun",
@@ -122,7 +131,7 @@
                  "y":477
                 }, 
                 {
-                 "gid":81,
+                 "gid":69,
                  "height":64,
                  "id":24,
                  "name":"nun",
@@ -134,7 +143,7 @@
                  "y":799
                 }, 
                 {
-                 "gid":81,
+                 "gid":69,
                  "height":64,
                  "id":25,
                  "name":"nun",
@@ -146,7 +155,7 @@
                  "y":605
                 }, 
                 {
-                 "gid":77,
+                 "gid":65,
                  "height":64,
                  "id":26,
                  "name":"arq",
@@ -158,7 +167,7 @@
                  "y":544
                 }, 
                 {
-                 "gid":77,
+                 "gid":65,
                  "height":64,
                  "id":32,
                  "name":"arq",
@@ -170,7 +179,7 @@
                  "y":255
                 }, 
                 {
-                 "gid":77,
+                 "gid":65,
                  "height":64,
                  "id":35,
                  "name":"arq",
@@ -184,11 +193,10 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":40,
          "x":0,
          "y":0
         }],
- "nextobjectid":38,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":32,
@@ -209,19 +217,6 @@
         {
          "columns":4,
          "firstgid":65,
-         "image":"..\/spritesheets\/enemies.png",
-         "imageheight":96,
-         "imagewidth":128,
-         "margin":0,
-         "name":"enemies",
-         "spacing":0,
-         "tilecount":12,
-         "tileheight":32,
-         "tilewidth":32
-        }, 
-        {
-         "columns":4,
-         "firstgid":77,
          "image":"..\/spritesheets\/ARQUEIRO-SPRITE.png",
          "imageheight":64,
          "imagewidth":256,
@@ -234,7 +229,7 @@
         }, 
         {
          "columns":4,
-         "firstgid":81,
+         "firstgid":69,
          "image":"..\/spritesheets\/FREIRA-SPRITE.png",
          "imageheight":64,
          "imagewidth":256,
@@ -247,7 +242,7 @@
         }, 
         {
          "columns":4,
-         "firstgid":85,
+         "firstgid":73,
          "image":"..\/spritesheets\/items.png",
          "imageheight":128,
          "imagewidth":128,
@@ -260,7 +255,7 @@
         }, 
         {
          "columns":1,
-         "firstgid":101,
+         "firstgid":89,
          "image":"..\/img\/blood.png",
          "imageheight":42,
          "imagewidth":42,
@@ -272,6 +267,7 @@
          "tilewidth":42
         }],
  "tilewidth":32,
- "version":1,
+ "type":"map",
+ "version":"2017.05.16",
  "width":40
 }

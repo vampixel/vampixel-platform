@@ -3,8 +3,7 @@
 
     var Level1State = function(Level1) {
         // load sprites here
-        this.player = gameManager.getSprite('player');
- 
+        this.player = gameManager.getSprite('player'); 
     };
     
     Level1State.prototype.preload = function() {
@@ -27,6 +26,10 @@
     }
 
     Level1State.prototype.create = function() {
+
+        // set globals
+        gameManager.globals.lives = 3;
+
         // Física
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         
@@ -61,9 +64,9 @@
         this.level1Text.fixedToCamera = true;  
         
         // Life
-        this.addlifesLevel1 = this.game.add.physicsGroup();
-        this.Level1.createFromObjects('Items', 'life1', 'blood', 0, true, false, this.addlifesLevel1);
-        this.addlifesLevel1.forEach(function(addlifeLevel1) {
+        this.livesToCollect = this.game.add.physicsGroup();
+        this.Level1.createFromObjects('Items', 'life', 'blood', 0, true, false, this.livesToCollect);
+        this.livesToCollect.forEach(function(addlifeLevel1) {
             addlifeLevel1.anchor.setTo(0.5);
             addlifeLevel1.body.immovable = true;
         });
@@ -169,7 +172,6 @@
     FireParticle.prototype = Object.create(Phaser.Particle.prototype);
     FireParticle.prototype.constructor = FireParticle;
     
-    
     Level1State.prototype.update = function() {
         this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
     
@@ -181,7 +183,7 @@
         this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
         
         // Player pegando coração "vida"
-        this.game.physics.arcade.overlap(this.player.sprite, this.addlifesLevel1, this.LiveCollisionLevel1, null, this); 
+        this.game.physics.arcade.overlap(this.player.sprite, this.livesToCollect, this.player.livesToCollectCollision, null, this.player); 
         
         // Objetos com as paredes e Plataformas
         this.game.physics.arcade.collide(this.bats, this.wallsLayer);
@@ -248,11 +250,6 @@
     
     Level1State.prototype.fireDeath = function(player, fire){
         this.player.decreaseLives.apply(this.player);
-    }
-    
-    Level1State.prototype.LiveCollisionLevel1 = function(player, addlifeLevel1){
-        addlifeLevel1.kill();
-        this.player.addLives.apply(this.player); 
     }
 
     gameManager.addState('level1', Level1State);
