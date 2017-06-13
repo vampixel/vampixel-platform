@@ -230,36 +230,60 @@
         this.capaButton = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
         this.capaButton.inputEnabled = true;
         //this.capaButton = this.game.input.keyboard.addKey(Phaser.Keyboard.R); //Acharia Melhor  utilizar a letra "E"
+
+        this.checkAmountOfLives();
     }
     
+    Player.prototype.checkAmountOfLives = function () {
+        if(gameManager.globals.lives === 2) {
+            this.imageBloodLives3.alpha = 0;
+        }
+
+        if(gameManager.globals.lives === 1) {
+            this.imageBloodLives3.alpha = 0;
+            this.imageBloodLives2.alpha = 0;
+        }
+
+        if(gameManager.globals.lives === 0) {
+            this.imageBloodLives3.alpha = 0;
+            this.imageBloodLives2.alpha = 0;
+            this.imageBloodLives1.alpha = 0;
+            this.gameover();
+        }
+    }
+
     Player.prototype.decreaseLives = function () {
         gameManager.globals.lives--;
         this.soundDead.play();
 
         if(gameManager.globals.lives === 2) {
-            this.imageBloodLives3.kill();
+            this.imageBloodLives3.alpha = 0;
         }
 
         if(gameManager.globals.lives === 1) {
-            this.imageBloodLives2.kill();
+            this.imageBloodLives2.alpha = 0;
         }
 
         if(gameManager.globals.lives === 0) {
-            this.imageBloodLives1.kill();
+            this.imageBloodLives1.alpha = 0;
             this.gameover();
         }
     }
     
-    Player.prototype.addLives = function () {
+    Player.prototype.livesToCollectCollision = function (player, blood) {
+        // sound collecting
         this.soundPickup.play();
+        // destroy the blood
+        blood.kill();
+
         
         if(gameManager.globals.lives === 2) { // jogador com 2 corações e adicionando mais uma vida
-            this.imageBloodLives3.reset(140, 25);
+            this.imageBloodLives3.alpha = 1;
             gameManager.globals.lives++;
         }
 
         if(gameManager.globals.lives === 1) { // jogador com 1 coração e adicionando mais uma vida
-            this.imageBloodLives2.reset(90, 25);
+            this.imageBloodLives2.alpha = 1;
             gameManager.globals.lives++;
         }
     }
@@ -272,7 +296,6 @@
             this.sprite.anchor.set(0.5);
             this.sprite.animations.play('walk');
             this.sprite.body.gravity.y = this.normalGravity;
-            console.log("checkIsJumping()");
         }
     }
 
@@ -325,7 +348,7 @@
         this.checkIsJumping();
     }
 
-    Player.prototype.handleInputs = function () {     
+    Player.prototype.handleInputs = function () {   
         // Itens do HUD
         if(this.butButton.isDown && this.butButton.inputEnabled){
             this.soundModItens.play();
