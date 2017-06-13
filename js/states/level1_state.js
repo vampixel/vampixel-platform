@@ -14,6 +14,7 @@
         this.game.load.spritesheet('rato', 'assets/spritesheets/rato-sprite.png', 64, 64, 3);
         this.game.load.spritesheet('items', 'assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.spritesheet('blood', 'assets/img/blood.png', 42, 42, 1);
+        this.game.load.spritesheet('capa_hud', 'assets/spritesheets/capa_hud.png', 64, 64, 1);
         
         // Images
         this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
@@ -69,6 +70,14 @@
         this.livesToCollect.forEach(function(addlifeLevel1) {
             addlifeLevel1.anchor.setTo(0.5);
             addlifeLevel1.body.immovable = true;
+        });
+        
+        // Capas Level 1
+        this.capasToCollectLevel1 = this.game.add.physicsGroup();
+        this.Level1.createFromObjects('Items', 'capa', 'capa_hud', 0, true, false, this.capasToCollectLevel1);
+        this.capasToCollectLevel1.forEach(function(addCapaLevel1) {
+            addCapaLevel1.anchor.setTo(0.5);
+            addCapaLevel1.body.immovable = true;
         });
         
         //Ratos
@@ -173,6 +182,10 @@
     FireParticle.prototype.constructor = FireParticle;
     
     Level1State.prototype.update = function() {
+        if (gameManager.globals.qtdeCapas > 0){
+            gameManager.globals.haveCapas = true;
+        }
+        
         this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
     
         // Colisão do Player com os Diamantes e com os Inimigos "Ratos"
@@ -184,6 +197,9 @@
         
         // Player pegando coração "vida"
         this.game.physics.arcade.overlap(this.player.sprite, this.livesToCollect, this.player.livesToCollectCollision, null, this.player); 
+        
+        // Player pegando capa
+        this.game.physics.arcade.overlap(this.player.sprite, this.capasToCollectLevel1, this.player.capasToCollectCollision, null, this.player); 
         
         // Objetos com as paredes e Plataformas
         this.game.physics.arcade.collide(this.bats, this.wallsLayer);

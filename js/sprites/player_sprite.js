@@ -40,6 +40,8 @@
                 
         gameManager.globals.score = 0;
         gameManager.globals.scoreText = '';
+        gameManager.globals.qtdeCapas = 0;
+        gameManager.globals.haveCapas = false;
         gameManager.globals.isColliderRatos = true;
                 
         this.normalGravity = 750;
@@ -84,6 +86,10 @@
         this.soundNameModItens = 'soundModItens';
         this.soundUrlModItens = 'assets/sounds/ui/click.ogg';
         
+        // Sounds Pickup Capa
+        this.soundNamePickupCapa = 'pickupSoundCapa' 
+        this.soundUrlPickupCapa = 'assets/sounds/player/coletandoCapa.ogg';
+        
         this.stateContext = null;
         
     }
@@ -96,22 +102,17 @@
         this.game.load.spritesheet(this.imageJumpName, this.imageJumpUrl, 128, 128);
         //Player Bat Fly
         this.game.load.spritesheet(this.imageBatFlyName, this.imageBatFlyUrl, 64, 64);
-        
         // Bullet Bat
         this.game.load.spritesheet(this.imageNameBatShot, this.imageUrlBatShot, 16, 16);
         // load
-        this.game.load.spritesheet(this.imageNameLoadHud, this.imageUrlLoadHud, 64, 64);
+        this.game.load.spritesheet(this.imageChargerHud, this.imageUrlChargerHud, 64, 64);
         
         // Lives
         this.game.load.image(this.imageNameLives, this.imageUrlLives);
-        // Bg Score
-        this.game.load.image(this.imageNameScores, this.imageUrlScores);
-         // hud
+        // hud
         this.game.load.image(this.imageSelectHud, this.imageUrlSelectHud);
         this.game.load.image(this.imageBatHud, this.imageUrlBatHud);
         this.game.load.image(this.imageCapHud, this.imageUrlCapHud);
-        
-        this.game.load.spritesheet(this.imageChargerHud, this.imageUrlChargerHud, 64, 64);
         
         //Load Sounds
         this.game.load.audio(this.soundNameDead, this.soundUrlDead);
@@ -120,6 +121,7 @@
         this.game.load.audio(this.soundNamePickupBlood, this.soundUrlPickupBlood);
         this.game.load.audio(this.soundNamePlayerDeath, this.soundUrlPlayerDeath);
         this.game.load.audio(this.soundNameModItens, this.soundUrlModItens);
+        this.game.load.audio(this.soundNamePickupCapa, this.soundUrlPickupCapa);
     }
 
     Player.prototype.setup = function (stateContext) {   
@@ -171,30 +173,40 @@
         
         //Hud
         // 
-        this.imageSelectHudBat = this.game.add.sprite(266, 40, this.imageSelectHud); 
+        this.imageSelectHudBat = this.game.add.sprite(266, 50, this.imageSelectHud); 
         this.imageSelectHudBat.anchor.set(0.5);
         this.imageSelectHudBat.fixedToCamera = true;
         
-        this.imageBatHudView = this.game.add.sprite(270, 45, this.imageBatHud); 
+        this.imageBatHudView = this.game.add.sprite(270, 55, this.imageBatHud); 
         this.imageBatHudView.anchor.set(0.5);
         this.imageBatHudView.fixedToCamera = true;
         
-        this.imageSelectHudCapa = this.game.add.sprite(346, 40, this.imageSelectHud); 
+        this.imageSelectHudCapa = this.game.add.sprite(346, 50, this.imageSelectHud); 
         this.imageSelectHudCapa.anchor.set(0.5);
         this.imageSelectHudCapa.fixedToCamera = true;
         this.imageSelectHudCapa.kill();
        
-        this.imageCapHudView = this.game.add.sprite(346, 40, this.imageCapHud); 
+        this.imageCapHudView = this.game.add.sprite(346, 50, this.imageCapHud); 
         this.imageCapHudView.anchor.set(0.5);
         this.imageCapHudView.fixedToCamera = true;
       
         // charger
-        this.imageChargerHudView = this.game.add.sprite(422, 40, this.imageChargerHud); 
+        this.imageChargerHudView = this.game.add.sprite(422, 45, this.imageChargerHud); 
         this.imageChargerHudView .frame = 0;
         this.imageChargerHudView .animations.add('charger', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 1, true);
         this.imageChargerHudView.anchor.set(0.5);
         this.imageChargerHudView.fixedToCamera = true;
-                
+        
+        // Text Hud Bat
+        var textHudQtdeBat = this.game.add.text(247, 2, 'Infinity', { fill: '#ffffff', fontSize: 12 });
+        textHudQtdeBat.anchor.set(0,0);  
+        textHudQtdeBat.fixedToCamera = true;  
+        
+        // Text Hud Capa
+        gameManager.globals.textHudQtdeCap = this.game.add.text(343, 2, gameManager.globals.qtdeCapas, { fill: '#ffffff', fontSize: 12 });
+        gameManager.globals.textHudQtdeCap.anchor.set(0,0);
+        gameManager.globals.textHudQtdeCap.fixedToCamera = true; 
+        
         // Text Scores
         gameManager.globals.scoreText = this.game.add.text(690, 12, gameManager.globals.score, { fill: '#ffffff', align: 'center', fontSize: 30 });
         gameManager.globals.scoreText.anchor.set(0,0);
@@ -207,6 +219,7 @@
         this.soundPickup = this.game.add.audio(this.soundNamePickupBlood);
         this.soundPlayerDeath = this.game.add.audio(this.soundNamePlayerDeath);
         this.soundModItens = this.game.add.audio(this.soundNameModItens);
+        this.soundPickupCapa = this.game.add.audio(this.soundNamePickupCapa);
         
         //Controles
         // Player Movement
@@ -287,6 +300,17 @@
             gameManager.globals.lives++;
         }
     }
+    
+    Player.prototype.capasToCollectCollision = function (player, capa_hud) {
+        // Sound Collecting Capa
+        this.soundPickupCapa.play();        
+        // destruindo a capa coletada
+        capa_hud.kill();
+        if (gameManager.globals.qtdeCapas < 3){
+            gameManager.globals.qtdeCapas++;
+            gameManager.globals.textHudQtdeCap.setText(gameManager.globals.qtdeCapas);
+        }
+    }
 
     Player.prototype.checkIsJumping = function () {
         if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
@@ -351,29 +375,36 @@
     Player.prototype.handleInputs = function () {   
         // Itens do HUD
         if(this.butButton.isDown && this.butButton.inputEnabled){
-            this.soundModItens.play();
+            //this.soundModItens.play();
             this.imageSelectHudBat.reset(200, 40);
             this.imageSelectHudCapa.kill();
         }
-        if(this.capaButton.isDown){
+        if(this.capaButton.isDown && this.capaButton.inputEnabled && gameManager.globals.haveCapas && gameManager.globals.qtdeCapas > 0){
             this.soundModItens.play();
+            this.soundPickupCapa.play();
             this.isInvisible = true;
             this.butButton.inputEnabled = false;
+            this.capaButton.inputEnabled = false;
             this.sprite.alpha = 0.1;
+            gameManager.globals.qtdeCapas--;
+            gameManager.globals.textHudQtdeCap.setText(gameManager.globals.qtdeCapas);
             gameManager.globals.isColliderRatos = false;
             gameManager.globals.bossBulletCollision = false;
             this.sprite.body.collider = false;
             this.imageSelectHudCapa.reset(280, 40);
             this.imageSelectHudBat.kill();
             this.imageChargerHudView.animations.play('charger');
+            
+            // Evento de 10 segundo de utilização da capa
             this.game.time.events.add(11000, function () {
                 this.butButton.inputEnabled = true;
+                this.capaButton.inputEnabled = true;
+                this.isInvisible = false;
                 this.imageChargerHudView.animations.stop('charger');
                 this.imageChargerHudView.frame = 0;
                 this.imageSelectHudBat.reset(200, 40);
                 this.imageSelectHudCapa.kill();
                 this.sprite.alpha = 1;
-                this.isInvisible = false;
                 gameManager.globals.isColliderRatos = true;
                 gameManager.globals.bossBulletCollision = true;
             }, this);
