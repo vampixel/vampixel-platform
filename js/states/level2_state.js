@@ -263,6 +263,8 @@
     Level2State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
         this.music.stop();
+        gameManager.globals.isLevel2 = false;
+        gameManager.globals.isLevel3 = true;
         this.game.state.start('level3');
     }
     
