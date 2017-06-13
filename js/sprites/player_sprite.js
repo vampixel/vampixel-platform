@@ -4,15 +4,17 @@
     var Player = function () {
         //SpriteSheet Player
         this.imageName = 'player_image';
-        this.imageUrl = 'assets/spritesheets/walk-idle-transform-BAT.png';
+        this.imageUrl = 'assets/spritesheets/walk-idle-transform.png';
+        //this.imageUrl = 'assets/spritesheets/walk-idle-transform-BAT.png';
         
         //SpriteSheet Player Jump
         this.imageJumpName = 'player_jump_image';
-        this.imageJumpUrl = 'assets/spritesheets/jump-vampixel-128x128.png';
+        this.imageJumpUrl = 'assets/spritesheets/JUMP3-64x64.png';
+        //this.imageJumpUrl = 'assets/spritesheets/jump-vampixel-128x128.png';
         
         //SpriteSheet Player Bat Fly
         this.imageBatFlyName = 'player_batfly_image';
-        this.imageBatFlyUrl = 'assets/spritesheets/batflyItems.png';
+        this.imageBatFlyUrl = 'assets/spritesheets/BATFLY-ITEMS.png';
         
         //BatShot
         this.imageNameBatShot = 'batShot_image';
@@ -93,7 +95,7 @@
         // Player
         this.game.load.spritesheet(this.imageName, this.imageUrl, 48, 64);
         //Player Jump
-        this.game.load.spritesheet(this.imageJumpName, this.imageJumpUrl, 128, 128);
+        this.game.load.spritesheet(this.imageJumpName, this.imageJumpUrl, 64, 64);
         //Player Bat Fly
         this.game.load.spritesheet(this.imageBatFlyName, this.imageBatFlyUrl, 64, 64);
         
@@ -150,7 +152,7 @@
         // Animations Player Jump
         this.sprite.animations.add('singleJump', [0,1,2,3,4,5,6,7], 10, false);
         // Animations Player Bat Fly
-        this.sprite.animations.add('batFly', [1,2,3,4,5,6,7,8,9], 66, true);
+        this.sprite.animations.add('batFly', [1,2,3,4,5,6,7,8,9], 24, true);
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.normalGravity;
@@ -310,7 +312,9 @@
         if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = true;
             this.sprite.loadTexture(this.imageJumpName, 0, true);
-            this.sprite.anchor.set(0.5,0.7);
+            //this.sprite.loadTexture(this.imageJumpName, 0, true);
+            //this.sprite.anchor.set(0.5);
+            //this.sprite.anchor.set(0.5,0.7);
             this.sprite.animations.play('singleJump');
             this.sprite.events.onAnimationComplete.add(function(){
                 this.sprite.loadTexture(this.imageName);
