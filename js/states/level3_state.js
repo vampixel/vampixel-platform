@@ -11,6 +11,7 @@
         // Para carregar um sprite, basta informar uma chave e dizer qual é o arquivo
         this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
         this.game.load.image('platform', 'assets/spritesheets/platform.png');
+        this.game.load.spritesheet('capa_hud', 'assets/spritesheets/capa_hud.png', 64, 64, 1);
 
         this.game.load.tilemap('level3', 'assets/maps/level3.json', null, Phaser.Tilemap.TILED_JSON);
 
@@ -67,6 +68,14 @@
         this.bossSound.loop = true;
         this.bossSound.play();
         
+        // Capas Level 3
+        this.capasToCollectLevel3 = this.game.add.physicsGroup();
+        this.level3.createFromObjects('Items', 'capa', 'capa_hud', 0, true, false, this.capasToCollectLevel3);
+        this.capasToCollectLevel3.forEach(function(addCapaLevel3) {
+            addCapaLevel3.anchor.setTo(0.5);
+            addCapaLevel3.body.immovable = true;
+        });
+        
         // Texto do level
         this.level3Text = this.game.add.text(this.game.world.centerX + 180, 30, 'Level 3', { fill: '#ffffff', align: 'center', fontSize: 27 });
         this.level3Text.anchor.set(0.5);
@@ -112,12 +121,18 @@
     }
 
     Level3State.prototype.update = function() {
+        if (gameManager.globals.qtdeCapas > 0) {
+            gameManager.globals.haveCapas = true;
+        }
         // player and boss collisions
         this.game.physics.arcade.collide(this.player.sprite, this.floor, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.platform1, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.platform2, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.boss.sprite, this.floor);
         this.game.physics.arcade.collide(this.boss.sprite, this.player.sprite, this.C, null, this);
+        
+        // Player pegando capa
+        this.game.physics.arcade.overlap(this.player.sprite, this.capasToCollectLevel3, this.player.capasToCollectCollision, null, this.player);
         
         // bullet colliders
         this.game.physics.arcade.overlap(this.player.sprite, this.boss.bullets, this.bossBulletCollision, null, this);
