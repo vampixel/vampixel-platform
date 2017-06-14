@@ -318,7 +318,7 @@
     }
 
     Player.prototype.checkIsJumping = function () {
-        if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
+        if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = false;
             this.isDoubleJumping = false;
             this.sprite.loadTexture(this.imageName);
