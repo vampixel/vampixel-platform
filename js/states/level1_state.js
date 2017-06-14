@@ -211,7 +211,7 @@
         
         this.player.handleInputs();
         //console.log("Animation: ", this.player.sprite.animations.currentAnim.name);
-        console.log("isDead: ", this.player.isDead);
+        //console.log("isDead: ", this.player.isDead);
         this.player.checkGravity.apply(this.player); 
         // Para cada morcego, verificar em que sentido ele está indo
         // Se a velocidade for positiva, a escala no eixo X será 1, caso
