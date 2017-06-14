@@ -318,7 +318,7 @@
     }
 
     Player.prototype.checkIsJumping = function () {
-        if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
+        if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
             this.isJumping = false;
             this.isDoubleJumping = false;
             this.sprite.loadTexture(this.imageName);
@@ -349,7 +349,7 @@
             },this);
             return doJump.apply(this);
         }
-        else if(!this.isDoubleJumping) {
+        else if(this.isJumping && !this.isDoubleJumping) {
             this.isDoubleJumping = true;
             this.sprite.loadTexture(this.imageBatFlyName);
             this.sprite.animations.play('batFly');
