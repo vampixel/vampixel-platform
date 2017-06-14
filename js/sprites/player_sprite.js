@@ -492,19 +492,13 @@
                     self.bulletTime = self.game.time.now + 150;
                 }
 
-                if(!self.amountOfBats) {
-                    self.soundShot.play();
-                }
+                self.soundShot.play();
 
-                self.amountOfBats++;
                 self.canFire = false;
 
                 self.game.time.events.add(Phaser.Timer.SECOND, function () {
-                    self.amountOfBats--;
                     self.bullet.kill();
-                    if(!self.amountOfBats) {
-                        self.soundShot.stop();
-                    }
+                    self.soundShot.stop();
                     self.canFire = true;
                 }, this).autoDestroy = true;
             }
