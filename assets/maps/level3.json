@@ -32,8 +32,32 @@
          "width":25,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":19,
+         "name":"Items",
+         "objects":[
+                {
+                 "gid":66,
+                 "height":64,
+                 "id":35,
+                 "name":"capa",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":545,
+                 "y":128
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":25,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":32,
+ "nextobjectid":36,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":32,
@@ -63,6 +87,19 @@
          "tilecount":1,
          "tileheight":42,
          "tilewidth":42
+        }, 
+        {
+         "columns":1,
+         "firstgid":66,
+         "image":"..\/spritesheets\/capa_hud.png",
+         "imageheight":64,
+         "imagewidth":64,
+         "margin":0,
+         "name":"capa_hud",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":64,
+         "tilewidth":64
         }],
  "tilewidth":32,
  "version":1,
