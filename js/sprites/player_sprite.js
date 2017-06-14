@@ -4,7 +4,7 @@
     var Player = function () {
         //SpriteSheet Player
         this.imageName = 'player_image';
-        this.imageUrl = 'assets/spritesheets/walk-idle-transform.png';
+        this.imageUrl = 'assets/spritesheets/walk-idle-transform-64x64.png';
         //this.imageUrl = 'assets/spritesheets/walk-idle-transform-BAT.png';
         
         //SpriteSheet Player Jump
@@ -98,7 +98,7 @@
     Player.prototype.preload = function () {
         //Load Imagens
         // Player
-        this.game.load.spritesheet(this.imageName, this.imageUrl, 48, 64);
+        this.game.load.spritesheet(this.imageName, this.imageUrl, 64, 64);
         //Player Jump
         this.game.load.spritesheet(this.imageJumpName, this.imageJumpUrl, 64, 64);
         //Player Bat Fly
