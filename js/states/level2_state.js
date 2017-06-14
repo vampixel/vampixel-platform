@@ -9,9 +9,8 @@
         this.bullet;
         
         //BatShot
-        this.imageNameBatShot = 'batShot_image';
-        this.imageUrlBatShot = 'assets/img/red_square_10x10.png';
-        this.imageBatShot = null;
+        this.imageNameArqBullet = 'arqshot_image';
+        this.imageUrlArqBullet = 'assets/img/red_square_10x10.png';
     };
 
     Level2State.prototype.preload = function() {
@@ -21,7 +20,7 @@
         // Para carregar um sprite, basta informar uma chave e dizer qual é o arquivo
         this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
         this.game.load.image('crucifixo_image', 'assets/img/crucifixo2.png');
-        this.game.load.image(this.imageNameBatShot, this.imageUrlBatShot);
+        this.game.load.image(this.imageNameArqBullet, this.imageUrlArqBullet);
 
         // Para carregar um spritesheet, é necessário saber a altura e largura de cada sprite, e o número de sprites no arquivo
         this.game.load.spritesheet('items', 'assets/spritesheets/items.png', 32, 32, 16);
@@ -178,8 +177,8 @@
         this.bullets.enableBody = true; 
         this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
         for (var i = 0; i < 40; i++){
-            var b = this.bullets.create(0, 0, this.imageNameBatShot);
-            b.name = 'imageNameBatShot' + i;
+            var b = this.bullets.create(0, 0, this.imageNameArqBullet);
+            b.name = 'imageNameArqBullet' + i;
             b.exists = false;
             b.visible = true;
             b.checkWorldBounds = true;
