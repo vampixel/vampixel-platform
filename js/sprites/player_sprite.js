@@ -233,6 +233,9 @@
         
         // Shot
         this.shotButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+        // cancel transformation
+        this.downButton = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         
         // Run
         this.runButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
@@ -319,15 +322,19 @@
 
     Player.prototype.checkIsJumping = function () {
         if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
-            this.isJumping = false;
-            this.isDoubleJumping = false;
-            this.sprite.loadTexture(this.imageName);
-            this.sprite.anchor.set(0.5);
-            this.sprite.animations.play('walk');
-            this.sprite.body.gravity.y = this.normalGravity;
+            this.resetJump();
         }
     }
 
+    Player.prototype.resetJump = function () {
+        this.isJumping = false;
+        this.isDoubleJumping = false;
+        this.sprite.loadTexture(this.imageName);
+        this.sprite.anchor.set(0.5);
+        this.sprite.animations.play('walk');
+        this.sprite.body.gravity.y = this.normalGravity;
+    }
+        
     Player.prototype.gameover = function () {
         this.checkIsJumping();
         this.soundDead.stop();
@@ -446,6 +453,11 @@
                 }
             }
         
+        // pressing down button
+        if(this.downButton.isDown && this.isDoubleJumping) {
+            this.resetJump();
+        }
+
         // Player Atirando        
         if (this.shotButton.isDown){
             this.fire();
