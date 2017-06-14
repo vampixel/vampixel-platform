@@ -57,8 +57,7 @@
         
         this.bullets;
         this.bulletTime = 0;
-        this.bullet;
-        this.canFire = true;
+        this.bullet;        
         
         //Sound Dead
         this.soundNameDead = 'deadSound';
@@ -158,6 +157,7 @@
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.normalGravity;
+        this.canFire = true;
         this.stateContext = stateContext;
         
         //Img Blood Lives
