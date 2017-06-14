@@ -318,7 +318,7 @@
     }
 
     Player.prototype.checkIsJumping = function () {
-        if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
+        if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = false;
             this.isDoubleJumping = false;
             this.sprite.loadTexture(this.imageName);
@@ -492,19 +492,13 @@
                     self.bulletTime = self.game.time.now + 150;
                 }
 
-                if(!self.amountOfBats) {
-                    self.soundShot.play();
-                }
+                self.soundShot.play();
 
-                self.amountOfBats++;
                 self.canFire = false;
 
                 self.game.time.events.add(Phaser.Timer.SECOND, function () {
-                    self.amountOfBats--;
                     self.bullet.kill();
-                    if(!self.amountOfBats) {
-                        self.soundShot.stop();
-                    }
+                    self.soundShot.stop();
                     self.canFire = true;
                 }, this).autoDestroy = true;
             }
