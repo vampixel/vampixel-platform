@@ -6,6 +6,10 @@
         this.imageName = 'player_image';
         this.imageUrl = 'assets/spritesheets/walk-idle-transform-64x64.png';
         
+        //SrpriteSheet Player Dead
+        this.imageDeadName = 'player_dead';
+        this.imageDeadUrl = 'assets/spritesheets/Personagem-Morrendo-64x64_ajuste.png';
+        
         //SpriteSheet Player Jump
         this.imageJumpName = 'player_jump_image';
         this.imageJumpUrl = 'assets/spritesheets/JUMP3-64x64.png';
@@ -60,7 +64,7 @@
         this.initialPositionX = 50;
         this.initialPositionY = this.game.height - 500;
         this.isInvisible = false;
-        
+        this.isDead = false;
         this.bullets;
         this.bulletTime = 0;
         this.bullet;        
@@ -105,6 +109,8 @@
         //Load Imagens
         // Player
         this.game.load.spritesheet(this.imageName, this.imageUrl, 64, 64);
+        // Player Dead
+        this.game.load.spritesheet(this.imageDeadName, this.imageDeadUrl, 64, 64);
         // wolf
         this.game.load.spritesheet(this.imageWolfName, this.imageWolfUrl, 64, 64);
         //Player Jump
@@ -159,9 +165,11 @@
 
         this.sprite.animations.add('idle', [4,5,6], 4, true);
         this.sprite.animations.add('wolfIdle', [0, 1], 2, true);
-
         this.sprite.animations.add('transform', [7,8,9], 22, true);
         this.sprite.animations.add('batTransformation', [11,12,13,14,15,16,17,18,19], 10, true);
+        this.sprite.animations.add('wolfRun', [10,11,12,13,14,15,16,17,18,19], 22, true);
+        this.sprite.animations.add('dead', [0,1,2,3,4,5,6,7,8,9], 5, false);
+
         // Animations Player Jump
         this.sprite.animations.add('singleJump', [0,1,2,3,4,5,6,7], 10, false);
         // Animations Player Bat Fly
@@ -299,7 +307,8 @@
             this.imageBloodLives1.alpha = 0;
             if (gameManager.globals.isLevel1){
                gameManager.globals.environmentSoundLevel1.stop(); 
-            } 
+            }
+            this.isDead = true;
             this.gameover();
         }
     }
@@ -334,7 +343,7 @@
     }
 
     Player.prototype.checkIsJumping = function () {
-        if((this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
+        if((!this.isDead) && (this.isJumping) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
             this.resetJump();
         }
     }
@@ -347,14 +356,19 @@
     }
         
     Player.prototype.gameover = function () {
+        this.sprite.loadTexture(this.imageDeadName);
+        this.sprite.anchor.set(0.5);
+        this.sprite.animations.play('dead');
         this.checkIsJumping();
         this.soundDead.stop();
         this.soundPlayerDeath.play();
-        this.game.state.start('lose');
+        this.sprite.events.onAnimationComplete.add(function(){
+                this.game.state.start('lose');
+        },this);
     }
     
     Player.prototype.jump = function () { 
-        if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
+        if((!this.isDead) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
             this.isJumping = true;
             this.setNormalOrWolfAnimation('singleJump', 'wolfRun', this.imageJumpName);
             this.sprite.events.onAnimationComplete.add(function(){
@@ -363,7 +377,8 @@
             },this);
             return doJump.apply(this);
         }
-        else if(this.isJumping && !this.isDoubleJumping && !this.isWolf) {
+
+        else if(this.isJumping && !this.isDoubleJumping && !this.isDead && !this.isWolf) {
             this.isDoubleJumping = true;
             this.setAnimation('batFly', this.imageBatFlyName);
             this.sprite.events.onAnimationComplete.add(function(){
@@ -435,32 +450,35 @@
 
         // Movimentação Esquerda e Direita do Player
         if (this.leftButton.isDown) {
-            this.sprite.body.velocity.x = this.ifIsWolf(-this.wolfSpeed, -this.normalSpeed); // Ajustar velocidade
-            // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
-            if (this.sprite.scale.x == 1) this.sprite.scale.x = -1;
-            // Iniciando a animação 'walk'
-            if (!this.isJumping) {
+            if(!this.isDead) {
+              this.sprite.body.velocity.x = this.ifIsWolf(-this.wolfSpeed, -this.normalSpeed); // Ajustar velocidade
+              // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
+              if (this.sprite.scale.x == 1) this.sprite.scale.x = -1;
+            }
+             // Iniciando a animação 'walk'
+            if (!this.isJumping && !this.isDead) {
                 this.setNormalOrWolfAnimation('walk', 'wolfRun');
             }
         } else if (this.rightButton.isDown) {
-            // se a tecla direita estiver pressionada
-            this.sprite.body.velocity.x = this.ifIsWolf(this.wolfSpeed, this.normalSpeed); // Ajustar velocidade
-            // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
-            if (this.sprite.scale.x == -1) this.sprite.scale.x = 1;
-
-            if (!this.isJumping) {
+            if(!this.isDead){
+              // se a tecla direita estiver pressionada
+              this.sprite.body.velocity.x = this.ifIsWolf(this.wolfSpeed, this.normalSpeed); // Ajustar velocidade
+              // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
+              if (this.sprite.scale.x == -1) this.sprite.scale.x = 1;
+            }
+            if (!this.isJumping && !this.isDead) {
                 this.setNormalOrWolfAnimation('walk', 'wolfRun');
             }
         } else {
             // Player Parado
             this.sprite.body.velocity.x = 0;
-            if (!this.isJumping && !this.isDoubleJumping) {
+            if (!this.isJumping && !this.isDoubleJumping && !this.isDead) {
                 this.setNormalOrWolfAnimation('idle', 'wolfIdle');
             }
         }
 
         // pressing down button
-        if (this.downButton.isDown && this.isDoubleJumping) {
+        if(this.downButton.isDown && this.isDoubleJumping && !this.isDead) {
             this.resetJump();
         }
 
