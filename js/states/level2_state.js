@@ -32,7 +32,7 @@
         this.game.load.tilemap('level2', 'assets/maps/level21.json', null, Phaser.Tilemap.TILED_JSON);
 
         // Para carregar os sons, basta informar a chave e dizer qual é o arquivo
-        this.game.load.audio('environmentSound', 'assets/sounds/levels/gumbelElSiniestroYLaVelz.ogg');
+        this.game.load.audio('environmentSoundLevel2', 'assets/sounds/levels/gumbelElSiniestroYLaVelz.ogg');
     }
 
     Level2State.prototype.create = function() {
@@ -157,9 +157,9 @@
         //this.jumpSound = this.game.add.audio('jumpSound');
         
         // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true, para ficar repetindo
-        this.music = this.game.add.audio('environmentSound');
-        this.music.loop = true;
-        this.music.play();
+        gameManager.globals.environmentSoundLevel2 = this.game.add.audio('environmentSoundLevel2');
+        gameManager.globals.environmentSoundLevel2.loop = true;
+        gameManager.globals.environmentSoundLevel2.play();
 
         // Texto do level
         this.level2Text = this.game.add.text(400, 105, 'Level 2', { fill: '#ffffff', align: 'center', fontSize: 30 });
@@ -261,10 +261,10 @@
     // e então podemos manipular tais objetos
     Level2State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
-        this.music.stop();
+        gameManager.globals.environmentSoundLevel2.stop();
         gameManager.globals.isLevel2 = false;
         gameManager.globals.isLevel3 = true;
-        this.game.state.start('level3');
+        this.game.state.start('transicao');
     }
     
     //Shot Bats

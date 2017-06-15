@@ -36,7 +36,7 @@
         
         // Áudios
         gameManager.globals.environmentSoundLevel1 = this.game.add.audio('environmentSoundLevel1');
-        gameManager.globals.environmentSoundLevel1.lopp = true;
+        gameManager.globals.environmentSoundLevel1.loop = true;
         gameManager.globals.environmentSoundLevel1.play();
     
         //Tile maps
@@ -245,9 +245,10 @@
 
     Level1State.prototype.diamondCollect = function(player, diamond){ //Jogando Colidindo com o Diamante e indo para o Level 2
         diamond.kill();
+        gameManager.globals.environmentSoundLevel1.stop();
         gameManager.globals.isLevel1 = false
         gameManager.globals.isLevel2 = true;
-        this.game.state.start('level2');  
+        this.game.state.start('transicao');  
     } 
     
     Level1State.prototype.fireBulletCollideWall = function(fireBullet){

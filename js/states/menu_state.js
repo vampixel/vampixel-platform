@@ -52,7 +52,7 @@
             this.clickSound.play();
             this.menuSound.stop();
             gameManager.globals.isLevel1 = true;
-            this.game.state.start('level1');
+            this.game.state.start('transicao');
         }
         
         function chooseLevelButton() {
