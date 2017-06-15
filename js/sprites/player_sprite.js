@@ -15,6 +15,10 @@
         //SpriteSheet Player Bat Fly
         this.imageBatFlyName = 'player_batfly_image';
         this.imageBatFlyUrl = 'assets/spritesheets/BATFLY-ITEMS.png';
+
+        //SpriteSheet Player Bat Fly
+        this.imageWolfName = 'player_batfly_image';
+        this.imageWolfUrl = 'assets/spritesheets/lobo-64x64-idle-run-jump-stop.png';
         
         //BatShot
         this.imageNameBatShot = 'batShot_image';
