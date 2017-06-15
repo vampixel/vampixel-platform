@@ -139,6 +139,7 @@
         //Criando balas
         this.bullets = this.game.add.group();
         this.bullets.enableBody = true; 
+        this.isWolf = false;
         this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
         for (var i = 0; i < 40; i++){
             var b = this.bullets.create(0, 0, this.imageNameBatShot);
