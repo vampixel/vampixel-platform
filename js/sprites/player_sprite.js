@@ -8,12 +8,11 @@
         
         //SrpriteSheet Player Dead
         this.imageDeadName = 'player_dead';
-        this.imageDeadUrl = 'assets/spritesheets/walk-idle-transform-64x64.png';
+        this.imageDeadUrl = 'assets/spritesheets/Personagem-Morrendo-64x64_ajuste.png';
         
         //SpriteSheet Player Jump
         this.imageJumpName = 'player_jump_image';
         this.imageJumpUrl = 'assets/spritesheets/JUMP3-64x64.png';
-        //this.imageJumpUrl = 'assets/spritesheets/jump-vampixel-128x128.png';
         
         //SpriteSheet Player Bat Fly
         this.imageBatFlyName = 'player_batfly_image';
@@ -155,7 +154,7 @@
         this.sprite.animations.add('transform', [7,8,9], 22, true);
         this.sprite.animations.add('batTransformation', [11,12,13,14,15,16,17,18,19], 10, true);
         this.sprite.animations.add('wolfRun', [10,11,12,13,14,15,16,17,18,19], 22, true);
-        this.sprite.animations.add('dead', [7,8,9], 24, true);
+        this.sprite.animations.add('dead', [0,1,2,3,4,5,6,7,8,9], 5, false);
         // Animations Player Jump
         this.sprite.animations.add('singleJump', [0,1,2,3,4,5,6,7], 10, false);
         // Animations Player Bat Fly
@@ -349,10 +348,13 @@
         this.checkIsJumping();
         this.soundDead.stop();
         this.soundPlayerDeath.play();
-        this.game.time.events.add(3000, function () {
+        this.sprite.events.onAnimationComplete.add(function(){
                 this.game.state.start('lose');
-                this.isDead = false;
-        }, this);
+        },this);
+//        this.game.time.events.add(3000, function () {
+//                this.game.state.start('lose');
+//                this.isDead = false;
+//        }, this);
     }
     
     Player.prototype.jump = function () { 
