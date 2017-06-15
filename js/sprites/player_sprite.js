@@ -5,16 +5,18 @@
         //SpriteSheet Player
         this.imageName = 'player_image';
         this.imageUrl = 'assets/spritesheets/walk-idle-transform-64x64.png';
-        //this.imageUrl = 'assets/spritesheets/walk-idle-transform-BAT.png';
         
         //SpriteSheet Player Jump
         this.imageJumpName = 'player_jump_image';
         this.imageJumpUrl = 'assets/spritesheets/JUMP3-64x64.png';
-        //this.imageJumpUrl = 'assets/spritesheets/jump-vampixel-128x128.png';
         
         //SpriteSheet Player Bat Fly
         this.imageBatFlyName = 'player_batfly_image';
         this.imageBatFlyUrl = 'assets/spritesheets/BATFLY-ITEMS.png';
+
+        //SpriteSheet Wolf
+        this.imageWolfName = 'player_wolf_image';
+        this.imageWolfUrl = 'assets/spritesheets/lobo-64x64-idle-run-jump-stop.png';
         
         //BatShot
         this.imageNameBatShot = 'batShot_image';
@@ -34,7 +36,7 @@
         
         //Capa Hud
         this.imageCapHud = 'capa_hud_image';
-        this.imageUrlCapHud = 'assets/spritesheets/capa_hud.png';    
+        this.imageUrlCapHud = 'assets/spritesheets/capa_hud.png';
         
         //Charger Hud
         this.imageChargerHud = 'charger_hud_image';
@@ -46,6 +48,10 @@
         gameManager.globals.haveCapas = false;
         gameManager.globals.isColliderRatos = true;
                 
+        this.isWolf = false;
+        this.currentAnimationName = '';
+        this.normalSpeed = 150;
+        this.wolfSpeed = 300;
         this.normalGravity = 750;
         this.fallingGravity = 50;
         this.jumpVelocity = -450;
@@ -99,6 +105,8 @@
         //Load Imagens
         // Player
         this.game.load.spritesheet(this.imageName, this.imageUrl, 64, 64);
+        // wolf
+        this.game.load.spritesheet(this.imageWolfName, this.imageWolfUrl, 64, 64);
         //Player Jump
         this.game.load.spritesheet(this.imageJumpName, this.imageJumpUrl, 64, 64);
         //Player Bat Fly
@@ -131,6 +139,7 @@
         //Criando balas
         this.bullets = this.game.add.group();
         this.bullets.enableBody = true; 
+        this.isWolf = false;
         this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
         for (var i = 0; i < 40; i++){
             var b = this.bullets.create(0, 0, this.imageNameBatShot);
@@ -146,10 +155,13 @@
         this.sprite = this.game.add.sprite(this.initialPositionX, this.initialPositionY, this.imageName);   
         this.sprite.frame = 0;
         this.sprite.animations.add('walk', [0, 1, 2, 3], 22, true);
+        this.sprite.animations.add('wolfRun', [2,3,4,5], 22, true);
+
         this.sprite.animations.add('idle', [4,5,6], 4, true);
+        this.sprite.animations.add('wolfIdle', [0, 1], 2, true);
+
         this.sprite.animations.add('transform', [7,8,9], 22, true);
         this.sprite.animations.add('batTransformation', [11,12,13,14,15,16,17,18,19], 10, true);
-        this.sprite.animations.add('wolfRun', [10,11,12,13,14,15,16,17,18,19], 22, true);
         // Animations Player Jump
         this.sprite.animations.add('singleJump', [0,1,2,3,4,5,6,7], 10, false);
         // Animations Player Bat Fly
@@ -239,7 +251,8 @@
         
         // Run
         this.runButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
-        this.runButton.onDown.add(this.run,this)
+        this.runButton.onDown.add(this.startWolfTransformation, this);
+        this.runButton.onUp.add(this.cancelWolfTransformation, this);
         
         //hud of items
         this.butButton = this.game.input.keyboard.addKey(Phaser.Keyboard.Q);
@@ -329,9 +342,7 @@
     Player.prototype.resetJump = function () {
         this.isJumping = false;
         this.isDoubleJumping = false;
-        this.sprite.loadTexture(this.imageName);
-        this.sprite.anchor.set(0.5);
-        this.sprite.animations.play('walk');
+        this.setNormalOrWolfAnimation('walk', 'wolfRun');        
         this.sprite.body.gravity.y = this.normalGravity;
     }
         
@@ -345,21 +356,16 @@
     Player.prototype.jump = function () { 
         if(this.sprite.body.touching.down || this.sprite.body.onFloor()) {
             this.isJumping = true;
-            this.sprite.loadTexture(this.imageJumpName, 0, true);
-            //this.sprite.loadTexture(this.imageJumpName, 0, true);
-            //this.sprite.anchor.set(0.5);
-            //this.sprite.anchor.set(0.5,0.7);
-            this.sprite.animations.play('singleJump');
+            this.setNormalOrWolfAnimation('singleJump', 'wolfRun', this.imageJumpName);
             this.sprite.events.onAnimationComplete.add(function(){
                 this.sprite.loadTexture(this.imageName);
                 this.sprite.anchor.set(0.5);
             },this);
             return doJump.apply(this);
         }
-        else if(this.isJumping && !this.isDoubleJumping) {
+        else if(this.isJumping && !this.isDoubleJumping && !this.isWolf) {
             this.isDoubleJumping = true;
-            this.sprite.loadTexture(this.imageBatFlyName);
-            this.sprite.animations.play('batFly');
+            this.setAnimation('batFly', this.imageBatFlyName);
             this.sprite.events.onAnimationComplete.add(function(){
                 this.sprite.loadTexture(this.imageName);
                 //this.sprite.anchor.set(0.5);
@@ -371,15 +377,18 @@
             this.sprite.body.velocity.y = this.jumpVelocity || -450;
             this.soundJump.play();
         }
-    }
-        
-    Player.prototype.run = function () {
-        if(this.sprite.body.velocity.x != 0 && this.isJumping == false) {  
-            this.sprite.animations.play('transform');
-            this.sprite.scale.x = 1 * Math.sign(this.sprite.body.velocity.x);
-            this.sprite.body.velocity.x = (this.sprite.body.velocity.x * 15);
-            console.log("correndo: ",this.sprite.body.velocity.x);
+    }        
+    
+    Player.prototype.startWolfTransformation = function () {
+        if(!this.isDoubleJumping) {
+            this.isWolf = true;
+            this.setNormalOrWolfAnimation('walk', 'wolfRun');
         }
+    }
+
+    Player.prototype.cancelWolfTransformation = function () {
+        this.isWolf = false;
+        this.setNormalOrWolfAnimation('walk', 'wolfRun');
     }
 
     Player.prototype.groundCollision = function (playerSprite) {
@@ -387,13 +396,13 @@
     }
 
     Player.prototype.handleInputs = function () {   
-        // Itens do HUD
-        if(this.butButton.isDown && this.butButton.inputEnabled){
+       // Itens do HUD
+        if (this.butButton.isDown && this.butButton.inputEnabled) {
             //this.soundModItens.play();
             this.imageSelectHudBat.reset(200, 40);
             this.imageSelectHudCapa.kill();
         }
-        if(this.capaButton.isDown && this.capaButton.inputEnabled && gameManager.globals.haveCapas && gameManager.globals.qtdeCapas > 0){
+        if (this.capaButton.isDown && this.capaButton.inputEnabled && gameManager.globals.haveCapas && gameManager.globals.qtdeCapas > 0) {
             this.soundModItens.play();
             this.soundPickupCapa.play();
             this.isInvisible = true;
@@ -408,9 +417,9 @@
             this.imageSelectHudCapa.reset(280, 40);
             this.imageSelectHudBat.kill();
             this.imageChargerHudView.animations.play('charger');
-            
+
             // Evento de 10 segundo de utilização da capa
-            this.game.time.events.add(11000, function () {
+            this.game.time.events.add(11000, function() {
                 this.butButton.inputEnabled = true;
                 this.capaButton.inputEnabled = true;
                 this.isInvisible = false;
@@ -425,42 +434,95 @@
         }
 
         // Movimentação Esquerda e Direita do Player
-        if(this.leftButton.isDown){
-            this.sprite.body.velocity.x = -150; // Ajustar velocidade
+        if (this.leftButton.isDown) {
+            this.sprite.body.velocity.x = this.ifIsWolf(-this.wolfSpeed, -this.normalSpeed); // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
-            if(this.sprite.scale.x == 1) this.sprite.scale.x = -1;
+            if (this.sprite.scale.x == 1) this.sprite.scale.x = -1;
             // Iniciando a animação 'walk'
-            if(!this.isJumping) {
-                this.sprite.animations.play('walk');
+            if (!this.isJumping) {
+                this.setNormalOrWolfAnimation('walk', 'wolfRun');
             }
-        } else if(this.rightButton.isDown){
-                // se a tecla direita estiver pressionada
-            this.sprite.body.velocity.x = 150;  // Ajustar velocidade
+        } else if (this.rightButton.isDown) {
+            // se a tecla direita estiver pressionada
+            this.sprite.body.velocity.x = this.ifIsWolf(this.wolfSpeed, this.normalSpeed); // Ajustar velocidade
             // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
-            if(this.sprite.scale.x == -1) this.sprite.scale.x = 1;
+            if (this.sprite.scale.x == -1) this.sprite.scale.x = 1;
 
-            if(!this.isJumping) {
-                this.sprite.animations.play('walk');
+            if (!this.isJumping) {
+                this.setNormalOrWolfAnimation('walk', 'wolfRun');
             }
-          } else {
-                // Player Parado
-                this.sprite.body.velocity.x = 0;
-                if(!this.isJumping && !this.isDoubleJumping) {
-                    this.sprite.animations.play('idle');   
-                }
-                if(!this.isDoubleJumping) {
-                    this.sprite.animations.play('');
-                }
+        } else {
+            // Player Parado
+            this.sprite.body.velocity.x = 0;
+            if (!this.isJumping && !this.isDoubleJumping) {
+                this.setNormalOrWolfAnimation('idle', 'wolfIdle');
             }
-        
+        }
+
         // pressing down button
-        if(this.downButton.isDown && this.isDoubleJumping) {
+        if (this.downButton.isDown && this.isDoubleJumping) {
             this.resetJump();
         }
 
         // Player Atirando        
-        if (this.shotButton.isDown){
+        if (this.shotButton.isDown) {
             this.fire();
+        }
+    }
+    
+    /**
+     * @description return first value if it's wolf or the second one if it's not
+     * @param {any} firstValue
+     * @param {any} secondValue
+     * @return {any}
+     */
+    Player.prototype.ifIsWolf = function (firstValue, secondValue) {
+        return this.isWolf ? firstValue: secondValue;
+    }
+
+    /**
+     * @description This method set the animation depending on either the player is wolf or not
+     * @param {string} normalAnimationName
+     * @param {string} wolfAnimationName
+     */
+    Player.prototype.setNormalOrWolfAnimation = function (normalAnimationName, wolfAnimationName, textureName) {
+        if(this.isWolf) {
+            this.setAnimation(wolfAnimationName, this.imageWolfName);
+        }
+        else {
+            if(textureName) {
+                this.setAnimation(normalAnimationName, textureName);
+            }
+            else {
+                this.setAnimation(normalAnimationName);
+            }
+        }
+    }
+
+    /**
+     * @description This method changes the current animation if it's
+     * not already playing. It also change the texture of the sprite if a
+     * texture name is passed as the second param
+     * @params {string} animationName
+     * @params {string} textureName Optional
+     */
+    
+    Player.prototype.setAnimation = function (animationName, textureName) {
+        // check if it's not already playing
+        if(this.currentAnimationName !== animationName) {
+            // change texture
+            if(textureName) {
+                this.sprite.loadTexture(textureName);
+            }
+            else {
+                this.sprite.loadTexture(this.imageName);
+            }
+            // update anchor
+            this.sprite.anchor.set(0.5);
+            // play animation
+            this.sprite.animations.play(animationName);
+            // update current animation
+            this.currentAnimationName = animationName;
         }
     }
 
@@ -489,7 +551,7 @@
     //Shot Bats
     Player.prototype.fire = function () {
         var self = this;
-        if (self.canFire && !this.isInvisible && self.game.time.now > self.bulletTime) {
+        if (self.canFire && !this.isInvisible && !this.isWolf && self.game.time.now > self.bulletTime) {
             self.bullet = self.bullets.getFirstExists(false);
             if (self.bullet) {                
                 self.bullet.reset(self.sprite.x, self.sprite.y);
