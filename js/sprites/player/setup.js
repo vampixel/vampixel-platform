@@ -47,6 +47,10 @@
         this.emitter = this.game.add.emitter(0, 0, 100);
         this.emitter.makeParticles(this.imagePlayerBloodName);
         
+        // Feedback gain Blood particle emmiter
+        this.emitterBlood = this.game.add.emitter(0, 0, 100);
+        this.emitterBlood.makeParticles(this.imagePlayerBloodName);
+        
         //Img Blood Lives
         this.imageBloodLives1 = this.game.add.sprite(40, 25, this.imageNameLives); 
         this.imageBloodLives1.anchor.set(0.5);

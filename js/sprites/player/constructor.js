@@ -55,7 +55,7 @@
         gameManager.globals.qtdeCapas = 0;
         gameManager.globals.haveCapas = false;
         gameManager.globals.isColliderRatos = true;
-        gameManager.globals.enemyScore = 100;
+        gameManager.globals.enemyScore = 1000;
         gameManager.globals.enemy01Type = 50;
         gameManager.globals.enemy02Type = 100;
                 
@@ -76,6 +76,7 @@
         this.bulletTime = 0;
         this.bullet;
         this.nextScore = gameManager.globals.enemyScore;
+        this.applyEmitter = false;
         
         //Sound Dead
         this.soundNameDead = 'deadSound';
