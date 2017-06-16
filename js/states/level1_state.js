@@ -240,7 +240,7 @@
     Level1State.prototype.playerBulletCollision = function(ratos, bullet) { //Bala do player colidindo com o inimigos "RATO"
         bullet.kill();
         ratos.kill();
-        this.player.increaseScoreRatos.apply();
+        this.player.increaseScoreRatos.apply(this.player);
     }
 
     Level1State.prototype.diamondCollect = function(player, diamond){ //Jogando Colidindo com o Diamante e indo para o Level 2

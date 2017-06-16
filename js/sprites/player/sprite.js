@@ -74,8 +74,10 @@
         this.soundPickup.play();
         // destroy the blood
         blood.kill();
-
-        
+        this.addBloodLives();
+    }
+    
+    Player.prototype.addBloodLives = function () {
         if(gameManager.globals.lives === 2) { // jogador com 2 corações e adicionando mais uma vida
             this.imageBloodLives3.alpha = 1;
             gameManager.globals.lives++;
@@ -314,15 +316,25 @@
     // Score Rato
     Player.prototype.increaseScoreRatos = function () {
         //this.soundShot.stop();
-        gameManager.globals.score = gameManager.globals.score + 50;
+        gameManager.globals.score = gameManager.globals.score + gameManager.globals.enemy01Type;
         gameManager.globals.scoreText.setText(gameManager.globals.score);
+        this.checkScore(gameManager.globals.enemy01Type);
     }
     
     // Score Enemies
     Player.prototype.increaseScoreEnemies = function () {
         //this.soundShot.stop();
-        gameManager.globals.score = gameManager.globals.score + 100;
+        gameManager.globals.score = gameManager.globals.score + gameManager.globals.enemy02Type;
         gameManager.globals.scoreText.setText(gameManager.globals.score);
+        this.checkScore(gameManager.globals.enemy02Type);
+    }
+    
+    Player.prototype.checkScore = function (enemyType) {
+        if(gameManager.globals.score >= this.nextScore) {
+            this.nextScore = gameManager.globals.score + gameManager.globals.enemyScore;
+            this.addBloodLives();
+            console.log("nextScore: ", this.nextScore);
+        };
     }
     
     
