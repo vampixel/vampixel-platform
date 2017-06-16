@@ -5,7 +5,21 @@ var gameManager = (function () {
     var gameInstance = null,
         states = {},
         sprites = {},
-        globals = {};
+        globals = {},
+        modules = {};
+
+    var addModule = function (name, func) {
+        modules[name] = func;
+    }
+
+    var getModule = function (name) {
+        if(modules.hasOwnProperty(name)) {
+            return modules[name];
+        }
+        else {
+            throw new ReferenceError("Module '"+ name +"' was not found");
+        }
+    }
 
     var addSprite =  function (name, Sprite) {
         sprites[name] = Sprite;
@@ -69,6 +83,8 @@ var gameManager = (function () {
         create: create,
         addSprite: addSprite,
         getSprite: getSprite,
+        addModule: addModule,
+        getModule: getModule,
         createNewGameInstance: createNewGameInstance,
         getGameInstance: getGameInstance,
         getSprites: getSprites,
