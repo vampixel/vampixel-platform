@@ -26,6 +26,7 @@
     Player.prototype.decreaseLives = function () {
         gameManager.globals.lives--;
         this.soundDead.play();
+        this.playerHit();
 
         if(gameManager.globals.lives === 2) {
             this.imageBloodLives3.alpha = 0;
@@ -44,6 +45,29 @@
             this.gameover();
         }
     }
+    
+    Player.prototype.makeBlood = function () {
+        this.emitter.on = true;
+        this.emitter.start(true, 1000, null, 20);
+        this.emitter.on = false;
+    }
+    
+    Player.prototype.playerHit = function () {
+        // Faz o player recuar quando é acertado
+        if (this.sprite.body.deltaX() >= 0) {
+            this.sprite.body.x -= 20;   
+        } else {
+            this.sprite.body.x += 20;
+        }
+        this.sprite.body.y -= 30;
+        
+        // pinta o player de vermelho
+        this.sprite.tint = 0xd41c1c;
+        // volta a cor original
+        this.game.time.events.add(200, function () {this.sprite.tint = 0xffffff;}, this);
+        this.makeBlood();
+    }
+
     
     Player.prototype.livesToCollectCollision = function (player, blood) {
         // sound collecting
@@ -179,6 +203,10 @@
                 gameManager.globals.bossBulletCollision = true;
             }, this);
         }
+        
+        // Atualiza a posição do emmiter de particulas de sangue para seguir o player
+        this.emitter.x = this.sprite.x;
+        this.emitter.y = this.sprite.y;
 
         // Movimentação Esquerda e Direita do Player
         if (this.leftButton.isDown) {

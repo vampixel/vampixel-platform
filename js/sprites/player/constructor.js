@@ -30,6 +30,10 @@
         this.imageNameLives = 'lives_image';
         this.imageUrlLives = 'assets/img/blood.png';
         
+        //Player Blood
+        this.imagePlayerBloodName = 'player_blood';
+        this.imageUrlPlayerBlood = 'assets/img/red_square_10x10.png';
+        
         //Select Item Hud
         this.imageSelectHud = 'select_hud_image';
         this.imageUrlSelectHud = 'assets/spritesheets/select-item.png';

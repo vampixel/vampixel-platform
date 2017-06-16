@@ -41,6 +41,10 @@
         this.canFire = true;
         this.stateContext = stateContext;
         
+        // Blood particle emmiter
+        this.emitter = this.game.add.emitter(0, 0, 100);
+        this.emitter.makeParticles(this.imagePlayerBloodName);
+        
         //Img Blood Lives
         this.imageBloodLives1 = this.game.add.sprite(40, 25, this.imageNameLives); 
         this.imageBloodLives1.anchor.set(0.5);
