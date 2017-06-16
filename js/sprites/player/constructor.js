@@ -55,6 +55,9 @@
         gameManager.globals.qtdeCapas = 0;
         gameManager.globals.haveCapas = false;
         gameManager.globals.isColliderRatos = true;
+        gameManager.globals.enemyScore = 100;
+        gameManager.globals.enemy01Type = 50;
+        gameManager.globals.enemy02Type = 100;
                 
         this.isWolf = false;
         this.currentAnimationName = '';
@@ -71,7 +74,8 @@
         this.isDead = false;
         this.bullets;
         this.bulletTime = 0;
-        this.bullet;        
+        this.bullet;
+        this.nextScore = gameManager.globals.enemyScore;
         
         //Sound Dead
         this.soundNameDead = 'deadSound';
