@@ -253,7 +253,7 @@
     Level2State.prototype.playerBulletCollision = function(enemies, bullet) {
         bullet.kill();
         enemies.kill();
-        this.player.increaseScoreEnemies.apply();
+        this.player.increaseScoreEnemies.apply(this.player);
     }
     
     // Tratamento da colisão entre o jogador e os diamantes

@@ -74,8 +74,11 @@
         this.soundPickup.play();
         // destroy the blood
         blood.kill();
-
+        this.addBloodLives();
         
+    }
+    
+    Player.prototype.addBloodLives = function() {
         if(gameManager.globals.lives === 2) { // jogador com 2 corações e adicionando mais uma vida
             this.imageBloodLives3.alpha = 1;
             gameManager.globals.lives++;
@@ -86,6 +89,8 @@
             gameManager.globals.lives++;
         }
     }
+    
+    
     
     Player.prototype.capasToCollectCollision = function (player, capa_hud) {
         // Sound Collecting Capa
@@ -314,17 +319,24 @@
     // Score Rato
     Player.prototype.increaseScoreRatos = function () {
         //this.soundShot.stop();
-        gameManager.globals.score = gameManager.globals.score + 50;
+        gameManager.globals.score = gameManager.globals.score + gameManager.globals.enemy01Type;
         gameManager.globals.scoreText.setText(gameManager.globals.score);
+        
+        if(gameManager.globals.score == gameManager.globals.enemyQty * gameManager.globals.enemy01Type) {
+            this.addBloodLives();
+        };
     }
     
     // Score Enemies
     Player.prototype.increaseScoreEnemies = function () {
         //this.soundShot.stop();
-        gameManager.globals.score = gameManager.globals.score + 100;
+        gameManager.globals.score = gameManager.globals.score + gameManager.globals.enemy02Type;
         gameManager.globals.scoreText.setText(gameManager.globals.score);
+        
+        if(gameManager.globals.score == gameManager.globals.enemyQty * gameManager.globals.enemy02Type) {
+            this.addBloodLives();
+        }
     }
-    
     
     //Shot Bats
     Player.prototype.fire = function () {
