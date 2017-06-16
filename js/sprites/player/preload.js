@@ -18,6 +18,9 @@
         // load
         this.game.load.spritesheet(this.imageChargerHud, this.imageUrlChargerHud, 64, 64);
         
+        //Player blood
+        this.game.load.image(this.imagePlayerBloodName, this.imageUrlPlayerBlood);
+        
         // Lives
         this.game.load.image(this.imageNameLives, this.imageUrlLives);
         // hud
