@@ -47,7 +47,7 @@
         this.imageUrlChargerHud = 'assets/spritesheets/timer-64x64.png';
                 
         gameManager.globals.score = 0;
-        gameManager.globals.scoreLive = 100;
+        gameManager.globals.enemyQty = 2;
         gameManager.globals.enemy01Type = 50;
         gameManager.globals.enemy02Type = 100;
         gameManager.globals.scoreText = '';

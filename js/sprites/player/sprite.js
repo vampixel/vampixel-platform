@@ -293,7 +293,10 @@
         //this.soundShot.stop();
         gameManager.globals.score = gameManager.globals.score + gameManager.globals.enemy01Type;
         gameManager.globals.scoreText.setText(gameManager.globals.score);
-        this.checkScore(gameManager.globals.enemy01Type);
+        
+        if(gameManager.globals.score == gameManager.globals.enemyQty * gameManager.globals.enemy01Type) {
+            this.addBloodLives();
+        };
     }
     
     // Score Enemies
@@ -301,24 +304,11 @@
         //this.soundShot.stop();
         gameManager.globals.score = gameManager.globals.score + gameManager.globals.enemy02Type;
         gameManager.globals.scoreText.setText(gameManager.globals.score);
-        this.checkScore(gameManager.globals.enemy02Type);
-    }
-    
-    /**
-     * @description This method check if pass to ScoreLive points
-     * @params {int} enemyType
-     */
-    Player.prototype.checkScore = function (enemyType) {
-        if(gameManager.globals.score >= gameManager.globals.scoreLive) {
-            console.log("addBloodLives()");
+        
+        if(gameManager.globals.score == gameManager.globals.enemyQty * gameManager.globals.enemy02Type) {
             this.addBloodLives();
-            gameManager.globals.scoreLive += gameManager.globals.scoreLive;  
-            console.log("scoreLive: ", gameManager.globals.scoreLive);
         }
     }
-    
-    
-    
     
     //Shot Bats
     Player.prototype.fire = function () {
