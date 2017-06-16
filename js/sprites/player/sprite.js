@@ -81,12 +81,29 @@
         if(gameManager.globals.lives === 2) { // jogador com 2 corações e adicionando mais uma vida
             this.imageBloodLives3.alpha = 1;
             gameManager.globals.lives++;
+            if (this.applyEmitter){
+                this.makeEmitterBlood(this.imageBloodLives3);
+            }
         }
 
         if(gameManager.globals.lives === 1) { // jogador com 1 coração e adicionando mais uma vida
             this.imageBloodLives2.alpha = 1;
             gameManager.globals.lives++;
+            if (this.applyEmitter){
+                this.makeEmitterBlood(this.imageBloodLives2);
+            }
         }
+    }
+    
+    Player.prototype.makeEmitterBlood = function (imageBloodLives) {
+        this.emitterBlood.x = imageBloodLives.x;
+        this.emitterBlood.y = imageBloodLives.y;
+        
+        this.emitterBlood.on = true;
+        this.emitterBlood.start(true, 2000, null, 40);
+        this.emitterBlood.on = false;
+        
+        this.applyEmitter = false;
     }
     
     Player.prototype.capasToCollectCollision = function (player, capa_hud) {
@@ -332,6 +349,7 @@
     Player.prototype.checkScore = function (enemyType) {
         if(gameManager.globals.score >= this.nextScore) {
             this.nextScore = gameManager.globals.score + gameManager.globals.enemyScore;
+            this.applyEmitter = true;
             this.addBloodLives();
             console.log("nextScore: ", this.nextScore);
         };
