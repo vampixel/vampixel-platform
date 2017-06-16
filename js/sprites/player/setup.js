@@ -38,6 +38,8 @@
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.normalGravity;
+        this.isDoubleJumping = false;
+        this.isJumping = false;
         this.canFire = true;
         this.stateContext = stateContext;
         
