@@ -111,8 +111,11 @@
         this.bossHP.setText('Boss: '+ this.boss.HP +'%');
 
         if(this.boss.HP <= 0) {
-            this.game.state.start('win');
             this.bossSound.stop();
+            gameManager.globals.isLevel3 = false;
+            this.game.time.events.add(2000, function() {
+                this.game.state.start('win');
+            }, this);
         }
 
         if(this.boss.state === 'normal' && this.boss.HP <= this.boss.limitHPToTransform) {
