@@ -21,7 +21,12 @@
         scoreTextGameOver.anchor.set(0.5);
         
         setTimeout(function () {
-            self.game.state.start('menu');
+            gameManager.globals.isLevel1 = false;
+            gameManager.globals.isLevel2 = false;
+            gameManager.globals.isLevel3 = false;
+            gameManager.globals.isWin = false;
+            gameManager.globals.isLose = true;
+            self.game.state.start('transicao');
         }, 5000);
     }
 

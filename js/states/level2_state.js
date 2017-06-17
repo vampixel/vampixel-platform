@@ -8,6 +8,8 @@
         this.bulletTime = 0;
         this.bullet;
         
+        gameManager.globals.isColliderEnemies = true;
+        
         //BatShot
         this.imageNameArqBullet = 'arqshot_image';
         this.imageUrlArqBullet = 'assets/img/red_square_10x10.png';
@@ -162,7 +164,7 @@
         gameManager.globals.environmentSoundLevel2.play();
 
         // Texto do level
-        this.level2Text = this.game.add.text(400, 105, 'Level 2', { fill: '#ffffff', align: 'center', fontSize: 30 });
+        this.level2Text = this.game.add.text(570, 32, 'Level 2', { fill: '#ffffff', align: 'center', fontSize: 30 });
         this.level2Text.anchor.set(0.5);
         this.level2Text.fixedToCamera = true;  
        
@@ -241,8 +243,10 @@
     }
     
     Level2State.prototype.enemiesCollision = function(player, enemie) {
-        enemie.kill();
-        this.player.decreaseLives.apply(this.player);
+        if (gameManager.globals.isColliderEnemies){
+            enemie.kill();
+            this.player.decreaseLives.apply(this.player);
+        }
     }
     
     Level2State.prototype.LiveCollisionLevel2 = function(player, addlifeLevel2){
