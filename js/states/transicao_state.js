@@ -23,23 +23,23 @@
         if (gameManager.globals.isLevel1) {
             setTimeout(function () {
                 self.game.state.start('level1');
-            }, 3200);
+            }, 2000);
         } else if (gameManager.globals.isLevel2) {
             setTimeout(function () {
                 self.game.state.start('level2');
-            }, 3200);
+            }, 2000);
         } else if (gameManager.globals.isLevel3) {
             setTimeout(function () {
                 self.game.state.start('level3');
-            }, 3200);
+            }, 2000);
         } else if (gameManager.globals.isWin) {
             setTimeout(function () {
                 self.game.state.start('menu');
-            }, 3200);
+            }, 2000);
         } else if (gameManager.globals.isLose) {
             setTimeout(function () {
                 self.game.state.start('menu');
-            }, 3200);
+            }, 2000);
         }
     }
 
