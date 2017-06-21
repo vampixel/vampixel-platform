@@ -35,7 +35,6 @@
         }, 
         {
          "draworder":"topdown",
-         "height":0,
          "name":"Enemies",
          "objects":[
                 {
@@ -233,13 +232,11 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":0,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
-         "height":0,
          "name":"Items",
          "objects":[
                 {
@@ -365,11 +362,10 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":0,
          "x":0,
          "y":0
         }],
- "nextobjectid":84,
+ "nextobjectid":85,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":32,
@@ -440,6 +436,7 @@
          "tilewidth":64
         }],
  "tilewidth":32,
- "version":1,
+ "type":"map",
+ "version":"2017.05.16",
  "width":25
 }
