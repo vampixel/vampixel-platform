@@ -23,7 +23,7 @@
         this.sprite = this.game.add.sprite(this.initialPositionX, this.initialPositionY, this.imageName);   
         this.sprite.frame = 0;
         this.sprite.animations.add('walk', [0, 1, 2, 3], 22, true);
-        this.sprite.animations.add('wolfRun', [2,3,4,5], 22, true);
+        this.sprite.animations.add('wolfRun', [2,3,4,5], 15, true);
         this.sprite.animations.add('dead', [0,1,2,3,4,5,6,7,8,9], 5, false);
 
         this.sprite.animations.add('idle', [4,5,6], 4, true);

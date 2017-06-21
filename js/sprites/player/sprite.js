@@ -210,7 +210,7 @@
             this.imageChargerHudView.animations.play('charger');
 
             // Evento de 10 segundo de utilização da capa
-            this.game.time.events.add(11000, function() {
+            this.game.time.events.add(this.cloackDuration + 1000, function() {
                 this.butButton.inputEnabled = true;
                 this.capaButton.inputEnabled = true;
                 this.isInvisible = false;

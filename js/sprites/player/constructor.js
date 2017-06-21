@@ -63,6 +63,7 @@
         this.currentAnimationName = '';
         this.normalSpeed = 150;
         this.wolfSpeed = 300;
+        this.cloackDuration = 10000;
         this.normalGravity = 750;
         this.fallingGravity = 50;
         this.jumpVelocity = -450;
