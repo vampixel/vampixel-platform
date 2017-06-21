@@ -21,7 +21,8 @@
         text.anchor.set(0.5);
 
         setTimeout(function () {
-            game.state.start('menu');
+            gameManager.globals.isWin = true;
+            game.state.start('transicao');
         }, 6500);
     }
 

@@ -38,10 +38,10 @@
 
         if(gameManager.globals.lives === 0) {
             this.imageBloodLives1.alpha = 0;
-            //if (gameManager.globals.isLevel1){
-            if (gameManager.globals.isLevelChamine){
-               gameManager.globals.environmentSoundLevelChamine.stop(); 
-               //gameManager.globals.environmentSoundLevel1.stop(); 
+            if (gameManager.globals.isLevel1){
+            //if (gameManager.globals.isLevelChamine){
+               //gameManager.globals.environmentSoundLevelChamine.stop(); 
+               gameManager.globals.environmentSoundLevel1.stop(); 
             }
             this.isDead = true;
             this.gameover();
@@ -206,6 +206,7 @@
             gameManager.globals.isColliderRatos = false;
             gameManager.globals.isColliderSticks = false;
             gameManager.globals.bossBulletCollision = false;
+            gameManager.globals.isColliderEnemies = false;
             this.sprite.body.collider = false;
             this.imageSelectHudCapa.reset(280, 40);
             this.imageSelectHudBat.kill();
@@ -224,6 +225,7 @@
                 gameManager.globals.isColliderRatos = true;
                 gameManager.globals.bossBulletCollision = true;
                 gameManager.globals.isColliderSticks = true;
+                gameManager.globals.isColliderEnemies = true;
             }, this);
         }
         
