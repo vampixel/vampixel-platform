@@ -1,120 +1,142 @@
 (function () {
     'use strict'; 
 
-    var Level2State = function() {
-        this.player = gameManager.getSprite('player');
-        
-        this.bullets;
-        this.bulletTime = 0;
-        this.bullet;
-        
-        gameManager.globals.isColliderEnemies = true;
-        
-        //BatShot
-        this.imageNameArqBullet = 'arqshot_image';
-        this.imageUrlArqBullet = 'assets/img/red_square_10x10.png';
+    var Level2State = function(Level2) {
+        // load sprites here
+        this.player = gameManager.getSprite('player'); 
     };
-
+    
     Level2State.prototype.preload = function() {
-        // player
+        // Carregando o Player
         this.player.preload();
         
-        // Para carregar um sprite, basta informar uma chave e dizer qual é o arquivo
-        this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
-        this.game.load.image('crucifixo_image', 'assets/img/crucifixo2.png');
-        this.game.load.image(this.imageNameArqBullet, this.imageUrlArqBullet);
-
-        // Para carregar um spritesheet, é necessário saber a altura e largura de cada sprite, e o número de sprites no arquivo
+        // SpriteSheet
+        this.game.load.spritesheet('rato', 'assets/spritesheets/rato-sprite.png', 64, 64, 3);
         this.game.load.spritesheet('items', 'assets/spritesheets/items.png', 32, 32, 16);
-        this.game.load.spritesheet('freira', 'assets/spritesheets/FREIRA-SPRITE.png', 64, 64, 4);
-        this.game.load.spritesheet('arqueiro', 'assets/spritesheets/ARQUEIRO-SPRITE.png', 64, 64, 3);
         this.game.load.spritesheet('blood', 'assets/img/blood.png', 42, 42, 1);
-        
-        // Para carregar um arquivo do Tiled, o mesmo precisa estar no formato JSON
-        this.game.load.tilemap('level2', 'assets/maps/level21.json', null, Phaser.Tilemap.TILED_JSON);
+        this.game.load.spritesheet('capa_hud', 'assets/spritesheets/capa_hud.png', 64, 64, 1);
+        this.game.load.spritesheet('fire', 'assets/spritesheets/sprite-fogo-chamine-32x32.png', 32, 32, 4);    
 
-        // Para carregar os sons, basta informar a chave e dizer qual é o arquivo
-        this.game.load.audio('environmentSoundLevel2', 'assets/sounds/levels/gumbelElSiniestroYLaVelz.ogg');
+        
+        // Images
+        this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
+        this.game.load.image('stick', 'assets/img/estacas.png');
+        this.game.load.image('plataformas', 'assets/img/plataformas-que-caem-32x32.png');
+        
+        //Tile maps
+        this.game.load.tilemap('Level2','assets/maps/level_2_chamine.json', null, Phaser.Tilemap.TILED_JSON);
+        
+        // Sounds
+        this.game.load.audio('environmentSoundLevel2', 'assets/sounds/levels/simonMathewson8bitEnergyDrinkComedown1.ogg');
     }
 
     Level2State.prototype.create = function() {
-        // Inicializando sistema de física
-        // o sistema Arcade é o mais simples de todos, mas também é o mais eficiente em termos de processamento.
-        // https://photonstorm.github.io/phaser-ce/Phaser.Physics.Arcade.html
+
+        // set globals
+        gameManager.globals.lives = 3;
+
+        // Física
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
-
-        // Para carregar o mapa do Tiled para o Phaser, 3 estágios são necessários:
-        // 1 - Criar um objeto com o arquivo do Tiled carregado no preload()
-        this.level2 = this.game.add.tilemap('level2');
-        // 2 - Adicionar as imagens correspondentes aos tilesets do Tiled dentro do Phaser
-        // "tiles" é o nome do tileset dentro do Tiled
-        // "mapTiles" é o nome da imagem com os tiles, carregada no preload()
-        this.level2.addTilesetImage('tiled-fases', 'mapTiles');
         
-        // 3 - Criar os layers do mapa
-        // A ordem nesse caso é importante, então os layers que ficarão no "fundo" deverão ser
-        // criados primeiro, e os que ficarão na "frente" por último;
+        // Áudios
+        gameManager.globals.environmentSoundLevel2 = this.game.add.audio('environmentSoundLevel2');
+        gameManager.globals.environmentSoundLevel2.lopp = true;
+        gameManager.globals.environmentSoundLevel2.play();
+    
+        //Tile maps
+        this.Level2 = this.game.add.tilemap('Level2');
+        this.Level2.addTilesetImage('tiled-fases','tiledFases');
+        //this.Level2.addTilesetImage('estacas','estacas');
+        this.Level2.addTilesetImage('plataformas','plataformas');
+        //this.Level2.addTilesetImage('fogo','fogo');
         
-        this.bgLayer = this.level2.createLayer('BG');
-        this.itemLayer = this.level2.createLayer('Item');
-        this.floor = this.level2.createLayer('Floor');
-        this.wallsLayer = this.level2.createLayer('Wall');
-        
-        // Mais informações sobre tilemaps:
-        // https://photonstorm.github.io/phaser-ce/#toc14
-
-        // Redimensionando o tamanho do "mundo" do jogo
+        this.bgLayer = this.Level2.createLayer('Bg');
+        this.fireLayer = this.Level2.createLayer('Fire');
+        this.wallsLayer = this.Level2.createLayer('Walls');
         this.wallsLayer.resizeWorld();
         
-        // Para que possamos detectar colisões dos objetos com os layers do mapa, primeiro precisamos
-        // informar quais tiles deverão efetivamente ter um colisor, para cada layer.
-        // Esta contagem é feita olhando o tileset no Tiled, sendo que o tile mais à esquerda da
-        // primeira linha do tileset terá valor 1, o próximo na linha valor 2, e assim por diante,
-        // continuando a contagem na próxima linha, até o último tile da última linha.
+        //Tile maps - collision
+        //this.Level2.setCollisionByExclusion([19,20,21,22,23,24], true, this.wallsLayer);
+        this.Level2.setCollisionByExclusion([], true, this.wallsLayer);
+        this.Level2.setCollisionByExclusion([], true, this.fireLayer);
         
-        // Neste caso, ao invés de dizermos quais tiles devem colidir, estamos dizendo quais tiles não
-        // devem colidir, pois há mais tiles que colidem do que tiles sem colisão.
-        // Os parâmetros são a lista dos tiles, "true" indicando que a colisão deve ser ativada,
-        // e o nome do layer.
-        this.level2.setCollisionByExclusion([9, 10, 11, 12, 17, 18, 19, 20], true, this.wallsLayer);
-        this.level2.setCollisionByExclusion([11, 12, 17, 19, 20], true, this.floor);
-        
-        // Para o caso oposto: poucos tiles colidindo, então é mais fácil informar diretamente quais sã0
-        //this.level1.setCollision([5, 6, 13], true, this.lavaLayer);
-        
-        // Adicionando objetos do Tiled, utilizando grupos
-        // Um grupo é como se fosse um array de sprites, mas com várias facilidades adicionais, 
-        // como por exemplo alterar atributos e facilitar detectar colisões com objetos do grupo
-        // Especificamente, estamos criando physicsGroups, que já armazenam objetos com física ativada
-        // https://photonstorm.github.io/phaser-ce/Phaser.GameObjectFactory.html#physicsGroup
-        
-        // Criando objetos que foram criados em um layer de objetos do Tiled
-        // Parâmetros do createFromObjects():
-        // nome do layer do Tiled de onde vamos criar os objetos
-        // nome dos objetos do Tiled que serão criados
-        // nome do spritesheet carregado no preload() com os objetos
-        // frame do spritesheet, basta setar para um dos frames do objeto em questão
-        // true, false - estes dois parâmetros podem ficar com estes valores
-        // grupo - qual grupo do Phaser devemos adicionar esses objetos
-        
-        // Inicializando jogador
-        // setup initial player properties        
+        // setup initial player properties and camera follow
         this.player.setup(this);
-        this.player.sprite.x = 85;
-        this.player.sprite.y = 844;
+        this.player.sprite.x = this.game.world.centerX - 100;
+        this.player.sprite.y = 70;
         this.game.camera.follow(this.player.sprite);
-
+        
+        // texto do level
+        this.Level2Text = this.game.add.text(this.game.world.centerX + 180, 30, 'Level 2', { fill: '#ffffff', align: 'center', fontSize: 27 });
+        this.Level2Text.anchor.set(0.5);
+        this.Level2Text.fixedToCamera = true;  
+        
+        // Sticks group
+        this.sticks = this.game.add.physicsGroup();
+        this.Level2.createFromObjects('Sticks', 'stick', 'stick', 0, true, false, this.sticks);
+        // Para cada objeto do grupo, vamos executar uma função
+        this.sticks.forEach(function(stick){
+            stick.body.immovable = true;
+        });
+        
+        // Grupo de chamas (fogo)
+        this.flames = this.game.add.physicsGroup();
+        this.Level2.createFromObjects('Flames', 'flame', 'fire', 0, true, false, this.flames);
+        // Para cada objeto do grupo, vamos executar uma função
+        this.flames.forEach(function(fire){
+            // body.immovable = true indica que o objeto não é afetado por forças externas
+            fire.body.immovable = true;
+            // Adicionando animações; o parâmetro true indica que a animação é em loop
+            fire.animations.add('fireAnim', [0,1,2,3,2,1],6, true);
+            fire.animations.play('fireAnim');
+        });
+        
         // Life
         this.livesToCollect = this.game.add.physicsGroup();
-        this.level2.createFromObjects('Items', 'life', 'blood', 0, true, false, this.livesToCollect);
+        this.Level2.createFromObjects('Items', 'life', 'blood', 0, true, false, this.livesToCollect);
         this.livesToCollect.forEach(function(addlifeLevel2) {
             addlifeLevel2.anchor.setTo(0.5);
             addlifeLevel2.body.immovable = true;
         });
         
+        // Capas Level 1
+        this.capasToCollectLevel2 = this.game.add.physicsGroup();
+        this.Level2.createFromObjects('Items', 'capa', 'capa_hud', 0, true, false, this.capasToCollectLevel2);
+        this.capasToCollectLevel2.forEach(function(addCapaLevel2) {
+            addCapaLevel2.anchor.setTo(0.5);
+            addCapaLevel2.body.immovable = true;
+        });
+        
+        //Ratos
+        this.ratos = this.game.add.physicsGroup();
+        this.Level2.createFromObjects('Enemies', 'rato', 'rato', 8, true, false, this.ratos);
+        this.ratos.forEach(function(rato){
+            rato.anchor.setTo(0, 0);
+            rato.body.immovable = true;
+            rato.animations.add('walk', [1,2,3], 6, true);
+            rato.animations.play('walk');
+            rato.body.velocity.x = 100;
+            rato.body.bounce.x = 1;
+        });
+        
+        // Grupo de fireBullets
+        this.fireBullets = this.game.add.physicsGroup();
+        this.Level2.createFromObjects('Enemies', 'fireBullet', 'items', 5, true, false, this.fireBullets);
+        
+        // Para cada objeto do grupo, vamos executar uma função
+        this.fireBullets.forEach(function(fireBullet){
+            // body.immovable = true indica que o objeto não é afetado por forças externas
+            fireBullet.body.immovable = true;
+            // Adicionando animações; o parâmetro true indica que a animação é em loop
+            fireBullet.animations.add('go', [10, 11, 10], 3, true);
+            fireBullet.animations.play('go');
+            fireBullet.body.velocity.x = 100;
+            fireBullet.body.bounce.x = 1;
+        });
+        
         // Grupo de diamantes
         this.diamonds = this.game.add.physicsGroup();
-        this.level2.createFromObjects('Items', 'diamond', 'items', 5, true, false, this.diamonds);
+        this.Level2.createFromObjects('Items', 'diamond', 'items', 5, true, false, this.diamonds);
         // Para cada objeto do grupo, vamos executar uma função
         this.diamonds.forEach(function(diamond){
             // body.immovable = true indica que o objeto não é afetado por forças externas
@@ -124,174 +146,168 @@
             diamond.animations.play('spin');
         });
         
-        // Grupo de Arqueiros        
-        this.arqs = this.game.add.physicsGroup();
-        this.level2.createFromObjects('Enemies', 'arq', 'arqueiro', 8, true, false, this.arqs);
-        this.arqs.forEach(function(arq){
-            arq.anchor.setTo(0, 0);
-            arq.body.immovable = true;
-            arq.animations.add('fly', [1,2,3], 6, true);
-            arq.animations.play('fly');
+        // Grupo de inimigos
+        this.bats = this.game.add.physicsGroup();
+        
+        this.Level2.createFromObjects('Enemies', 'bat', 'enemies', 8, true, false, this.bats);
+        this.bats.forEach(function(bat){
+            bat.anchor.setTo(0.5, 0.5);
+            bat.body.immovable = true;
+            bat.animations.add('fly', [8, 9, 10], 6, true);
+            bat.animations.play('fly');
             // Velocidade inicial do inimigo
-            arq.body.velocity.x = 100;
+            bat.body.velocity.x = 100;
             // bounce.x=1 indica que, se o objeto tocar num objeto no eixo x, a força deverá
             // ficar no sentido contrário; em outras palavras, o objeto é perfeitamente elástico
-            arq.body.bounce.x = 1;
+            bat.body.bounce.x = 1;
         });
         
-        // Grupo de Freiras        
-        this.nuns = this.game.add.physicsGroup();
-        this.level2.createFromObjects('Enemies', 'nun', 'freira', 8, true, false, this.nuns);
-        this.nuns.forEach(function(nun){
-            nun.anchor.setTo(0, 0);
-            nun.body.immovable = true;
-            nun.animations.add('fly', [1,2,3,4], 6, true);
-            nun.animations.play('fly');
-            // Velocidade inicial do inimigo
-            nun.body.velocity.x = 100;
-            // bounce.x=1 indica que, se o objeto tocar num objeto no eixo x, a força deverá
-            // ficar no sentido contrário; em outras palavras, o objeto é perfeitamente elástico
-            nun.body.bounce.x = 1;
-        });
-
-        // Criando assets de som com this.game.add.audio()
-        // O parâmetro é o nome do asset definido no preload()
-        //this.jumpSound = this.game.add.audio('jumpSound');
+        /*
+        //Fire effect with phaser particles
+        var emitter;
+        var pSize = this.game.world.width / 12.5;
+        var bmpd = this.game.add.bitmapData(pSize, pSize);
+        // Create a radial gradient, yellow-ish on the inside, orange
+        // on the outside. Use it to draw a circle that will be used
+        // by the FireParticle class.
+        var grd = bmpd.ctx.createRadialGradient(
+                    pSize / 2, pSize /2, 2,
+                    pSize / 2, pSize / 2, pSize * 0.5);
         
-        // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true, para ficar repetindo
-        gameManager.globals.environmentSoundLevel2 = this.game.add.audio('environmentSoundLevel2');
-        gameManager.globals.environmentSoundLevel2.loop = true;
-        gameManager.globals.environmentSoundLevel2.play();
-
-        // Texto do level
-        this.level2Text = this.game.add.text(570, 32, 'Level 2', { fill: '#ffffff', align: 'center', fontSize: 30 });
-        this.level2Text.anchor.set(0.5);
-        this.level2Text.fixedToCamera = true;  
-       
-        // Estado do jogo - Variáveis para guardar quaisquer informações pertinentes para as condições de 
-        // vitória/derrota, ações do jogador, etc
-        // this.totalDiamonds = this.diamonds.length;
-        // this.collectedDiamonds = 0;
-        // this.score = 0;
+        grd.addColorStop(0, 'rgba(193, 170, 30, 0.6)');
+        grd.addColorStop(1, 'rgba(255, 100, 30, 0.1)');
+        bmpd.ctx.fillStyle = grd;
         
-        // Bullets dos Arqueiros
-        this.bullets = this.game.add.group();
-        this.bullets.enableBody = true; 
-        this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-        for (var i = 0; i < 40; i++){
-            var b = this.bullets.create(0, 0, this.imageNameArqBullet);
-            b.name = 'imageNameArqBullet' + i;
-            b.exists = false;
-            b.visible = true;
-            b.checkWorldBounds = true;
-            b.events.onOutOfBounds.add(this.resetBullet, this);
+        bmpd.ctx.arc(pSize / 2, pSize / 2 , pSize / 2, 0, Math.PI * 2);
+        bmpd.ctx.fill();
+        
+        this.game.cache.addBitmapData('flame', bmpd);
+        
+        // Generate 100 particles
+        emitter = this.game.add.emitter(this.game.world.centerX, this.game.world.height, 100);
+        emitter.width = 11 * pSize;
+        emitter.particleClass = FireParticle;
+        
+        // Magic happens here, bleding the colors of each particle
+        // generates the bright light effect
+        emitter.blendMode = PIXI.blendModes.ADD;
+        emitter.makeParticles();
+        emitter.minParticleSpeed.set(-15, -160);
+        emitter.maxParticleSpeed.set(15, -200);
+        emitter.setRotation(0, 0);
+        // Make the flames taller than they are wide to simulate the
+        // effect of flame tongues
+        emitter.setScale(3, 1, 4, 3, 12000, Phaser.Easing.Quintic.Out);
+        emitter.gravity = -20;
+        emitter.start(false, 3000, 50);
+        */
+    }
+    
+    function FireParticle(game, x, y) {
+        Phaser.Particle.call(this, game, x, y, game.cache.getBitmapData('flame'));
+    }
+    
+    FireParticle.prototype = Object.create(Phaser.Particle.prototype);
+    FireParticle.prototype.constructor = FireParticle;
+    
+    Level2State.prototype.update = function() {
+        if (gameManager.globals.qtdeCapas > 0){
+            gameManager.globals.haveCapas = true;
         }
         
-        this.game.time.events.loop(Phaser.Timer.SECOND, function () {
-            var self = this;
-            this.arqs.forEach(function(arq){
-                self.fire(arq);
-            })
-        }, this);
-    }
-
-    Level2State.prototype.update = function() {
-        // Detecção de colisões
-        // Todas as colisões entre os objetos do jogo são avaliadas com arcade.collide() ou 
-        // arcade.overlap(). O Phaser irá automaticamente calcular a colisão dos objetos
-        // Inicialmente, adicionando colisões do player com as paredes da fase, que é um layer:
-        this.game.physics.arcade.collide(this.player.sprite, this.floor, this.player.groundCollision, null, this.player);
-    
-        // Colisão com os diamantes - devem ser coletados
-        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);
+        //Collisões
+        this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
+        this.game.physics.arcade.overlap(this.player.sprite, this.sticks, this.sticksCollision, null, this);
+        // Colisão do Player com os Diamantes e com os Inimigos "Ratos"
+        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this); 
+        this.game.physics.arcade.overlap(this.player.sprite, this.ratos, this.ratosCollision, null, this);
         
-        // Colisão do Player com os Inimigos
-        this.game.physics.arcade.overlap(this.player.sprite, this.nuns, this.enemiesCollision, null, this);
-        this.game.physics.arcade.overlap(this.player.sprite, this.arqs, this.enemiesCollision, null, this);
-        
-        // Colisão dos Inimigos com as balas do player    
-        this.game.physics.arcade.overlap(this.nuns, this.player.bullets, this.playerBulletCollision, null, this);
-        this.game.physics.arcade.overlap(this.arqs, this.player.bullets, this.playerBulletCollision, null, this);
+        // Rato morrendo ao ser atingido pelos morcegos do player
+        this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
         
         // Player pegando coração "vida"
         this.game.physics.arcade.overlap(this.player.sprite, this.livesToCollect, this.player.livesToCollectCollision, null, this.player); 
-
-        // Colisão dos Arqueiros e freias com as paredes
-        this.game.physics.arcade.collide(this.arqs, this.wallsLayer);
-        this.game.physics.arcade.collide(this.nuns, this.wallsLayer);
         
-        // Movimentação do player
+        // Player pegando capa
+        this.game.physics.arcade.overlap(this.player.sprite, this.capasToCollectLevel2, this.player.capasToCollectCollision, null, this.player); 
+        
+        // Objetos com as paredes e Plataformas
+        this.game.physics.arcade.collide(this.bats, this.wallsLayer);
+        this.game.physics.arcade.collide(this.ratos, this.wallsLayer);
+        this.game.physics.arcade.collide(this.player.sprite, this.wallsLayer, this.player.groundCollision, null, this.player);
+        
+        this.game.physics.arcade.overlap(this.player.sprite, this.fireBullets, this.fireBullet, null, this);            
+        this.game.physics.arcade.collide(this.fireBullets, this.wallsLayer, this.fireBulletCollideWall, null, this);
+        
         this.player.handleInputs();
+        //console.log("Animation: ", this.player.sprite.animations.currentAnim.name);
+        //console.log("isColliderSticks: ",gameManager.globals.isColliderSticks);
         this.player.checkGravity.apply(this.player); 
-         
         // Para cada morcego, verificar em que sentido ele está indo
         // Se a velocidade for positiva, a escala no eixo X será 1, caso
         // contrário -1
-        this.arqs.forEach(function(arq){
-           if(arq.body.velocity.x != 0) {
-               // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
-               arq.scale.x = 1 * Math.sign(arq.body.velocity.x);
-           }
+        this.bats.forEach(function(bat){
+            if(bat.body.velocity.x != 0) {
+                // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
+                bat.scale.x = 1 * Math.sign(bat.body.velocity.x);
+            }
         });
         
-        this.nuns.forEach(function(nun){
-           if(nun.body.velocity.x != 0) {
-               // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
-               nun.scale.x = 1 * Math.sign(nun.body.velocity.x);
-           }
+        this.ratos.forEach(function(rato){
+            if(rato.body.velocity.x != 0) {
+                // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
+                rato.scale.x = 1 * Math.sign(rato.body.velocity.x);
+            }
+        });
+        
+        this.fireBullets.forEach(function(fireBullet){
+            if(fireBullet.body.velocity.x != 0) {
+                // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
+                fireBullet.scale.x = -1;
+            }
         });
     }
-    
-    Level2State.prototype.enemiesCollision = function(player, enemie) {
-        if (gameManager.globals.isColliderEnemies){
-            enemie.kill();
-            this.player.decreaseLives.apply(this.player);
-        }
-    }
-    
-    Level2State.prototype.LiveCollisionLevel2 = function(player, addlifeLevel2){
-        addlifeLevel2.kill();
-        this.player.addLives.apply(this.player); 
-    }
-    
-    Level2State.prototype.playerBulletCollision = function(enemies, bullet) {
+        
+    Level2State.prototype.playerBulletCollision = function(ratos, bullet) { //Bala do player colidindo com o inimigos "RATO"
         bullet.kill();
-        enemies.kill();
-        this.player.increaseScoreEnemies.apply(this.player);
+        ratos.kill();
+        this.player.increaseScoreRatos.apply(this.player);
     }
-    
-    // Tratamento da colisão entre o jogador e os diamantes
-    // As funções para esse fim sempre recebem os dois objetos que colidiram,
-    // e então podemos manipular tais objetos
-    Level2State.prototype.diamondCollect = function(player, diamond){
+
+    Level2State.prototype.diamondCollect = function(player, diamond){ //Jogando Colidindo com o Diamante e indo para o Level 2
         diamond.kill();
         gameManager.globals.environmentSoundLevel2.stop();
-        gameManager.globals.isLevel2 = false;
+        gameManager.globals.isLevel2 = false
         gameManager.globals.isLevel3 = true;
-        this.game.state.start('transicao');
+        this.game.state.start('transicao');  
+    } 
+    
+    Level2State.prototype.fireBulletCollideWall = function(fireBullet){
+        fireBullet.kill();
     }
     
-    //Shot Bats
-    Level2State.prototype.fire = function (arq) {        
-        if (this.game.time.now > this.bulletTime) {
-            this.bullet = this.bullets.getFirstExists(false);
-            if (this.bullet) {
-                this.bullet.reset(arq.x, arq.y);
-                if (arq.scale.x == 1) {
-                    this.bullet.body.velocity.x = 300;
-                    this.bulletTime = this.game.time.now + 150;
-                } else {
-                    this.bullet.body.velocity.x = -300;
-                    this.bulletTime = this.game.time.now + 150;
-                }
-            }
-        }
+    Level2State.prototype.fireBullet = function(player, fireBullet){
+        fireBullet.kill();
+        this.player.decreaseLives.apply(this.player); 
     }
     
-    Level2State.prototype.resetBullet = function(bullet) {
-        bullet.kill();
+    Level2State.prototype.sticksCollision = function(player, stick){
+       if (gameManager.globals.isColliderSticks){
+            this.player.decreaseLives.apply(this.player);
+       }
     }
     
+    Level2State.prototype.ratosCollision = function(player, rato){
+       if (gameManager.globals.isColliderRatos){
+            rato.kill();
+            this.player.decreaseLives.apply(this.player);
+       }
+    }
+    
+    Level2State.prototype.fireDeath = function(player, fire){
+        this.player.decreaseLives.apply(this.player);
+    }
+
     gameManager.addState('level2', Level2State);
 
 })();
