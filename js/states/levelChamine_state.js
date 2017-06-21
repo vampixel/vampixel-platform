@@ -15,14 +15,13 @@
         this.game.load.spritesheet('items', 'assets/spritesheets/items.png', 32, 32, 16);
         this.game.load.spritesheet('blood', 'assets/img/blood.png', 42, 42, 1);
         this.game.load.spritesheet('capa_hud', 'assets/spritesheets/capa_hud.png', 64, 64, 1);
-        //this.game.load.spritesheet('estacas', 'assets/img/estacas.png', 32, 32, 1);    
+        this.game.load.spritesheet('fire', 'assets/spritesheets/sprite-fogo-chamine-32x32.png', 32, 32, 4);    
 
         
         // Images
         this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
-        this.game.load.image('estacas', 'assets/img/estacas.png');
+        this.game.load.image('stick', 'assets/img/estacas.png');
         this.game.load.image('plataformas', 'assets/img/plataformas-que-caem-32x32.png');
-        this.game.load.image('fogo', 'assets/img/sprite-fogo-chamine 32x32.png');
         
         //Tile maps
         this.game.load.tilemap('LevelChamine','assets/maps/level-chamine.json', null, Phaser.Tilemap.TILED_JSON);
@@ -47,9 +46,9 @@
         //Tile maps
         this.LevelChamine = this.game.add.tilemap('LevelChamine');
         this.LevelChamine.addTilesetImage('tiled-fases','tiledFases');
-        this.LevelChamine.addTilesetImage('estacas','estacas');
+        //this.LevelChamine.addTilesetImage('estacas','estacas');
         this.LevelChamine.addTilesetImage('plataformas','plataformas');
-        this.LevelChamine.addTilesetImage('fogo','fogo');
+        //this.LevelChamine.addTilesetImage('fogo','fogo');
         
         this.bgLayer = this.LevelChamine.createLayer('Bg');
         this.fireLayer = this.LevelChamine.createLayer('Fire');
@@ -71,6 +70,26 @@
         this.LevelChamineText = this.game.add.text(this.game.world.centerX + 180, 30, 'Level 1', { fill: '#ffffff', align: 'center', fontSize: 27 });
         this.LevelChamineText.anchor.set(0.5);
         this.LevelChamineText.fixedToCamera = true;  
+        
+        // Sticks group
+        this.sticks = this.game.add.physicsGroup();
+        this.LevelChamine.createFromObjects('Sticks', 'stick', 'stick', 0, true, false, this.sticks);
+        // Para cada objeto do grupo, vamos executar uma função
+        this.sticks.forEach(function(stick){
+            stick.body.immovable = true;
+        });
+        
+        // Grupo de chamas (fogo)
+        this.flames = this.game.add.physicsGroup();
+        this.LevelChamine.createFromObjects('Flames', 'flame', 'fire', 0, true, false, this.flames);
+        // Para cada objeto do grupo, vamos executar uma função
+        this.flames.forEach(function(fire){
+            // body.immovable = true indica que o objeto não é afetado por forças externas
+            fire.body.immovable = true;
+            // Adicionando animações; o parâmetro true indica que a animação é em loop
+            fire.animations.add('fireAnim', [0,1,2,3,2,1],6, true);
+            fire.animations.play('fireAnim');
+        });
         
         // Life
         this.livesToCollect = this.game.add.physicsGroup();
@@ -143,6 +162,7 @@
             bat.body.bounce.x = 1;
         });
         
+        /*
         //Fire effect with phaser particles
         var emitter;
         var pSize = this.game.world.width / 12.5;
@@ -180,6 +200,7 @@
         emitter.setScale(3, 1, 4, 3, 12000, Phaser.Easing.Quintic.Out);
         emitter.gravity = -20;
         emitter.start(false, 3000, 50);
+        */
     }
     
     function FireParticle(game, x, y) {
@@ -194,8 +215,9 @@
             gameManager.globals.haveCapas = true;
         }
         
+        //Collisões
         this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
-    
+        this.game.physics.arcade.overlap(this.player.sprite, this.sticks, this.sticksCollision, null, this);
         // Colisão do Player com os Diamantes e com os Inimigos "Ratos"
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this); 
         this.game.physics.arcade.overlap(this.player.sprite, this.ratos, this.ratosCollision, null, this);
@@ -219,6 +241,7 @@
         
         this.player.handleInputs();
         //console.log("Animation: ", this.player.sprite.animations.currentAnim.name);
+        console.log("isColliderSticks: ",gameManager.globals.isColliderSticks);
         this.player.checkGravity.apply(this.player); 
         // Para cada morcego, verificar em que sentido ele está indo
         // Se a velocidade for positiva, a escala no eixo X será 1, caso
@@ -265,6 +288,12 @@
     LevelChamineState.prototype.fireBullet = function(player, fireBullet){
         fireBullet.kill();
         this.player.decreaseLives.apply(this.player); 
+    }
+    
+    LevelChamineState.prototype.sticksCollision = function(player, stick){
+       if (gameManager.globals.isColliderSticks){
+            this.player.decreaseLives.apply(this.player);
+       }
     }
     
     LevelChamineState.prototype.ratosCollision = function(player, rato){

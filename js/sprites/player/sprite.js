@@ -204,6 +204,7 @@
             gameManager.globals.qtdeCapas--;
             gameManager.globals.textHudQtdeCap.setText(gameManager.globals.qtdeCapas);
             gameManager.globals.isColliderRatos = false;
+            gameManager.globals.isColliderSticks = false;
             gameManager.globals.bossBulletCollision = false;
             this.sprite.body.collider = false;
             this.imageSelectHudCapa.reset(280, 40);
@@ -222,6 +223,7 @@
                 this.sprite.alpha = 1;
                 gameManager.globals.isColliderRatos = true;
                 gameManager.globals.bossBulletCollision = true;
+                gameManager.globals.isColliderSticks = true;
             }, this);
         }
         
