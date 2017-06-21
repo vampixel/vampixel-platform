@@ -22,7 +22,8 @@
     MenuState.prototype.create = function() {
         // player lives
         gameManager.globals.lives = 3;
-        gameManager.globals.isLevel1 = false;
+        gameManager.globals.isLevelChamine = false;
+        //gameManager.globals.isLevel1 = false;
         gameManager.globals.isLevel2 = false;
         gameManager.globals.isLevel3 = false;
         
@@ -51,8 +52,10 @@
         function startButtonClicked() {
             this.clickSound.play();
             this.menuSound.stop();
-            gameManager.globals.isLevel1 = true;
-            this.game.state.start('level1');
+            gameManager.globals.isLevelChamine = true;
+            //gameManager.globals.isLevel1 = true;
+            this.game.state.start('levelChamine');
+            //this.game.state.start('level1');
         }
         
         function chooseLevelButton() {
