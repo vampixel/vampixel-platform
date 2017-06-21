@@ -1,0 +1,12 @@
+{ "columns":31,
+ "image":"Tiles-Castelo-32x32.png",
+ "imageheight":320,
+ "imagewidth":992,
+ "margin":0,
+ "name":"Tiles-Castelo-32x32_tileset",
+ "spacing":0,
+ "tilecount":310,
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset"
+}

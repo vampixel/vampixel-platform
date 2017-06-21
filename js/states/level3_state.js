@@ -2,151 +2,108 @@
     'use strict'; 
 
     var Level3State = function() {
-         this.player = gameManager.getSprite('player');
-         this.boss = gameManager.getSprite('boss');
+        this.player = gameManager.getSprite('player');
     };
 
-
     Level3State.prototype.preload = function() {
-        // Para carregar um sprite, basta informar uma chave e dizer qual é o arquivo
-        this.game.load.image('mapTiles', 'assets/spritesheets/tiled-fases.png');
-        this.game.load.image('platform', 'assets/spritesheets/platform.png');
-        this.game.load.spritesheet('capa_hud', 'assets/spritesheets/capa_hud.png', 64, 64, 1);
-
-        this.game.load.tilemap('level3', 'assets/maps/level3.json', null, Phaser.Tilemap.TILED_JSON);
-
-        this.game.load.audio('environmentSoundBoss', 'assets/sounds/levels/VLAD8BitBull.ogg');
-
-        // player preload
+        // player
         this.player.preload();
-
-        // boss preload
-        this.boss.preload();
+        // images
+        this.game.load.image('tileMapImage', 'assets/spritesheets/Tiles-Castelo-32x32.png');
+        // spritesheets
+        this.game.load.spritesheet('blood', 'assets/img/blood.png', 42, 42, 1);
+        this.game.load.spritesheet('capa_hud', 'assets/spritesheets/capa_hud.png', 64, 64, 1);
+        // tilemap
+        this.game.load.tilemap('level3Map', 'assets/maps/level_3_castle.json', null, Phaser.Tilemap.TILED_JSON);
+        // audios
+        this.game.load.audio('environmentSoundLevel2', 'assets/sounds/levels/gumbelElSiniestroYLaVelz.ogg');
     }
 
     Level3State.prototype.create = function() {
-
-        // start physic system
+        // setup physics system
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        // tilemap
-        this.level3 = this.game.add.tilemap('level3');
+        // setup tilemap and add tileset
+        this.level3Map = this.game.add.tilemap('level3Map');
+        this.level3Map.addTilesetImage('Tiles-Castelo-32x32', 'tileMapImage');
 
-        // tileset
-        this.level3.addTilesetImage('tiled-fases', 'mapTiles');
+        // bg 2 layer setup
+        this.bg2Layer = this.level3Map.createLayer('bg2');
+
+        // bg layer setup
+        this.bgLayer = this.level3Map.createLayer('bg');
         
-        // layers
-        this.bgLayer = this.level3.createLayer('BG');
-        this.items = this.level3.createLayer('Items');
-        this.floor = this.level3.createLayer('Floor');
+        this.wallLayer = this.level3Map.createLayer('wall');
+        this.level3Map.setCollisionByExclusion([], true, this.wallLayer);
 
-        /* PLATFORMS */
-	    this.platform1 = this.game.add.sprite(110, 210, 'platform');
-	    this.platform2 = this.game.add.sprite(280, 320, 'platform');
-        this.game.physics.arcade.enable(this.platform1);
-        this.game.physics.arcade.enable(this.platform2);
-        this.platform1.body.immovable = true;
-        this.platform2.body.immovable = true;
-        this.platform1.body.checkCollision.down = false;
-        this.platform2.body.checkCollision.down = false;
+        // floor layer setup
+        this.floorLayer = this.level3Map.createLayer('floor');
+        this.level3Map.setCollisionByExclusion([], true, this.floorLayer);
+        this.wallLayer.resizeWorld();
 
-        this.bgLayer.resizeWorld();
-        
-        this.level3.setCollisionByExclusion([], true, this.items);
-        this.level3.setCollisionByExclusion([], true, this.floor);
-            
-        // Inicializando jogador
+        // setup initial player properties        
         this.player.setup(this);
-        this.player.sprite.x = 170;
-        this.player.sprite.y = 100;
-        
-        // Inicializando Boss
-        this.boss.setup(this);
+        this.player.sprite.x = 300;
+        this.player.sprite.y = 1505;
+        this.game.camera.follow(this.player.sprite);
 
-        // Música de fundo - criada da mesma forma, mas com o parâmetro loop = true
-        this.bossSound = this.game.add.audio('environmentSoundBoss');
-        this.bossSound.loop = true;
-        this.bossSound.play();
-        
-        // Capas Level 3
-        this.capasToCollectLevel3 = this.game.add.physicsGroup();
-        this.level3.createFromObjects('Items', 'capa', 'capa_hud', 0, true, false, this.capasToCollectLevel3);
-        this.capasToCollectLevel3.forEach(function(addCapaLevel3) {
-            addCapaLevel3.anchor.setTo(0.5);
-            addCapaLevel3.body.immovable = true;
+        // setup cloaks
+        this.capasToCollectLevel2 = this.game.add.physicsGroup();
+        this.level3Map.createFromObjects('Items', 'capa', 'capa_hud', 0, true, false, this.capasToCollectLevel2);
+        this.capasToCollectLevel2.forEach(function(addCapaLevel2) {
+            addCapaLevel2.anchor.setTo(0.5);
+            addCapaLevel2.body.immovable = true;
         });
-        
-        // Texto do level
-        this.level3Text = this.game.add.text(this.game.world.centerX + 180, 30, 'Level 3', { fill: '#ffffff', align: 'center', fontSize: 27 });
-        this.level3Text.anchor.set(0.5);
-        this.level3Text.fixedToCamera = true;  
-        
-        // Text HP BOSS
-        this.bossHP = this.game.add.text(620, 550, 'Boss: '+this.boss.HP+'%', {font: "25px Arial", fill: "#ffffff"});
-        this.bossHP.fixedToCamera = true;
 
+        // setup lives
+        this.livesToCollect = this.game.add.physicsGroup();
+        this.level3Map.createFromObjects('Items', 'life', 'blood', 0, true, false, this.livesToCollect);
+        this.livesToCollect.forEach(function(addlifeLevel2) {
+            addlifeLevel2.anchor.setTo(0.5);
+            addlifeLevel2.body.immovable = true;
+        });
+
+        // audio setup
+        gameManager.globals.environmentSoundLevel2 = this.game.add.audio('environmentSoundLevel2');
+        gameManager.globals.environmentSoundLevel2.loop = true;
+        gameManager.globals.environmentSoundLevel2.play();
     }
-
-    Level3State.prototype.bossPlayerCollision = function(boss, player) {
-        gameManager.globals.lives === 0;
-        this.player.decreaseLives.apply(this.player);
-    }
-
-    Level3State.prototype.bossBulletCollision = function(player, bullet) {
-        if (gameManager.globals.bossBulletCollision) {
-            bullet.kill();
-
-        // game over
-        if(gameManager.globals.lives === 1) {
-            this.bossSound.stop();
-        }
-
-        this.player.decreaseLives.apply(this.player);
-        }
-    }
-
-    Level3State.prototype.playerBulletCollision = function(player, bullet) {
-        bullet.kill();
-        this.boss.HP -= 2;
-        this.bossHP.setText('Boss: '+ this.boss.HP +'%');
-
-        if(this.boss.HP <= 0) {
-            this.bossSound.stop();
-            gameManager.globals.isLevel3 = false;
-            this.game.time.events.add(2000, function() {
-                this.game.state.start('win');
-            }, this);
-        }
-
-        if(this.boss.state === 'normal' && this.boss.HP <= this.boss.limitHPToTransform) {
-            this.boss.transform.apply(this.boss);
-        }
-    }
-
+    
     Level3State.prototype.update = function() {
-        if (gameManager.globals.qtdeCapas > 0) {
+        // workaround
+        // Please find a better place to this code Fernando...
+        if (gameManager.globals.qtdeCapas > 0){
             gameManager.globals.haveCapas = true;
-        }
-        // player and boss collisions
-        this.game.physics.arcade.collide(this.player.sprite, this.floor, this.player.groundCollision, null, this.player);
-        this.game.physics.arcade.collide(this.player.sprite, this.platform1, this.player.groundCollision, null, this.player);
-        this.game.physics.arcade.collide(this.player.sprite, this.platform2, this.player.groundCollision, null, this.player);
-        this.game.physics.arcade.collide(this.boss.sprite, this.floor);
-        this.game.physics.arcade.collide(this.boss.sprite, this.player.sprite, this.C, null, this);
-        
-        // Player pegando capa
-        this.game.physics.arcade.overlap(this.player.sprite, this.capasToCollectLevel3, this.player.capasToCollectCollision, null, this.player);
-        
-        // bullet colliders
-        this.game.physics.arcade.overlap(this.player.sprite, this.boss.bullets, this.bossBulletCollision, null, this);
-        this.game.physics.arcade.overlap(this.boss.sprite, this.player.bullets, this.playerBulletCollision, null, this);
+        }  
 
-        // handle player inputs
+        this.handleCollisions();
+        this.playerUpdate();   
+    }
+
+    Level3State.prototype.handleCollisions = function() {
+        this.game.physics.arcade.collide(this.player.sprite, this.floorLayer, this.player.groundCollision, null, this.player);
+        this.game.physics.arcade.collide(this.player.sprite, this.wallLayer, this.player.groundCollision, null, this.player);
+        this.game.physics.arcade.overlap(this.player.sprite, this.capasToCollectLevel2, this.player.capasToCollectCollision, null, this.player); 
+        this.game.physics.arcade.overlap(this.player.sprite, this.livesToCollect, this.player.livesToCollectCollision, null, this.player); 
+    }
+
+    Level3State.prototype.playerUpdate = function() {
         this.player.handleInputs();
         this.player.checkGravity.apply(this.player); 
+    }
 
-        // move boss
-        this.boss.move.apply(this.boss);
+    Level3State.prototype.diamondCollect = function(player, diamond){
+        diamond.kill();
+        gameManager.globals.environmentSoundLevel2.stop();
+        gameManager.globals.isLevel2 = false;
+        gameManager.globals.isLevel3 = true;
+        this.game.state.start('transicao');
+    }
+
+    Level3State.prototype.render = function() {
+        // this.game.debug.inputInfo(32, 32);
+        // this.game.debug.spriteInfo(this.player.sprite, 32, 32);
+        // this.game.debug.body(this.player.sprite);
     }
 
     gameManager.addState('level3', Level3State);
