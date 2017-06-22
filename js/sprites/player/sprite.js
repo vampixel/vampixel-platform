@@ -138,6 +138,7 @@
         this.soundDead.stop();
         this.soundPlayerDeath.play();
         this.sprite.events.onAnimationComplete.add(function(){
+            console.log("onAnimationComplete(dead)");
             this.isDead = false;
             this.game.state.start('lose');
         },this);
