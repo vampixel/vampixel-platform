@@ -63,7 +63,7 @@
         this.level1BosqueText.anchor.set(0.5);
         this.level1BosqueText.fixedToCamera = true;
         
-         // Life
+        /* // Life
         this.livesToCollect = this.game.add.physicsGroup();
         this.level1Bosque.createFromObjects('items', 'life', 'blood', 0, true, false, this.livesToCollect);
         this.livesToCollect.forEach(function(addlifelevel1bosque) {
@@ -90,7 +90,7 @@
             transport.animations.play('spin');
         });
         
-        /* // interrogação Tiro
+        // interrogação Tiro
         this.interrogacaoTiro = this.game.add.physicsGroup();
         this.level1Bosque.createFromObjects('items', 'interrogacaoTiro', 'interrogacao', 0, true, false, this.interrogacaoTiro);
         this.interrogacaoTiro.forEach(function(interTiro) {
@@ -128,7 +128,7 @@
         this.interrogacaoLobo.forEach(function(interLobo) {
             interLobo.anchor.setTo(0.5);
             interLobo.body.immovable = true;
-        }); */
+        }); 
         
         //Inimigo Rato
         this.ratos = this.game.add.physicsGroup();
@@ -140,7 +140,7 @@
             //rato.animations.play('walk');
             //rato.body.velocity.x = 100;
             //rato.body.bounce.x = 1;
-        });
+        }); */
     }
     
     Level1BosqueState.prototype.update = function () {
@@ -163,7 +163,7 @@
         // Player pegando capa
         this.game.physics.arcade.overlap(this.player.sprite, this.capasToCollectLevel1, this.player.capasToCollectCollision, null, this.player);
         
-        /* // Player Pegando interrogação do Tiro
+        /*// Player Pegando interrogação do Tiro
         this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoTiro, this.InterrogacaoTiro, null, this);
         // Player Pegando interrogação do Pulo Duplo
         this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoPuloDuplo, this.InterrogacaoPuloD, null, this);
@@ -224,6 +224,6 @@
         this.game.state.start('transicao'); 
     }
          
-    gameManager.addState('level1Bosque', Level1BosqueState);
+    gameManager.addState('level1', Level1BosqueState);
     
 })();

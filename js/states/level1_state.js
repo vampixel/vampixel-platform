@@ -271,6 +271,6 @@
         this.player.decreaseLives.apply(this.player);
     }
 
-    gameManager.addState('level1', Level1State);
+    gameManager.addState('level1old', Level1State);
 
 })();
