@@ -30,6 +30,7 @@
         gameManager.globals.isLevel3 = false;
         gameManager.globals.isWin = false;
         gameManager.globals.isLose = false;
+        gameManager.globals.InputsEnable = true;
         
         this.onMenu = true;
         

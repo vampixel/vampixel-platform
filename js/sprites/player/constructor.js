@@ -49,7 +49,7 @@
         //Charger Hud
         this.imageChargerHud = 'charger_hud_image';
         this.imageUrlChargerHud = 'assets/spritesheets/timer-64x64.png';
-                
+        
         gameManager.globals.score = 0;
         gameManager.globals.scoreText = '';
         gameManager.globals.qtdeCapas = 0;
