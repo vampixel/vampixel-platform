@@ -79,7 +79,6 @@
             platform.body.immovable = true;
         });
         
-        
         // Sticks group
         this.sticks = this.game.add.physicsGroup();
         this.Level2.createFromObjects('Sticks', 'stick', 'stick', 0, true, false, this.sticks);
@@ -171,53 +170,8 @@
             bat.body.bounce.x = 1;
         });
         
-        /*
-        //Fire effect with phaser particles
-        var emitter;
-        var pSize = this.game.world.width / 12.5;
-        var bmpd = this.game.add.bitmapData(pSize, pSize);
-        // Create a radial gradient, yellow-ish on the inside, orange
-        // on the outside. Use it to draw a circle that will be used
-        // by the FireParticle class.
-        var grd = bmpd.ctx.createRadialGradient(
-                    pSize / 2, pSize /2, 2,
-                    pSize / 2, pSize / 2, pSize * 0.5);
-        
-        grd.addColorStop(0, 'rgba(193, 170, 30, 0.6)');
-        grd.addColorStop(1, 'rgba(255, 100, 30, 0.1)');
-        bmpd.ctx.fillStyle = grd;
-        
-        bmpd.ctx.arc(pSize / 2, pSize / 2 , pSize / 2, 0, Math.PI * 2);
-        bmpd.ctx.fill();
-        
-        this.game.cache.addBitmapData('flame', bmpd);
-        
-        // Generate 100 particles
-        emitter = this.game.add.emitter(this.game.world.centerX, this.game.world.height, 100);
-        emitter.width = 11 * pSize;
-        emitter.particleClass = FireParticle;
-        
-        // Magic happens here, bleding the colors of each particle
-        // generates the bright light effect
-        emitter.blendMode = PIXI.blendModes.ADD;
-        emitter.makeParticles();
-        emitter.minParticleSpeed.set(-15, -160);
-        emitter.maxParticleSpeed.set(15, -200);
-        emitter.setRotation(0, 0);
-        // Make the flames taller than they are wide to simulate the
-        // effect of flame tongues
-        emitter.setScale(3, 1, 4, 3, 12000, Phaser.Easing.Quintic.Out);
-        emitter.gravity = -20;
-        emitter.start(false, 3000, 50);
-        */
+       
     }
-    
-    function FireParticle(game, x, y) {
-        Phaser.Particle.call(this, game, x, y, game.cache.getBitmapData('flame'));
-    }
-    
-    FireParticle.prototype = Object.create(Phaser.Particle.prototype);
-    FireParticle.prototype.constructor = FireParticle;
     
     Level2State.prototype.update = function() {
         if (gameManager.globals.qtdeCapas > 0){
@@ -252,6 +206,7 @@
         this.player.handleInputs();
         //console.log("Animation: ", this.player.sprite.animations.currentAnim.name);
         //console.log("isColliderSticks: ",gameManager.globals.isColliderSticks);
+        //console.log("isDead: " , this.player.isDead);
         this.player.checkGravity.apply(this.player); 
         // Para cada morcego, verificar em que sentido ele está indo
         // Se a velocidade for positiva, a escala no eixo X será 1, caso
@@ -303,7 +258,11 @@
     
     Level2State.prototype.sticksCollision = function(player, stick){
        if (gameManager.globals.isColliderSticks){
-           this.player.decreaseLives.apply(this.player);
+           this.player.sprite.body.enable = false;
+           this.player.isDead = true;
+           this.player.playerHit(this.player);
+           this.player.gameover();
+           gameManager.globals.environmentSoundLevel2.stop()
        }
     }
     
