@@ -40,7 +40,7 @@
         this.sprite.body.gravity.y = this.normalGravity;
         this.isDoubleJumping = false;
         this.isJumping = false;
-        this.canFire = true;
+        this.canFire = true;   
         this.stateContext = stateContext;
         
         // Blood particle emmiter
