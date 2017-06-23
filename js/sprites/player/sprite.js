@@ -189,7 +189,8 @@
     }
 
     Player.prototype.handleInputs = function () {   
-       // Itens do HUD
+       if (gameManager.globals.InputsEnable) {
+        // Itens do HUD
         if (this.butButton.isDown && this.butButton.inputEnabled) {
             //this.soundModItens.play();
             this.imageSelectHudBat.reset(200, 40);
@@ -234,6 +235,7 @@
         this.emitter.x = this.sprite.x;
         this.emitter.y = this.sprite.y;
 
+        
         // Movimentação Esquerda e Direita do Player
         if (this.leftButton.isDown) {
             if(!this.isDead) {
@@ -272,6 +274,7 @@
         if (this.shotButton.isDown) {
             this.fire();
         }
+    }
     }
     
     /**
@@ -397,7 +400,7 @@
     Player.prototype.resetBullet = function(bullet) {
         this.soundShot.stop();
         bullet.kill();
-    }
+    }    
     
     gameManager.addSprite('player', Player);
 

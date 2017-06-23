@@ -16,7 +16,8 @@
             b.exists = false;
             b.visible = false;
             b.checkWorldBounds = true;
-            b.events.onOutOfBounds.add(this.resetBullet, this);
+            b.
+            events.onOutOfBounds.add(this.resetBullet, this);
         }
         
         //SpriteSheet and Animations Player
@@ -25,22 +26,18 @@
         this.sprite.animations.add('walk', [0, 1, 2, 3], 22, true);
         this.sprite.animations.add('wolfRun', [2,3,4,5], 15, true);
         this.sprite.animations.add('dead', [0,1,2,3,4,5,6,7,8,9], 5, false);
-
         this.sprite.animations.add('idle', [4,5,6], 4, true);
         this.sprite.animations.add('wolfIdle', [0, 1], 2, true);
-
         this.sprite.animations.add('transform', [7,8,9], 22, true);
         this.sprite.animations.add('batTransformation', [11,12,13,14,15,16,17,18,19], 10, true);
-        // Animations Player Jump
         this.sprite.animations.add('singleJump', [0,1,2,3,4,5,6,7], 10, false);
-        // Animations Player Bat Fly
         this.sprite.animations.add('batFly', [1,2,3,4,5,6,7,8,9], 24, true);
         this.sprite.anchor.set(0.5);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.normalGravity;
         this.isDoubleJumping = false;
         this.isJumping = false;
-        this.canFire = true;
+        this.canFire = true;   
         this.stateContext = stateContext;
         
         
