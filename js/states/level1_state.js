@@ -22,7 +22,7 @@
         this.game.load.image('tiledBosque1', 'assets/spritesheets/tilesetBosqueBackground.png');
         
         // Pré carregamento do TileMap Construído
-        this.game.load.tilemap('level1Bosque','assets/maps/level1bosque.json', null, Phaser.Tilemap.TILED_JSON);
+        this.game.load.tilemap('level1Bosque','assets/maps/level_1_bosque.json', null, Phaser.Tilemap.TILED_JSON);
         
         // Pré carregamento dos Áudios do Level
         this.game.load.audio('environmentSoundLevel1', 'assets/sounds/levels/environment.ogg');
