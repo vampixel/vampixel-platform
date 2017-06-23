@@ -51,6 +51,7 @@
         this.bgMountainsLayer = this.level1Bosque.createLayer('bgMountains');
         this.bgTreeBehindLayer = this.level1Bosque.createLayer('bgTreeBehind');
         this.bgTreeLayer = this.level1Bosque.createLayer('bgTree');
+        this.enemyBackTriggerLayer = this.level1Bosque.createLayer('enemy_back_trigger');
         this.waterLayer = this.level1Bosque.createLayer('water');
         this.FloorLayer = this.level1Bosque.createLayer('floor');
         this.FloorLayer.resizeWorld();
@@ -58,6 +59,7 @@
         // Setando os Frames do TileSet que devem ter colisão 
         this.level1Bosque.setCollisionByExclusion([], true, this.FloorLayer);
         this.level1Bosque.setCollision([121, 122, 123, 124, 125], true, this.waterLayer);
+        this.level1Bosque.setCollisionByExclusion([], true, this.enemyBackTriggerLayer);
         
         // setup initial player properties and camera follow
         this.player.setup(this);
@@ -162,17 +164,17 @@
             interLobo.body.immovable = true;
         });
         
-        /* //Inimigo Rato
+        //Inimigo Rato
         this.ratos = this.game.add.physicsGroup();
         this.level1Bosque.createFromObjects('enemies', 'ratos', 'rato', 0, true, false, this.ratos);
         this.ratos.forEach(function(rato){
             rato.anchor.setTo(0, 0);
             rato.body.immovable = true;
-            //rato.animations.add('walk', [1,2,3], 6, true);
-            //rato.animations.play('walk');
-            //rato.body.velocity.x = 100;
-            //rato.body.bounce.x = 1;
-        }); */
+            rato.animations.add('walk', [1,2,3], 6, true);
+            rato.animations.play('walk');
+            rato.body.velocity.x = 100;
+            rato.body.bounce.x = 1;
+        }); 
     }
     
     Level1BosqueState.prototype.update = function () { 
@@ -187,7 +189,7 @@
         this.game.physics.arcade.overlap(this.player.sprite, this.ratos, this.ratosCollision, null, this);
         
         // Rato morrendo ao ser atingido pelos morcegos do player
-        //this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
+        this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
         
         // Player pegando sangue "vida"
         this.game.physics.arcade.overlap(this.player.sprite, this.livesToCollect, this.player.livesToCollectCollision, null, this.player); 
@@ -206,16 +208,24 @@
         // Player Pegando interrogação do Lobo
         this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoLobo, this.InterrogacaoLoboCollision, null, this);
         
-        // Inimigos e Player com as paredes e chão
-        //this.game.physics.arcade.collide(this.ratos, this.FloorLayer);
+        // Player Coletando Diamante para ir para outro Level
+        this.game.physics.arcade.overlap(this.player.sprite, this.teletransport, this.goLevel2, null, this); 
+        
         this.game.physics.arcade.collide(this.player.sprite, this.FloorLayer, this.player.groundCollision, null, this.player);
         if (this.game.physics.arcade.collide(this.player.sprite, this.waterLayer)) {
             this.player.sprite.body.moves = false;
             this.player.gameover();
         }
         
-        // Player Coletando Diamante para ir para outro Level
-        this.game.physics.arcade.overlap(this.player.sprite, this.teletransport, this.goLevel2, null, this); 
+        // Inimigos com as paredes
+        this.game.physics.arcade.collide(this.ratos,this.enemyBackTriggerLayer);
+        
+        this.ratos.forEach(function(rato){
+            if(rato.body.velocity.x != 0) {
+                // Math.sign apenas retorna o sinal do parâmetro: positivo retorna 1, negativo -1
+                rato.scale.x = 1 * Math.sign(rato.body.velocity.x);
+            }
+        });       
     }
     
     Level1BosqueState.prototype.ratosCollision = function (player, rato) {
