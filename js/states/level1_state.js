@@ -164,7 +164,7 @@
         this.game.physics.arcade.overlap(this.player.sprite, this.capasToCollectLevel1, this.player.capasToCollectCollision, null, this.player);
         
         // Player Pegando interrogação do Tiro
-        this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoTiro, this.InterrogacaoTiro, null, this);
+        this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoTiro, this.InterrogacaoTiroCollision, null, this);
         // Player Pegando interrogação do Pulo Duplo
         /* this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoPuloDuplo, this.InterrogacaoPuloD, null, this);
         // Player Pegando interrogação da Capa
@@ -200,8 +200,8 @@
         this.player.increaseScoreRatos.apply(this.player);
      }              
      
-    Level1BosqueState.prototype.InterrogacaoTiro = function (interTiro) {
-        interTiro.kill();
+    Level1BosqueState.prototype.InterrogacaoTiroCollision = function (player, interrogacaoTiro) {
+        interrogacaoTiro.kill();
     }
     /* Level1BosqueState.prototype.InterrogacaoPuloD = function (interPuloDuplo) { 
         interPuloDuplo.kill();
