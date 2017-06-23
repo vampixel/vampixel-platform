@@ -24,27 +24,28 @@
     }
 
     Player.prototype.decreaseLives = function () {
-        gameManager.globals.lives--;
-        this.soundDead.play();
-        this.playerHit();
+        if(!this.isDead) {
+            gameManager.globals.lives--;
+            this.soundDead.play();
+            this.playerHit();
 
-        if(gameManager.globals.lives === 2) {
-            this.imageBloodLives3.alpha = 0;
-        }
-
-        if(gameManager.globals.lives === 1) {
-            this.imageBloodLives2.alpha = 0;
-        }
-
-        if(gameManager.globals.lives === 0) {
-            this.imageBloodLives1.alpha = 0;
-            if (gameManager.globals.isLevel1){
-            //if (gameManager.globals.isLevelChamine){
-               //gameManager.globals.environmentSoundLevelChamine.stop(); 
-               gameManager.globals.environmentSoundLevel1.stop(); 
+            if(gameManager.globals.lives === 2) {
+                this.imageBloodLives3.alpha = 0;
             }
-            this.isDead = true;
-            this.gameover();
+
+            if(gameManager.globals.lives === 1) {
+                this.imageBloodLives2.alpha = 0;
+            }
+
+            if(gameManager.globals.lives === 0) {
+                this.imageBloodLives1.alpha = 0;
+                if (gameManager.globals.isLevel1){
+                //if (gameManager.globals.isLevelChamine){
+                //gameManager.globals.environmentSoundLevelChamine.stop(); 
+                gameManager.globals.environmentSoundLevel1.stop(); 
+                }            
+                this.gameover();
+            }
         }
     }
     
@@ -137,8 +138,9 @@
         //this.checkIsJumping();
         this.soundDead.stop();
         this.soundPlayerDeath.play();
+        this.isDead = true;
         this.sprite.events.onAnimationComplete.add(function(){
-            console.log("onAnimationComplete(dead)");
+            this.game.sound.stopAll();  
             this.isDead = false;
             this.game.state.start('lose');
         },this);
@@ -400,8 +402,8 @@
     Player.prototype.resetBullet = function(bullet) {
         this.soundShot.stop();
         bullet.kill();
-    }    
-    
+    }
+
     gameManager.addSprite('player', Player);
 
 })();
