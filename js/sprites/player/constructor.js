@@ -56,6 +56,7 @@
         gameManager.globals.haveCapas = false;
         gameManager.globals.isColliderRatos = true;
         gameManager.globals.isColliderSticks = true;
+        gameManager.globals.isColliderEnemies = true;
         gameManager.globals.enemyScore = 1000;
         gameManager.globals.enemy01Type = 50;
         gameManager.globals.enemy02Type = 100;

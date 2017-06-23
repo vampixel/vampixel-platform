@@ -112,7 +112,7 @@
 
         if(this.boss.HP <= 0) {
             this.bossSound.stop();
-            gameManager.globals.isLevel3 = false;
+            gameManager.globals.isLevel4 = false;
             this.game.time.events.add(2000, function() {
                 this.game.state.start('win');
             }, this);

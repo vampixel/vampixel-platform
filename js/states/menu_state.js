@@ -29,6 +29,7 @@
         //gameManager.globals.isLevel1 = false;
         gameManager.globals.isLevel2 = false;
         gameManager.globals.isLevel3 = false;
+        gameManager.globals.isLevel4 = false;
         gameManager.globals.isWin = false;
         gameManager.globals.isLose = false;
         gameManager.globals.InputsEnable = true;
