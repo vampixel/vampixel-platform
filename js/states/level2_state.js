@@ -258,7 +258,8 @@
     
     Level2State.prototype.sticksCollision = function(player, stick){
        if (gameManager.globals.isColliderSticks){
-           this.player.sprite.body.enable = false;
+           //this.player.sprite.body.enable = false;
+           this.player.sprite.body.moves = false
            this.player.isDead = true;
            this.player.playerHit(this.player);
            this.player.gameover();

@@ -139,6 +139,8 @@
         this.soundDead.stop();
         this.soundPlayerDeath.play();
         this.isDead = true;
+        this.sprite.body.moves = false;
+        this.sprite.body.enable = false;
         this.sprite.events.onAnimationComplete.add(function(){
             this.game.sound.stopAll();  
             this.isDead = false;
@@ -366,7 +368,6 @@
             console.log("nextScore: ", this.nextScore);
         };
     }
-    
     
     //Shot Bats
     Player.prototype.fire = function () {
