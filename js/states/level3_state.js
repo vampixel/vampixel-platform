@@ -15,6 +15,9 @@
         this.game.load.spritesheet('arqueiro', 'assets/spritesheets/ARQUEIRO-SPRITE.png', 64, 64, 3);
         this.game.load.spritesheet('blood', 'assets/img/blood.png', 42, 42, 1);
         this.game.load.spritesheet('capa_hud', 'assets/spritesheets/capa_hud.png', 64, 64, 1);
+        this.game.load.spritesheet('platform', 'assets/img/plataformas-que-caem-32x32.png', 32,32, 8);
+        this.game.load.spritesheet('items', 'assets/spritesheets/items.png', 32, 32, 16);
+        
         // tilemap
         this.game.load.tilemap('level3Map', 'assets/maps/level_3_castle.json', null, Phaser.Tilemap.TILED_JSON);
         // audios
@@ -49,10 +52,37 @@
 
         // setup initial player properties        
         this.player.setup(this);
-        this.player.sprite.x = 300;
-        this.player.sprite.y = 1505;
+        this.player.sprite.x = 80;
+        this.player.sprite.y = 2310;
+        
+        //Teste1
+        //this.player.sprite.x = 80;
+        //this.player.sprite.y = 950;
+       
+        //Teste2
+        //this.player.sprite.x = 1000;
+        //this.player.sprite.y = 250;
+        
         this.game.camera.follow(this.player.sprite);
 
+        // Platforms group
+        this.platforms = this.game.add.physicsGroup();
+        this.level3Map.createFromObjects('Platforms', 'platform', 'platform', 0, true, false, this.platforms);
+        // Para cada objeto do grupo, vamos executar uma função
+        this.platforms.forEach(function(platform){
+            platform.body.immovable = true;
+        });
+        
+        // Diamond
+        this.diamonds = this.game.add.physicsGroup();
+        this.level3Map.createFromObjects('Items', 'diamond', 'items', 5, true, false, this.diamonds);
+        this.diamonds.forEach(function(diamond){
+            diamond.anchor.setTo(0.5);
+            diamond.body.immovable = true;
+            diamond.animations.add('spin', [4, 5, 6, 7, 6, 5], 6, true);
+            diamond.animations.play('spin');
+        });
+        
         // setup cloaks
         this.capasToCollectLevel2 = this.game.add.physicsGroup();
         this.level3Map.createFromObjects('Items', 'capa', 'capa_hud', 0, true, false, this.capasToCollectLevel2);
@@ -123,7 +153,9 @@
         // player
         this.game.physics.arcade.collide(this.player.sprite, this.floorLayer, this.player.groundCollision, null, this.player);
         this.game.physics.arcade.collide(this.player.sprite, this.wallLayer);
-
+        this.game.physics.arcade.collide(this.player.sprite, this.platforms);
+        this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this);
+        
         // cloak
         this.game.physics.arcade.overlap(this.player.sprite, this.capasToCollectLevel2, this.player.capasToCollectCollision, null, this.player); 
 
@@ -147,6 +179,15 @@
         this.game.physics.arcade.collide(this.nuns, this.wallLayer);
     }
 
+    Level3State.prototype.diamondCollect = function(player, diamond) {
+        diamond.kill();
+        gameManager.globals.environmentSoundLevel2.stop();
+        gameManager.globals.isLevel2 = false
+        gameManager.globals.isLevel3 = false;
+        gameManager.globals.isLevel4 = true;
+        this.game.state.start('transicao');  
+    }
+    
     Level3State.prototype.enemiesCollision = function(player, enemy) {
         if (gameManager.globals.isColliderEnemies) {
             enemy.kill();
@@ -176,8 +217,8 @@
     Level3State.prototype.diamondCollect = function(player, diamond){
         diamond.kill();
         gameManager.globals.environmentSoundLevel2.stop();
-        gameManager.globals.isLevel2 = false;
-        gameManager.globals.isLevel3 = true;
+        gameManager.globals.isLevel3 = false;
+        gameManager.globals.isLevel4 = true;
         this.game.state.start('transicao');
     }
 

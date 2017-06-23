@@ -32,6 +32,10 @@
             setTimeout(function () {
                 self.game.state.start('level3');
             }, 1300);
+        } else if (gameManager.globals.isLevel4) {
+            setTimeout(function () {
+                self.game.state.start('level4');
+            }, 1300);
         } else if (gameManager.globals.isWin) {
             setTimeout(function () {
                 self.game.state.start('menu');
