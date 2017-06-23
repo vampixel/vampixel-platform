@@ -139,10 +139,8 @@
         this.soundDead.stop();
         this.soundPlayerDeath.play();
         this.isDead = true;
-        this.sprite.body.moves = false;
-        this.sprite.body.enable = false;
         this.sprite.events.onAnimationComplete.add(function(){
-            this.game.sound.stopAll();  
+            this.game.sound.stopAll();
             this.isDead = false;
             this.game.state.start('lose');
         },this);
@@ -233,14 +231,15 @@
                 gameManager.globals.isColliderSticks = true;
                 gameManager.globals.isColliderEnemies = true;
             }, this);
-        }
+         }
+       }
         
         // Atualiza a posição do emmiter de particulas de sangue para seguir o player
         this.emitter.x = this.sprite.x;
         this.emitter.y = this.sprite.y;
-
-        if (gameManager.globals.InputsPlayer) {
+           
         // Movimentação Esquerda e Direita do Player
+           if (gameManager.globals.InputsPlayer) {
            if (this.leftButton.isDown) {
             if(!this.isDead) {
                 this.sprite.body.velocity.x = this.ifIsWolf(-this.wolfSpeed, -this.normalSpeed); // Ajustar velocidade
@@ -277,7 +276,6 @@
         // Player Atirando        
         if (this.shotButton.isDown) {
             this.fire();
-        }
         }
       }
     }
