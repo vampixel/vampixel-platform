@@ -33,6 +33,7 @@
         this.sprite.animations.add('singleJump', [0,1,2,3,4,5,6,7], 10, false);
         this.sprite.animations.add('batFly', [1,2,3,4,5,6,7,8,9], 24, true);
         this.sprite.anchor.set(0.5);
+        this.sprite.checkWorldBounds = true;
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.normalGravity;
         this.isDoubleJumping = false;
