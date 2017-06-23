@@ -148,8 +148,10 @@
     }
 
     Level3State.prototype.enemiesCollision = function(player, enemy) {
-        enemy.kill();
-        this.player.decreaseLives.apply(this.player);
+        if (gameManager.globals.isColliderEnemies) {
+            enemy.kill();
+            this.player.decreaseLives.apply(this.player);
+        }
     }
 
     Level3State.prototype.enemiesUpdate = function() {
