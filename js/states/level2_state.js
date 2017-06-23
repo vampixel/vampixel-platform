@@ -20,7 +20,7 @@
         
         // Images
         this.game.load.image('tiledFases', 'assets/spritesheets/tiled-fases.png');
-        this.game.load.image('stick', 'assets/img/estacas.png');
+        this.game.load.spritesheet('stick', 'assets/img/estacas-chao-teto-parede.png',32,32,4);
         this.game.load.spritesheet('platform', 'assets/img/plataformas-que-caem-32x32.png', 32,32, 8);
         
         //Tile maps
@@ -35,7 +35,7 @@
         // set globals
         gameManager.globals.lives = 3;
 
-        // Física
+        // Física ARCADE
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         
         // Áudios
@@ -46,28 +46,32 @@
         //Tile maps
         this.Level2 = this.game.add.tilemap('Level2');
         this.Level2.addTilesetImage('tiled-fases','tiledFases');
-        //this.Level2.addTilesetImage('estacas','estacas');
-        //this.Level2.addTilesetImage('plataformas','plataformas');
-        //this.Level2.addTilesetImage('fogo','fogo');
         
+        // setup trigger layer
+        this.enemyBackTriggerLayer = this.Level2.createLayer('enemy_back_trigger');
+        //Bg Layer
         this.bgLayer = this.Level2.createLayer('Bg');
-        this.fireLayer = this.Level2.createLayer('Fire');
+        //Walls layer
         this.wallsLayer = this.Level2.createLayer('Walls');
         this.wallsLayer.resizeWorld();
         
         //Tile maps - collision
-        //this.Level2.setCollisionByExclusion([19,20,21,22,23,24], true, this.wallsLayer);
+        this.Level2.setCollisionByExclusion([], true, this.enemyBackTriggerLayer);
         this.Level2.setCollisionByExclusion([], true, this.wallsLayer);
         this.Level2.setCollisionByExclusion([], true, this.fireLayer);
         
         // setup initial player properties and camera follow
         this.player.setup(this);
+        //this.player.sprite.x = this.game.world.centerX - 340;
         this.player.sprite.x = this.game.world.centerX - 100;
+        //this.player.sprite.y = 4700;
         this.player.sprite.y = 70;
+        this.player.sprite.body.collideWorldBounds = true;
         this.game.camera.follow(this.player.sprite);
         
+        
         // texto do level
-        this.Level2Text = this.game.add.text(this.game.world.centerX + 180, 30, 'Level 2', { fill: '#ffffff', align: 'center', fontSize: 27 });
+        this.Level2Text = this.game.add.text(this.game.world.centerX + 180, 30, 'Chaminé', { fill: '#ffffff', align: 'center', fontSize: 27 });
         this.Level2Text.anchor.set(0.5);
         this.Level2Text.fixedToCamera = true;  
         
@@ -80,11 +84,20 @@
         });
         
         // Sticks group
-        this.sticks = this.game.add.physicsGroup();
-        this.Level2.createFromObjects('Sticks', 'stick', 'stick', 0, true, false, this.sticks);
+        this.sticksUp = this.game.add.physicsGroup();
+        this.Level2.createFromObjects('Sticks', 'stick', 'stick', 0, true, false, this.sticksUp);
         // Para cada objeto do grupo, vamos executar uma função
-        this.sticks.forEach(function(stick){
-            stick.body.immovable = true;
+        this.sticksUp.forEach(function(stickUp){
+            stickUp.body.immovable = true;
+        });
+        
+        
+        // Sticks group
+        this.sticksDown = this.game.add.physicsGroup();
+        this.Level2.createFromObjects('Sticks', 'stickDown', 'stick', 1, true, false, this.sticksDown);
+        // Para cada objeto do grupo, vamos executar uma função
+        this.sticksDown.forEach(function(stickDown){
+            stickDown.body.immovable = true;
         });
         
         // Grupo de chamas (fogo)
@@ -169,8 +182,6 @@
             // ficar no sentido contrário; em outras palavras, o objeto é perfeitamente elástico
             bat.body.bounce.x = 1;
         });
-        
-       
     }
     
     Level2State.prototype.update = function() {
@@ -179,12 +190,13 @@
         }
         
         //Collisões
-        this.game.physics.arcade.overlap(this.player.sprite, this.platforms, this.platformsCollision, null, this);
-        this.game.physics.arcade.collide(this.player.sprite, this.fireLayer, this.fireDeath, null, this);
-        this.game.physics.arcade.overlap(this.player.sprite, this.sticks, this.sticksCollision, null, this);
-        // Colisão do Player com os Diamantes e com os Inimigos "Ratos"
+        this.game.physics.arcade.collide(this.player.sprite, this.platforms, this.platformsCollision, null, this);
+        this.game.physics.arcade.collide(this.player.sprite, this.flames, this.flamesCollision, null, this);
+        this.game.physics.arcade.overlap(this.player.sprite, this.sticksUp, this.sticksCollision, null, this);
+        this.game.physics.arcade.overlap(this.player.sprite, this.sticksDown, this.sticksCollision, null, this);
         this.game.physics.arcade.overlap(this.player.sprite, this.diamonds, this.diamondCollect, null, this); 
         this.game.physics.arcade.overlap(this.player.sprite, this.ratos, this.ratosCollision, null, this);
+        this.game.physics.arcade.collide(this.ratos,this.enemyBackTriggerLayer);
         
         // Rato morrendo ao ser atingido pelos morcegos do player
         this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
@@ -258,7 +270,6 @@
     
     Level2State.prototype.sticksCollision = function(player, stick){
        if (gameManager.globals.isColliderSticks){
-           //this.player.sprite.body.enable = false;
            this.player.sprite.body.moves = false
            this.player.isDead = true;
            this.player.playerHit(this.player);
@@ -268,7 +279,7 @@
     }
     
     Level2State.prototype.platformsCollision = function(player, platform){
-       platform.body.gravity.y = 50;
+        platform.body.gravity.y = 80;
     }
     
     Level2State.prototype.ratosCollision = function(player, rato){
@@ -278,8 +289,12 @@
        }
     }
     
-    Level2State.prototype.fireDeath = function(player, fire){
-        this.player.decreaseLives.apply(this.player);
+    Level2State.prototype.flamesCollision = function(player, flame){
+        this.player.sprite.body.moves = false
+        this.player.isDead = true;
+        this.player.playerHit(this.player);
+        this.player.gameover();
+        gameManager.globals.environmentSoundLevel2.stop()
     }
 
     gameManager.addState('level2', Level2State);
