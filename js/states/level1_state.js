@@ -63,7 +63,7 @@
         this.level1BosqueText.anchor.set(0.5);
         this.level1BosqueText.fixedToCamera = true;
         
-        /* // Life
+        // Life
         this.livesToCollect = this.game.add.physicsGroup();
         this.level1Bosque.createFromObjects('items', 'life', 'blood', 0, true, false, this.livesToCollect);
         this.livesToCollect.forEach(function(addlifelevel1bosque) {
@@ -98,7 +98,7 @@
             interTiro.body.immovable = true;
         });
         
-        // interrogação PuloDuplo
+        /* // interrogação PuloDuplo
         this.interrogacaoPuloDuplo = this.game.add.physicsGroup();
         this.level1Bosque.createFromObjects('items', 'interrogacaoPuloDuplo', 'interrogacao', 0, true, false, this.interrogacaoPuloDuplo);
         this.interrogacaoPuloDuplo.forEach(function(interPuloDuplo) {
@@ -128,7 +128,7 @@
         this.interrogacaoLobo.forEach(function(interLobo) {
             interLobo.anchor.setTo(0.5);
             interLobo.body.immovable = true;
-        }); 
+        }); */
         
         //Inimigo Rato
         this.ratos = this.game.add.physicsGroup();
@@ -140,7 +140,7 @@
             //rato.animations.play('walk');
             //rato.body.velocity.x = 100;
             //rato.body.bounce.x = 1;
-        }); */
+        }); 
     }
     
     Level1BosqueState.prototype.update = function () {
@@ -163,10 +163,10 @@
         // Player pegando capa
         this.game.physics.arcade.overlap(this.player.sprite, this.capasToCollectLevel1, this.player.capasToCollectCollision, null, this.player);
         
-        /*// Player Pegando interrogação do Tiro
+        // Player Pegando interrogação do Tiro
         this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoTiro, this.InterrogacaoTiro, null, this);
         // Player Pegando interrogação do Pulo Duplo
-        this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoPuloDuplo, this.InterrogacaoPuloD, null, this);
+        /* this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoPuloDuplo, this.InterrogacaoPuloD, null, this);
         // Player Pegando interrogação da Capa
         this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoCapa, this.InterrogacaoCapa, null, this);
         // Player Pegando interrogação da Vida
@@ -200,10 +200,10 @@
         this.player.increaseScoreRatos.apply(this.player);
      }              
      
-    /* Level1BosqueState.prototype.InterrogacaoTiro = function (interTiro) {
-        interTiro.alpha = 0;
+    Level1BosqueState.prototype.InterrogacaoTiro = function (interTiro) {
+        interTiro.kill();
     }
-    Level1BosqueState.prototype.InterrogacaoPuloD = function (interPuloDuplo) { 
+    /* Level1BosqueState.prototype.InterrogacaoPuloD = function (interPuloDuplo) { 
         interPuloDuplo.kill();
     }
     Level1BosqueState.prototype.InterrogacaoCapa = function (interCapa) {  
