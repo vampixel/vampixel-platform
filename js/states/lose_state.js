@@ -26,6 +26,7 @@
             gameManager.globals.isLevel3 = false;
             gameManager.globals.isWin = false;
             gameManager.globals.isLose = true;
+            gameManager.globals.InputsPlayer = true;
             self.game.state.start('transicao');
         }, 5000);
     }
