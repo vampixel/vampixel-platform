@@ -16,8 +16,7 @@
             b.exists = false;
             b.visible = false;
             b.checkWorldBounds = true;
-            b.
-            events.onOutOfBounds.add(this.resetBullet, this);
+            b.events.onOutOfBounds.add(this.resetBullet, this);
         }
         
         //SpriteSheet and Animations Player
@@ -34,6 +33,7 @@
         this.sprite.animations.add('batFly', [1,2,3,4,5,6,7,8,9], 24, true);
         this.sprite.anchor.set(0.5);
         this.sprite.checkWorldBounds = true;
+        this.sprite.events.onOutOfBounds.add(this.gameover, this);
         this.game.physics.arcade.enable(this.sprite);
         this.sprite.body.gravity.y = this.normalGravity;
         this.isDoubleJumping = false;

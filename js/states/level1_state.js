@@ -176,7 +176,6 @@
     }
     
     Level1BosqueState.prototype.update = function () { 
-        console.log(gameManager.globals.InputsPlayer);
         this.player.handleInputs();
         this.player.checkGravity.apply(this.player); 
         
@@ -211,6 +210,7 @@
         //this.game.physics.arcade.collide(this.ratos, this.FloorLayer);
         this.game.physics.arcade.collide(this.player.sprite, this.FloorLayer, this.player.groundCollision, null, this.player);
         if (this.game.physics.arcade.collide(this.player.sprite, this.waterLayer)) {
+            this.player.sprite.body.moves = false;
             this.player.gameover();
         }
         

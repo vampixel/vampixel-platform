@@ -142,6 +142,7 @@
         this.sprite.events.onAnimationComplete.add(function(){
             this.game.sound.stopAll();
             this.isDead = false;
+            gameManager.globals.InputsPlayer = false;
             this.game.state.start('lose');
         },this);
     }
