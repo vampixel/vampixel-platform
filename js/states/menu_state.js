@@ -32,6 +32,7 @@
         gameManager.globals.isWin = false;
         gameManager.globals.isLose = false;
         gameManager.globals.InputsEnable = true;
+        gameManager.globals.InputsPlayer = true;
         
         this.onMenu = true;
         

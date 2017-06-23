@@ -239,9 +239,9 @@
         this.emitter.x = this.sprite.x;
         this.emitter.y = this.sprite.y;
 
-        
+        if (gameManager.globals.InputsPlayer) {
         // Movimentação Esquerda e Direita do Player
-        if (this.leftButton.isDown) {
+           if (this.leftButton.isDown) {
             if(!this.isDead) {
                 this.sprite.body.velocity.x = this.ifIsWolf(-this.wolfSpeed, -this.normalSpeed); // Ajustar velocidade
                 // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
@@ -278,7 +278,8 @@
         if (this.shotButton.isDown) {
             this.fire();
         }
-    }
+        }
+      }
     }
     
     /**

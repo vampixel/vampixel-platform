@@ -16,10 +16,13 @@
         this.game.load.spritesheet('capa_hud', 'assets/spritesheets/capa_hud.png', 64, 64, 1);
         this.game.load.spritesheet('interrogacao', 'assets/img/interrogacao.png', 32, 32, 1);
         
+        
         // Pré carregamento de imagens
         // Imagem do TileSet da Fase do Bosque
         this.game.load.image('tiledBosque', 'assets/spritesheets/tilesetBosque.png');
         this.game.load.image('tiledBosque1', 'assets/spritesheets/tilesetBosqueBackground.png');
+        this.game.load.image('tutorialLobo', 'assets/img/instrucoes-correr.png');
+        this.game.load.image('tutorial', 'assets/img/tutorial.jpg')
         
         // Pré carregamento do TileMap Construído
         this.game.load.tilemap('level1Bosque','assets/maps/level_1_bosque.json', null, Phaser.Tilemap.TILED_JSON);
@@ -63,6 +66,31 @@
         this.level1BosqueText.anchor.set(0.5);
         this.level1BosqueText.fixedToCamera = true;
         
+        // Tutorial Tiro
+        this.tutorialTiro = this.game.add.sprite(284, 416, 'tutorial'); 
+        this.tutorialTiro.anchor.set(0.5);
+        this.tutorialTiro.alpha = 0;
+        
+        // Tutorial Pulo Duplo
+        this.tutorialPuloDuplo = this.game.add.sprite(610, 480, 'tutorial'); 
+        this.tutorialPuloDuplo.anchor.set(0.5);
+        this.tutorialPuloDuplo.alpha = 0;
+        
+        // Tutorial Capa
+        this.tutorialCapa = this.game.add.sprite(1120, 450, 'tutorial'); 
+        this.tutorialCapa.anchor.set(0.5);
+        this.tutorialCapa.alpha = 0;
+        
+        // Tutorial Life
+        this.tutorialLife = this.game.add.sprite(2465, 180, 'tutorial'); 
+        this.tutorialLife.anchor.set(0.5);
+        this.tutorialLife.alpha = 0;
+        
+        // Tutorial Lobo
+        this.tutorialLobo = this.game.add.sprite(3744, 290, 'tutorialLobo'); 
+        this.tutorialLobo.anchor.set(0.5);
+        this.tutorialLobo.alpha = 0;
+        
         // Life
         this.livesToCollect = this.game.add.physicsGroup();
         this.level1Bosque.createFromObjects('items', 'life', 'blood', 0, true, false, this.livesToCollect);
@@ -81,12 +109,12 @@
         
         // teletransport
         this.teletransport = this.game.add.physicsGroup();
-        this.level1Bosque.createFromObjects('items', 'teletransport', 'items', 3, true, false, this.teletransport);
+        this.level1Bosque.createFromObjects('items', 'teletransport', 'items', 5, true, false, this.teletransport);
         // Para cada objeto do grupo, vamos executar uma função
         this.teletransport.forEach(function(transport){
             // body.immovable = true indica que o objeto não é afetado por forças externas
             transport.body.immovable = true;
-            transport.animations.add('spin', [0, 1, 2, 3, 3, 2, 1, 0], 10, true);
+            transport.animations.add('spin', [4, 5, 6, 7, 7, 6, 5, 4], 10, true);
             transport.animations.play('spin');
         });
         
@@ -98,7 +126,7 @@
             interTiro.body.immovable = true;
         });
         
-        /* // interrogação PuloDuplo
+        // interrogação PuloDuplo
         this.interrogacaoPuloDuplo = this.game.add.physicsGroup();
         this.level1Bosque.createFromObjects('items', 'interrogacaoPuloDuplo', 'interrogacao', 0, true, false, this.interrogacaoPuloDuplo);
         this.interrogacaoPuloDuplo.forEach(function(interPuloDuplo) {
@@ -128,9 +156,9 @@
         this.interrogacaoLobo.forEach(function(interLobo) {
             interLobo.anchor.setTo(0.5);
             interLobo.body.immovable = true;
-        }); */
+        });
         
-        //Inimigo Rato
+        /* //Inimigo Rato
         this.ratos = this.game.add.physicsGroup();
         this.level1Bosque.createFromObjects('enemies', 'ratos', 'rato', 0, true, false, this.ratos);
         this.ratos.forEach(function(rato){
@@ -140,7 +168,7 @@
             //rato.animations.play('walk');
             //rato.body.velocity.x = 100;
             //rato.body.bounce.x = 1;
-        }); 
+        }); */
     }
     
     Level1BosqueState.prototype.update = function () {
@@ -151,11 +179,15 @@
             gameManager.globals.haveCapas = true;
         }
         
+        if (this.player.sprite.y > 640) {
+            this.isDead();
+        }
+        
         // Collider do Player com os Ratos
         this.game.physics.arcade.overlap(this.player.sprite, this.ratos, this.ratosCollision, null, this);
         
         // Rato morrendo ao ser atingido pelos morcegos do player
-        this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
+        //this.game.physics.arcade.overlap(this.ratos, this.player.bullets, this.playerBulletCollision, null, this);
         
         // Player pegando sangue "vida"
         this.game.physics.arcade.overlap(this.player.sprite, this.livesToCollect, this.player.livesToCollectCollision, null, this.player); 
@@ -166,16 +198,16 @@
         // Player Pegando interrogação do Tiro
         this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoTiro, this.InterrogacaoTiroCollision, null, this);
         // Player Pegando interrogação do Pulo Duplo
-        /* this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoPuloDuplo, this.InterrogacaoPuloD, null, this);
+        this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoPuloDuplo, this.InterrogacaoPuloDCollision, null, this);
         // Player Pegando interrogação da Capa
-        this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoCapa, this.InterrogacaoCapa, null, this);
+        this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoCapa, this.InterrogacaoCapaCollision, null, this);
         // Player Pegando interrogação da Vida
-        this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoLife, this.InterrogacaoLife, null, this);
+        this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoLife, this.InterrogacaoLifeCollision, null, this);
         // Player Pegando interrogação do Lobo
-        this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoLobo, this.InterrogacaoLobo, null, this); */
+        this.game.physics.arcade.overlap(this.player.sprite, this.interrogacaoLobo, this.InterrogacaoLoboCollision, null, this);
         
         // Inimigos e Player com as paredes e chão
-        this.game.physics.arcade.collide(this.ratos, this.FloorLayer);
+        //this.game.physics.arcade.collide(this.ratos, this.FloorLayer);
         this.game.physics.arcade.collide(this.player.sprite, this.FloorLayer, this.player.groundCollision, null, this.player);
         
         // Player Coletando Diamante para ir para outro Level
@@ -190,7 +222,7 @@
      }
      
     Level1BosqueState.prototype.isDead = function (player) {
-        gameManager.globals.InputsEnable = false;
+        gameManager.globals.InputsPlayer = false;
         this.player.gameover(this.player);
     }
     
@@ -200,21 +232,62 @@
         this.player.increaseScoreRatos.apply(this.player);
      }              
      
+    // Tutorial
     Level1BosqueState.prototype.InterrogacaoTiroCollision = function (player, interrogacaoTiro) {
         interrogacaoTiro.kill();
+        this.tutorialTiro.alpha = 1;
+        gameManager.globals.InputsPlayer = false;
+        this.player.sprite.body.moves = false;
+        this.game.time.events.add(2000, function() {
+            this.tutorialTiro.alpha = 0;
+            gameManager.globals.InputsPlayer = true;
+            this.player.sprite.body.moves = true;
+        }, this);
     }
-    /* Level1BosqueState.prototype.InterrogacaoPuloD = function (interPuloDuplo) { 
-        interPuloDuplo.kill();
+    Level1BosqueState.prototype.InterrogacaoPuloDCollision = function (player, interrogacaoPuloDuplo) { 
+        interrogacaoPuloDuplo.kill();
+        this.tutorialPuloDuplo.alpha = 1;
+        gameManager.globals.InputsPlayer = false;
+        this.player.sprite.body.moves = false;
+        this.game.time.events.add(2000, function() {
+            this.tutorialPuloDuplo.alpha = 0;
+            gameManager.globals.InputsPlayer = true;
+            this.player.sprite.body.moves = true;
+        }, this);
     }
-    Level1BosqueState.prototype.InterrogacaoCapa = function (interCapa) {  
-        interCapa.kill();
+    Level1BosqueState.prototype.InterrogacaoCapaCollision = function (player, interrogacaoCapa) {  
+        interrogacaoCapa.kill();
+        this.tutorialCapa.alpha = 1;
+        gameManager.globals.InputsPlayer = false;
+        this.player.sprite.body.moves = false;
+        this.game.time.events.add(2000, function() {
+            this.tutorialCapa.alpha = 0;
+            gameManager.globals.InputsPlayer = true;
+            this.player.sprite.body.moves = true;
+        }, this);
     }
-    Level1BosqueState.prototype.InterrogacaoLife = function (interLife) { 
-        interLife.kill();
+    Level1BosqueState.prototype.InterrogacaoLifeCollision = function (player, interrogacaoLife) { 
+        interrogacaoLife.kill();
+        this.tutorialLife.alpha = 1;
+        gameManager.globals.InputsPlayer = false;
+        this.player.sprite.body.moves = false;
+        this.game.time.events.add(2000, function() {
+            this.tutorialLife.alpha = 0;
+            gameManager.globals.InputsPlayer = true;
+            this.player.sprite.body.moves = true;
+        }, this);
     }
-    Level1BosqueState.prototype.InterrogacaoLobo = function (interLobo) { 
-        interLobo.kill();
-    } */
+    Level1BosqueState.prototype.InterrogacaoLoboCollision = function (player, interrogacaoLobo) { 
+        interrogacaoLobo.kill();
+        this.tutorialLobo.alpha = 1;
+        gameManager.globals.InputsPlayer = false;
+        this.player.sprite.body.moves = false;
+        this.game.time.events.add(4000, function() {
+            this.tutorialLobo.alpha = 0;
+            gameManager.globals.InputsPlayer = true;
+            this.player.sprite.body.moves = true;
+        }, this);
+    }
     
     Level1BosqueState.prototype.goLevel2 = function (transport) {
         transport.kill();
