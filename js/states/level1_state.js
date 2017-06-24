@@ -52,6 +52,7 @@
         this.bgTreeBehindLayer = this.level1Bosque.createLayer('bgTreeBehind');
         this.bgTreeLayer = this.level1Bosque.createLayer('bgTree');
         this.enemyBackTriggerLayer = this.level1Bosque.createLayer('enemy_back_trigger');
+        this.wallMargins = this.level1Bosque.createLayer('wallMargins');
         this.waterLayer = this.level1Bosque.createLayer('water');
         this.FloorLayer = this.level1Bosque.createLayer('floor');
         this.FloorLayer.resizeWorld();
@@ -60,6 +61,7 @@
         this.level1Bosque.setCollisionByExclusion([], true, this.FloorLayer);
         this.level1Bosque.setCollision([121, 122, 123, 124, 125], true, this.waterLayer);
         this.level1Bosque.setCollisionByExclusion([], true, this.enemyBackTriggerLayer);
+        this.level1Bosque.setCollisionByExclusion([], true, this.wallMargins);
         
         // setup initial player properties and camera follow
         this.player.setup(this);
@@ -73,17 +75,17 @@
         this.level1BosqueText.fixedToCamera = true;
         
         // Tutorial Tiro
-        this.tutorialTiro = this.game.add.sprite(284, 416, 'tutorialTiro'); 
+        this.tutorialTiro = this.game.add.sprite(150, 310, 'tutorialTiro'); 
         this.tutorialTiro.anchor.set(0.5);
         this.tutorialTiro.alpha = 0;
         
         // Tutorial Pulo Duplo
-        this.tutorialPuloDuplo = this.game.add.sprite(610, 480, 'tutorialPulo'); 
+        this.tutorialPuloDuplo = this.game.add.sprite(610, 430, 'tutorialPulo'); 
         this.tutorialPuloDuplo.anchor.set(0.5);
         this.tutorialPuloDuplo.alpha = 0;
         
         // Tutorial Capa
-        this.tutorialCapa = this.game.add.sprite(1120, 450, 'tutorialInvisivel'); 
+        this.tutorialCapa = this.game.add.sprite(1150, 380, 'tutorialInvisivel'); 
         this.tutorialCapa.anchor.set(0.5);
         this.tutorialCapa.alpha = 0;
         
@@ -93,7 +95,7 @@
         this.tutorialLife.alpha = 0; */
         
         // Tutorial Lobo
-        this.tutorialLobo = this.game.add.sprite(3744, 290, 'tutorialLobo'); 
+        this.tutorialLobo = this.game.add.sprite(3744, 200, 'tutorialLobo'); 
         this.tutorialLobo.anchor.set(0.5);
         this.tutorialLobo.alpha = 0;
         
@@ -217,8 +219,9 @@
             this.player.gameover();
         }
         
-        // Inimigos com as paredes
-        this.game.physics.arcade.collide(this.ratos,this.enemyBackTriggerLayer);
+        // Inimigos e Player com as paredes
+        this.game.physics.arcade.collide(this.ratos, this.enemyBackTriggerLayer);
+        this.game.physics.arcade.collide(this.player.sprite, this.wallMargins);
         
         this.ratos.forEach(function(rato){
             if(rato.body.velocity.x != 0) {

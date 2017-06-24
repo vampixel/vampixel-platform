@@ -68,10 +68,10 @@
             creditsButton.destroy();
             this.clickSound.play();
             this.menuSound.stop();
-            gameManager.globals.isLevelChamine = true;
+            //gameManager.globals.isLevelChamine = true;
             gameManager.globals.isLevel1 = true;
             //this.game.state.start('levelChamine');
-            this.game.state.start('level1');
+            //this.game.state.start('level1');
             this.telaTransicaoMenu.animations.play('transicaoBefore');
             this.game.time.events.add(1000, function() {
                 this.telaTransicaoMenu.animations.stop('transicaoBefore');
