@@ -19,7 +19,7 @@
         
         this.telaTransicao = this.game.add.sprite(400, 300, 'telaTransicao');
         this.telaTransicao.anchor.set(0.5, 0.5);
-        this.telaTransicao.animations.add('transicao', [7, 8, 9, 10, 11, 12, 13, 12, 11, 10, 9, 8, 7], 8, true);
+        this.telaTransicao.animations.add('transicao', [7, 8, 9, 10, 11, 12, 13, 12, 11, 10, 9, 8, 7], 10, true);
         this.telaTransicao.animations.play('transicao'); 
         
         this.telaTransicao = this.game.add.sprite(700, 580, 'telaLoading');
@@ -30,27 +30,27 @@
         if (gameManager.globals.isLevel1) {
             setTimeout(function () {
                 self.game.state.start('level1');
-            }, 2000);
+            }, 2500);
         } else if (gameManager.globals.isLevel2) {
             setTimeout(function () {
                 self.game.state.start('level2');
-            }, 2000);
+            }, 2500);
         } else if (gameManager.globals.isLevel3) {
             setTimeout(function () {
                 self.game.state.start('level3');
-            }, 2000);
+            }, 2500);
         } else if (gameManager.globals.isLevel4) {
             setTimeout(function () {
                 self.game.state.start('level4');
-            }, 2000);
+            }, 2500);
         } else if (gameManager.globals.isWin) {
             setTimeout(function () {
                 self.game.state.start('menu');
-            }, 2000);
+            }, 2500);
         } else if (gameManager.globals.isLose) {
             setTimeout(function () {
                 self.game.state.start('menu');
-            }, 2000);
+            }, 2500);
         }
     }
 

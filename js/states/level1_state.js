@@ -294,6 +294,7 @@
         this.tutorialLobo.alpha = 1;
         gameManager.globals.InputsPlayer = false;
         this.player.sprite.body.moves = false;
+        //this.player.sprite.animations.stop('wolfRun');
         this.game.time.events.add(4000, function() {
             this.tutorialLobo.alpha = 0;
             gameManager.globals.InputsPlayer = true;

@@ -16,7 +16,7 @@
         
         //SpriteSheet Player Bat Fly
         this.imageBatFlyName = 'player_batfly_image';
-        this.imageBatFlyUrl = 'assets/spritesheets/BATFLY-ITEMS.png';
+        this.imageBatFlyUrl = 'assets/spritesheets/Morcego-64x64.png';
 
         //SpriteSheet Wolf
         this.imageWolfName = 'player_wolf_image';

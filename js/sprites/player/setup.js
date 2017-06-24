@@ -30,7 +30,7 @@
         this.sprite.animations.add('transform', [7,8,9], 22, true);
         this.sprite.animations.add('batTransformation', [11,12,13,14,15,16,17,18,19], 10, true);
         this.sprite.animations.add('singleJump', [0,1,2,3,4,5,6,7], 10, false);
-        this.sprite.animations.add('batFly', [1,2,3,4,5,6,7,8,9], 24, true);
+        this.sprite.animations.add('batFly', [1,2,3,4,5,6,7,8], 24, true);
         this.sprite.anchor.set(0.5);
         this.sprite.checkWorldBounds = true;
         this.sprite.events.onOutOfBounds.add(this.gameover, this);
