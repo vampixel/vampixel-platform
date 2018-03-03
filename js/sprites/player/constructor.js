@@ -70,6 +70,7 @@
         this.fallingGravity = 50;
         this.jumpVelocity = -450;
         this.isJumping = false;
+        this.isFall = false;
         this.isDoubleJumping = false;
         this.initialPositionX = 50;
         this.initialPositionY = this.game.height - 500;

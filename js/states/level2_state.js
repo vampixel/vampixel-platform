@@ -297,6 +297,21 @@
         gameManager.globals.environmentSoundLevel2.stop()
     }
 
+    Level2State.prototype.render = function () {
+
+        this.game.debug.spriteInfo(this.player.sprite, 825, 125);
+        this.game.debug.spriteBounds(this.player.sprite);
+        // this.game.debug.pointer(this.game.input.activePointer);
+
+
+        console.log("1=="+  this.player.sprite.body.velocity.y);
+
+        this.player.checkIsFall();
+
+        // alert("1=="+ this.playPositionY1+"  2=="+this.playPositionY2)
+
+    }
+
     gameManager.addState('level2', Level2State);
 
 

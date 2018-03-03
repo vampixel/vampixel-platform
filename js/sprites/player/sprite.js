@@ -126,9 +126,16 @@
         }
     }
 
+    Player.prototype.checkIsFall = function () {
+        if(this.sprite.body.velocity.y > 430){
+            this.isFall = true;
+        }
+    }
+
     Player.prototype.resetJump = function () {
         this.isJumping = false;
         this.isDoubleJumping = false;
+        this.isFall = false;
         this.setNormalOrWolfAnimation('walk', 'wolfRun');        
         this.sprite.body.gravity.y = this.normalGravity;
     }
@@ -148,7 +155,7 @@
     }
     
     Player.prototype.jump = function () { 
-        if((!this.isDead) && (this.sprite.body.touching.down || this.sprite.body.onFloor())) {
+        if((!this.isDead) && (this.sprite.body.onFloor() || this.sprite.body.touching.down)) {
             this.isJumping = true;
             this.setNormalOrWolfAnimation('singleJump', 'wolfRun', this.imageJumpName);
             this.sprite.events.onAnimationComplete.add(function(){
@@ -157,7 +164,7 @@
             },this);
             return doJump.apply(this);
         }
-        else if(!this.isDead && this.isJumping && !this.isDoubleJumping && !this.isWolf) {
+        else if((!this.isDead && !this.isDoubleJumping && !this.isWolf) || (this.isFall || this.isJumping) ) {
             this.isDoubleJumping = true;
             this.setAnimation('batFly', this.imageBatFlyName);
             this.sprite.events.onAnimationComplete.add(function(){
@@ -248,7 +255,7 @@
                 if (this.sprite.scale.x == 1) this.sprite.scale.x = -1;
             }
                 // Iniciando a animação 'walk'
-            if (!this.isDead && !this.isJumping) {
+            if (!this.isDead && !this.isJumping && !this.isFall) {
                 this.setNormalOrWolfAnimation('walk', 'wolfRun');
             }
         } else if (this.rightButton.isDown) {
@@ -258,7 +265,7 @@
                 // Se o jogador estiver virado para a direita, inverter a escala para que ele vire para o outro lado
                 if (this.sprite.scale.x == -1) this.sprite.scale.x = 1;
             }
-            if (!this.isDead && !this.isJumping) {
+            if (!this.isDead && !this.isJumping && !this.isFall) {
                 this.setNormalOrWolfAnimation('walk', 'wolfRun');
             }
         } else {

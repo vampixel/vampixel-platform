@@ -38,6 +38,7 @@
         this.sprite.body.gravity.y = this.normalGravity;
         this.isDoubleJumping = false;
         this.isJumping = false;
+        this.isFall = false;
         this.canFire = true;   
         this.stateContext = stateContext;
         
