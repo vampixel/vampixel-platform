@@ -16,7 +16,7 @@
         this.game.load.image('bgInicial', 'assets/img/gameOver.jpg');
         
         // Sprite Sheet
-        this.game.load.spritesheet('telaTransicao', 'assets/spritesheets/telaTransicaoBoca800x600.png', 800, 600, 14);
+        this.game.load.spritesheet('telaTransicao', 'assets/spritesheets/telaTransicaoBoca800x600.png', 800, 600, 11);
         this.game.load.spritesheet('telaLoading', 'assets/spritesheets/Loading-16x110.png', 110, 16, 16);
         
         // Sounds
@@ -44,11 +44,11 @@
         
         this.telaTransicaoMenu = this.game.add.sprite(400, 300, 'telaTransicao');
         this.telaTransicaoMenu.anchor.set(0.5, 0.5);
-        this.telaTransicaoMenu.animations.add('transicaoBefore', [0, 1, 2, 3, 4, 5, 6, 7], 8, true);
+        this.telaTransicaoMenu.animations.add('transicaoBefore', [0,1,2,3,4,5,6,7], 6, true);
         
         this.telaTransicao = this.game.add.sprite(700, 580, 'telaLoading');
         this.telaTransicao.anchor.set(0.5, 0.5);
-        this.telaTransicao.animations.add('loading', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], 10, true);
+        this.telaTransicao.animations.add('loading', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 9, true);
         this.telaTransicao.animations.play('loading');
         
         this.clickSound = this.game.add.audio('clickSound');
@@ -73,7 +73,7 @@
         creditsButton.anchor.set(0.5);
         creditsButton.alpha = 0;
         
-        this.game.time.events.add(4000, function() {
+        this.game.time.events.add(1000, function() {
             startButton.alpha = 1;
             chooseLevelButton.alpha = 1;
             controlsButton.alpha = 1;
@@ -95,10 +95,10 @@
             //this.game.state.start('levelChamine');
             //this.game.state.start('level1');
             this.telaTransicaoMenu.animations.play('transicaoBefore');
+            // this.game.time.events.add(1000, function() {
+            //     this.telaTransicaoMenu.animations.stop('transicaoBefore');
+            // }, this);
             this.game.time.events.add(1000, function() {
-                this.telaTransicaoMenu.animations.stop('transicaoBefore');
-            }, this);
-            this.game.time.events.add(3000, function() {
                 this.game.state.start('transicao');
             }, this);
         }
@@ -117,10 +117,10 @@
             this.clickSound.play();
             this.menuSound.stop();
             this.telaTransicaoMenu.animations.play('transicaoBefore');
+            // this.game.time.events.add(1000, function() {
+            //     this.telaTransicaoMenu.animations.stop('transicaoBefore');
+            // }, this);
             this.game.time.events.add(1000, function() {
-                this.telaTransicaoMenu.animations.stop('transicaoBefore');
-            }, this);
-            this.game.time.events.add(3000, function() {
                 this.game.state.start('menuInstructions');
             }, this);
         }
@@ -133,12 +133,12 @@
             this.clickSound.play();
             this.menuSound.stop();
             this.telaTransicaoMenu.animations.play('transicaoBefore');
+            // this.game.time.events.add(1000, function() {
+            //     this.telaTransicaoMenu.animations.stop('transicaoBefore');
+            // }, this);
             this.game.time.events.add(1000, function() {
-                this.telaTransicaoMenu.animations.stop('transicaoBefore');
-            }, this);
-            this.game.time.events.add(3000, function() {
                 this.game.state.start('menuCredits');
-            }, this); 
+            }, this);
         }
     }
     
