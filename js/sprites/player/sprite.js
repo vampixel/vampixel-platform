@@ -40,7 +40,7 @@
             if(gameManager.globals.lives === 0) {
                 this.imageBloodLives1.alpha = 0;
                 if (gameManager.globals.isLevel1){
-                //if (gameManager.globals.isLevelChamine){
+                //if (gameManager.globals.isLevelChamine){....
                 //gameManager.globals.environmentSoundLevelChamine.stop(); 
                 gameManager.globals.environmentSoundLevel1.stop(); 
                 }            
