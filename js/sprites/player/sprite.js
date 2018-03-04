@@ -212,7 +212,7 @@
             this.isInvisible = true;
             this.butButton.inputEnabled = false;
             this.capaButton.inputEnabled = false;
-            this.sprite.alpha = 0.1;
+            this.sprite.alpha = 0.5;
             gameManager.globals.qtdeCapas--;
             gameManager.globals.textHudQtdeCap.setText(gameManager.globals.qtdeCapas);
             gameManager.globals.isColliderRatos = false;

@@ -309,6 +309,19 @@
         gameManager.globals.isLevel2 = true;
         this.game.state.start('transicao'); 
     }
+
+    Level1BosqueState.prototype.render = function () {
+
+        // this.game.debug.spriteInfo(this.player.sprite, 825, 125);
+        // this.game.debug.spriteBounds(this.player.sprite);
+        // // this.game.debug.pointer(this.game.input.activePointer);
+        //
+        //
+        // console.log("1=="+  this.player.sprite.body.velocity.y);
+
+        this.player.checkIsFall();
+
+    }
          
     gameManager.addState('level1', Level1BosqueState);
     

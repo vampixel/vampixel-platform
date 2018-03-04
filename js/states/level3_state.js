@@ -222,6 +222,19 @@
         this.game.state.start('transicao');
     }
 
+    Level3State.prototype.render = function () {
+
+        // this.game.debug.spriteInfo(this.player.sprite, 825, 125);
+        // this.game.debug.spriteBounds(this.player.sprite);
+        // // this.game.debug.pointer(this.game.input.activePointer);
+        //
+        //
+        // console.log("1=="+  this.player.sprite.body.velocity.y);
+
+        this.player.checkIsFall();
+
+    }
+
     Level3State.prototype.render = function() {
         // this.game.debug.inputInfo(32, 32);
         // this.game.debug.spriteInfo(this.player.sprite, 32, 32);
