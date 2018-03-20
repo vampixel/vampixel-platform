@@ -90,6 +90,7 @@
         }, 
         {
          "draworder":"topdown",
+         "height":0,
          "name":"items",
          "objects":[
                 {
@@ -191,11 +192,13 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
+         "width":0,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
+         "height":0,
          "name":"enemies",
          "objects":[
                 {
@@ -249,18 +252,6 @@
                 {
                  "gid":797,
                  "height":64,
-                 "id":30,
-                 "name":"ratos",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":366,
-                 "y":460
-                }, 
-                {
-                 "gid":797,
-                 "height":64,
                  "id":49,
                  "name":"ratos",
                  "rotation":0,
@@ -285,13 +276,13 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
+         "width":0,
          "x":0,
          "y":0
         }],
  "nextobjectid":51,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.0.1",
  "tileheight":32,
  "tilesets":[
         {
@@ -386,7 +377,6 @@
          "tilewidth":32
         }],
  "tilewidth":32,
- "type":"map",
  "version":1,
  "width":150
 }
