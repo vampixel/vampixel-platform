@@ -34,6 +34,9 @@
     }
     
     Level1BosqueState.prototype.create = function () {
+
+        this.currentTutorial = '';
+
         // Criando a Física do Jogo
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         
@@ -246,68 +249,44 @@
      
     // Tutorial
     Level1BosqueState.prototype.InterrogacaoTiroCollision = function (player, interrogacaoTiro) {
-        interrogacaoTiro.kill();
-        this.tutorialTiro.alpha = 1;
+        this.AnyInterrogacaoHandler(interrogacaoTiro, this.tutorialTiro);
+    };
+
+    Level1BosqueState.prototype.InterrogacaoPuloDCollision = function (player, interrogacaoPuloDuplo) {
+        this.AnyInterrogacaoHandler(interrogacaoPuloDuplo, this.tutorialPuloDuplo);
+    };
+
+    Level1BosqueState.prototype.InterrogacaoCapaCollision = function (player, interrogacaoCapa) {
+        this.AnyInterrogacaoHandler(interrogacaoCapa, this.tutorialCapa);
+    };
+
+    Level1BosqueState.prototype.InterrogacaoLoboCollision = function (player, interrogacaoLobo) {
+        this.AnyInterrogacaoHandler(interrogacaoLobo, this.tutorialLobo);
+    };
+
+    Level1BosqueState.prototype.AnyInterrogacaoHandler = function (interrogacao, tutorial) {
+        var self = this;
+        interrogacao.kill();
+        tutorial.alpha = 1;
         gameManager.globals.InputsPlayer = false;
         this.player.sprite.body.moves = false;
-        this.game.time.events.add(4000, function() {
-            this.tutorialTiro.alpha = 0;
-            gameManager.globals.InputsPlayer = true;
-            this.player.sprite.body.moves = true;
+
+        this.game.time.events.add(500, function() {
+            document.body.onkeydown = function(e){
+                tutorial.alpha = 0;
+                gameManager.globals.InputsPlayer = true;
+                self.player.sprite.body.moves = true;
+                document.body.onkeydown = null;
+            };
         }, this);
-    }
-    Level1BosqueState.prototype.InterrogacaoPuloDCollision = function (player, interrogacaoPuloDuplo) { 
-        interrogacaoPuloDuplo.kill();
-        this.tutorialPuloDuplo.alpha = 1;
-        gameManager.globals.InputsPlayer = false;
-        this.player.sprite.body.moves = false;
-        this.game.time.events.add(4000, function() {
-            this.tutorialPuloDuplo.alpha = 0;
-            gameManager.globals.InputsPlayer = true;
-            this.player.sprite.body.moves = true;
-        }, this);
-    }
-    Level1BosqueState.prototype.InterrogacaoCapaCollision = function (player, interrogacaoCapa) {  
-        interrogacaoCapa.kill();
-        this.tutorialCapa.alpha = 1;
-        gameManager.globals.InputsPlayer = false;
-        this.player.sprite.body.moves = false;
-        this.game.time.events.add(4000, function() {
-            this.tutorialCapa.alpha = 0;
-            gameManager.globals.InputsPlayer = true;
-            this.player.sprite.body.moves = true;
-        }, this);
-    }
-    /* Level1BosqueState.prototype.InterrogacaoLifeCollision = function (player, interrogacaoLife) { 
-        interrogacaoLife.kill();
-        this.tutorialLife.alpha = 1;
-        gameManager.globals.InputsPlayer = false;
-        this.player.sprite.body.moves = false;
-        this.game.time.events.add(4000, function() {
-            this.tutorialLife.alpha = 0;
-            gameManager.globals.InputsPlayer = true;
-            this.player.sprite.body.moves = true;
-        }, this);
-    } */
-    Level1BosqueState.prototype.InterrogacaoLoboCollision = function (player, interrogacaoLobo) { 
-        interrogacaoLobo.kill();
-        this.tutorialLobo.alpha = 1;
-        gameManager.globals.InputsPlayer = false;
-        this.player.sprite.body.moves = false;
-        //this.player.sprite.animations.stop('wolfRun');
-        this.game.time.events.add(4000, function() {
-            this.tutorialLobo.alpha = 0;
-            gameManager.globals.InputsPlayer = true;
-            this.player.sprite.body.moves = true;
-        }, this);
-    }
+    };
     
     Level1BosqueState.prototype.goLevel2 = function (transport) {
         transport.kill();
         gameManager.globals.environmentSoundLevel1.stop();
         gameManager.globals.isLevel1 = false
         gameManager.globals.isLevel2 = true;
-        this.game.state.start('transicao'); 
+        this.game.state.start('transicao');
     }
 
     Level1BosqueState.prototype.render = function () {
