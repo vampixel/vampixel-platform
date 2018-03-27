@@ -22,11 +22,6 @@
         this.telaTransicao.animations.add('transicao', [0,1,2,3,4,5,6,7], 6, true);
         this.telaTransicao.animations.play('transicao'); 
         
-        // this.telaTransicao = this.game.add.sprite(700, 580, 'telaLoading');
-        // this.telaTransicao.anchor.set(0.5, 0.5);
-        // this.telaTransicao.animations.add('loading', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 9, true);
-        // this.telaTransicao.animations.play('loading');
-        
         if (gameManager.globals.isLevel1) {
             setTimeout(function () {
                 self.game.state.start('level1');

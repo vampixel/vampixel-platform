@@ -154,8 +154,11 @@
         },this);
     }
     
-    Player.prototype.jump = function () { 
-        if((!this.isDead) && (this.sprite.body.onFloor() || this.sprite.body.touching.down)) {
+    Player.prototype.jump = function () {
+
+        if(this.isDead) return;
+
+        if(this.sprite.body.onFloor() || this.sprite.body.touching.down) {
             this.isJumping = true;
             this.setNormalOrWolfAnimation('singleJump', 'wolfRun', this.imageJumpName);
             this.sprite.events.onAnimationComplete.add(function(){
@@ -164,7 +167,7 @@
             },this);
             return doJump.apply(this);
         }
-        else if((!this.isDead && !this.isDoubleJumping && !this.isWolf) || (this.isFall || this.isJumping) ) {
+        else if((!this.isDoubleJumping && !this.isWolf)) {
             this.isDoubleJumping = true;
             this.setAnimation('batFly', this.imageBatFlyName);
             this.sprite.events.onAnimationComplete.add(function(){
