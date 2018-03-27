@@ -136,13 +136,12 @@
         this.isJumping = false;
         this.isDoubleJumping = false;
         this.isFall = false;
-        this.setNormalOrWolfAnimation('walk', 'wolfRun');        
+        this.setNormalOrWolfAnimation('walk', 'wolfRun');
         this.sprite.body.gravity.y = this.normalGravity;
     }
         
     Player.prototype.gameover = function () {
         this.setAnimation('dead', this.imageDeadName);
-        //this.checkIsJumping();
         this.soundDead.stop();
         this.soundPlayerDeath.play();
         this.isDead = true;
@@ -156,7 +155,7 @@
     
     Player.prototype.jump = function () {
 
-        if(this.isDead) return;
+        if(this.isDead || !this.canJump) return;
 
         if(this.sprite.body.onFloor() || this.sprite.body.touching.down) {
             this.isJumping = true;
@@ -168,12 +167,9 @@
             return doJump.apply(this);
         }
         else if((!this.isDoubleJumping && !this.isWolf)) {
+            this.canJump = false;
             this.isDoubleJumping = true;
             this.setAnimation('batFly', this.imageBatFlyName);
-            this.sprite.events.onAnimationComplete.add(function(){
-                this.sprite.loadTexture(this.imageName);
-                //this.sprite.anchor.set(0.5);
-            },this);
             return doJump.apply(this);
         }
 
@@ -198,6 +194,7 @@
     }
 
     Player.prototype.groundCollision = function (playerSprite) {
+        this.canJump = true;
         this.checkIsJumping();
     }
 
@@ -205,7 +202,6 @@
        if (gameManager.globals.InputsEnable) {
         // Itens do HUD
         if (this.butButton.isDown && this.butButton.inputEnabled) {
-            //this.soundModItens.play();
             this.imageSelectHudBat.reset(200, 40);
             this.imageSelectHudCapa.kill();
         }
@@ -344,6 +340,7 @@
             this.sprite.animations.play(animationName);
             // update current animation
             this.currentAnimationName = animationName;
+            console.log('current animation =>', animationName);
         }
     }
 

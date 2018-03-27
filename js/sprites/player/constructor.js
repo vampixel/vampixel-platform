@@ -76,6 +76,7 @@
         this.initialPositionY = this.game.height - 500;
         this.isInvisible = false;
         this.isDead = false;
+        this.canJump = true;
         this.bullets;
         this.bulletTime = 0;
         this.bullet;
