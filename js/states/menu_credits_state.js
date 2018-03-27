@@ -24,7 +24,7 @@
         voltarButton.anchor.set(0.5);
 
         var textCredits = this.game.add.text(30, 30, 
-        'Tela de Creditos\n Universidade do Estado do Amazonas\n Pos-Graduacao em Desenvolvimento de Jogos Eletronicos\n Equipe: MarmotaLab\n - Fernando Dantas\n - Paulo Matos\n - Jeferson Barros\n - Irlan Gomes\n - Josue Aguiar\n - Renan Zuany\n - Claudio Sampaio\n Orientadora: Professora Dra. Cristina Araujo \n Assets Externos:\n -\n -\n', 
+        'Universidade do Estado do Amazonas\n\nPós-Graduação em Desenvolvimento de Jogos Eletrônicos\n\nAlunos: \n- Irlan Gomes\n- Paulo Matos\n\nOrientador: Prof. Msc. Rodrigo Braga',
         { fill: '#ffffff' });
         //text.anchor.set(0.5);        
         

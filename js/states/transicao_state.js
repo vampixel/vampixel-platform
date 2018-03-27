@@ -20,7 +20,7 @@
         this.telaTransicao = this.game.add.sprite(400, 300, 'telaTransicao');
         this.telaTransicao.anchor.set(0.5, 0.5);
         this.telaTransicao.animations.add('transicao', [0,1,2,3,4,5,6,7], 6, true);
-        this.telaTransicao.animations.play('transicao'); 
+        this.telaTransicao.animations.play('transicao');
         
         if (gameManager.globals.isLevel1) {
             setTimeout(function () {
